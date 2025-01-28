@@ -66,11 +66,11 @@ export class ToursComponent implements AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  openDialog(): void {
+  openViewDialog(row: any): void {
     const dialogRef = this.dialog.open(ToursViewModalComponent, {
-      width: '1000px',
-      height : '700px',
-      
+      width: '1300px',
+      height: '600px',
+      data: row.tourSalesId
     });
 
     dialogRef.afterClosed().subscribe({

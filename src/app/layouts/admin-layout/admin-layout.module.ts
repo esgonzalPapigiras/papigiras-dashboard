@@ -23,7 +23,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ToursViewModalComponent } from '../../tours/tours-view-modal/tours-view-modal.component';
 import {MatTabsModule} from '@angular/material/tabs';
-
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -42,7 +42,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
+    MatIconModule
     
   ],
   declarations: [

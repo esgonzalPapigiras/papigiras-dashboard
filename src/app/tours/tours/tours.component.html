@@ -4,16 +4,13 @@
             <div class="col-md-12" style="width: 100%; padding: 20px;">
                 <div class="card" >
                     <div class="card-header card-header-danger">
-                        <h4 class="card-title">Edit Profile</h4>
-                        <p class="card-category">Complete your profile</p>
+                        <h4 class="card-title">Mantenedor Giras</h4>
+                        
                     </div>
                     <div class="card-body" >
-                        <li>
-                            <button mat-raised-button (click)="openDialog()">Pick one</button>
-                          </li>
                         <mat-form-field appearance="standard">
-                            <mat-label>Filter</mat-label>
-                            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+                            <mat-label>Filtro</mat-label>
+                            <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
                         </mat-form-field>
                         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
                             class="mat-elevation-z8">
@@ -81,7 +78,7 @@
                                   <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Contrato">
                                     <mat-icon>gavel</mat-icon>
                                   </button>
-                                  <button  color="primary" (click)="deleteAction(row)" matTooltip="Agregar coordinador">
+                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Agregar coordinador">
                                     <mat-icon>nordic_walking</mat-icon>
                                   </button>
                                   <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Lista Programa">
