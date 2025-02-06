@@ -66,34 +66,35 @@
                                   <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Ver detalles">
                                     <mat-icon>visibility</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="addAction(row)" matTooltip="Cargar Planilla Alumnos y Acompañantes">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogAlumn(row)" matTooltip="Cargar Planilla Alumnos y Acompañantes">
                                     <mat-icon>person_add</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="editAction(row)" matTooltip="Agregar autobús">
+                                  <input #fileInput type="file" (change)="onFileSelected($event,row)" accept=".xlsx,.xls" style="display:none" />
+                                  <button mat-icon-button color="primary" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                                     <mat-icon>directions_bus</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Agregar tripulación">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogTripulation(row)" matTooltip="Agregar tripulación">
                                     <mat-icon>people</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Contrato">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogContract(row)" matTooltip="Contrato">
                                     <mat-icon>gavel</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Agregar coordinador">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogCoordinator(row)" matTooltip="Agregar coordinador">
                                     <mat-icon>nordic_walking</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Lista Programa">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogProgram(row)" matTooltip="Lista Programa">
                                     <mat-icon>fact_check</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Poliza Seguro">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogPolizaSeguro(row)" matTooltip="Poliza Seguro">
                                     <mat-icon>health_and_safety</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Descargar Documentos Extras">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadDocuments(row)" matTooltip="Descargar Documentos Extras">
                                     <mat-icon>upload_file</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Descargar Manifiesto">
+                                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadManifest(row)" matTooltip="Descargar Manifiesto">
                                     <mat-icon>checklist_rtl</mat-icon>
                                   </button>
-                                  <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Eliminar">
+                                  <button mat-icon-button color="primary" (click)="applyDelete(row)" matTooltip="Eliminar">
                                     <mat-icon>delete</mat-icon>
                                   </button>
                                 </td>

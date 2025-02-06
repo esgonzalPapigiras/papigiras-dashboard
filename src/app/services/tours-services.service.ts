@@ -8,25 +8,27 @@ import { TourSalesDetail } from 'app/models/toursalesdetail';
 import { TripulationBus } from 'app/models/tripulationBus';
 import { TripulationsDTO } from 'app/models/tripulations';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ToursServicesService {
 
-   token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzc1ODY1NjIsImV4cCI6MTczODQ1MDU2Mn0.Fy2HJZTXV5-4V2K3VmFcP8I0zjgEilTGNy8S8GGs8WHhVpD6QYokbmNsIkhzQN1tMv-_Gj0r2FItgwHd1KQK0Q';
+
+  token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzg3NzUyNDgsImV4cCI6MTczOTYzOTI0OH0.K35EzwkL-9GIdI5PFWIlX7zwrzA1n-lcoJLPh58i1mbKXm-eU5dxEfOzH-4mEVDRxScWM6edrjmqjFisz_clug';
 
   constructor(private http: HttpClient) { }
 
-  public obtenerGiras():Observable<TourSalesDTO[]>{
+  public obtenerGiras(): Observable<TourSalesDTO[]> {
 
     const headers = new HttpHeaders().set('Authorization', this.token);
     return this.http.get<TourSalesDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get', { headers })
-    
+
   }
 
   public obtenerDetalleGira(id: number): Observable<TourSalesDetail> {
-    
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: this.token,
@@ -38,7 +40,7 @@ export class ToursServicesService {
   }
 
   public listaBusGira(id: number): Observable<TripulationBus[]> {
-     // Reemplaza con tu lógica para obtener el token dinámicamente
+    // Reemplaza con tu lógica para obtener el token dinámicamente
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -51,7 +53,7 @@ export class ToursServicesService {
   }
 
   public listaTripulantes(id: number): Observable<TripulationsDTO[]> {
-     // Reemplaza con tu lógica para obtener el token dinámicamente
+    // Reemplaza con tu lógica para obtener el token dinámicamente
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -64,7 +66,7 @@ export class ToursServicesService {
   }
 
   public listHotel(id: number): Observable<HotelDTOList[]> {
-    
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: this.token,
@@ -76,7 +78,7 @@ export class ToursServicesService {
   }
 
   public listAvion(id: number): Observable<TripulationAvionDTO[]> {
-     // Reemplaza con tu lógica para obtener el token dinámicamente
+    // Reemplaza con tu lógica para obtener el token dinámicamente
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -91,14 +93,28 @@ export class ToursServicesService {
   public listAlumn(id: number): Observable<PassengerDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
-   const headers = new HttpHeaders({
-     'Content-Type': 'application/json',
-     Authorization: this.token,
-   });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: this.token,
+    });
 
-   const params = new HttpParams().set('id', id.toString());
+    const params = new HttpParams().set('id', id.toString());
 
-   return this.http.get<PassengerDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/get/tour', { headers, params });
- }
+    return this.http.get<PassengerDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/get/tour', { headers, params });
+  }
 
+  public uploadFile(file: any, id_tour_sale: number): Observable<ResponsePassengerUpload> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('id_tour_sale', id_tour_sale.toString());  // Usamos el id_tour_sale recibido
+    console.log(id_tour_sale.toString());
+    const headers = new HttpHeaders().set('Authorization', this.token); // Reemplazar con el token si es necesario
+
+    return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });
+      
+  }
+
+  
+
+  
 }

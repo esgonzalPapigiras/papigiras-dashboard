@@ -27,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -43,7 +44,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatPaginatorModule,
     MatDialogModule,
     MatTabsModule,
-    MatIconModule
+    MatIconModule,
+    
     
   ],
   declarations: [
