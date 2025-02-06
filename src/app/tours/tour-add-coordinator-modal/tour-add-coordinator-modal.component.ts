@@ -1,4 +1,8 @@
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CoordinatorService } from 'app/services/coordinator.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tour-add-coordinator-modal',
@@ -7,9 +11,36 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TourAddCoordinatorModalComponent implements OnInit {
 
-  constructor() { }
+  coordinators: any[] = [];
+  searchTerm: string = '';
+  selectedCoordinator: any;
 
-  ngOnInit(): void {
+
+  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private coordinatorServices: CoordinatorService,) { }
+
+  ngOnInit() {
+    this.obtenerCoordinadores();
+  }
+
+  obtenerCoordinadores() {
+    Swal.fire({
+      title: 'Cargando...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.coordinatorServices.obtenerCoordinadores().subscribe(respon => {
+          this.coordinators = respon;
+          Swal.close();
+        });
+      },
+    });
+  }
+
+  filteredCoordinators() {
+    return this.coordinators.filter(coordinator =>
+      coordinator.coordinatorName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      coordinator.coordinatorLastname.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
 }

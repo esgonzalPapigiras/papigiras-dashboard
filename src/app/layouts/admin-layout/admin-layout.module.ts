@@ -24,8 +24,16 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { ToursViewModalComponent } from '../../tours/tours-view-modal/tours-view-modal.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-
-
+import { MatOptionModule } from '@angular/material/core';
+import { TourDonwloadAlumnsModalComponent } from '../../tours/tour-donwload-alumns-modal/tour-donwload-alumns-modal.component';
+import { TourAddBusModalComponent } from '../../tours/tour-add-bus-modal/tour-add-bus-modal.component';
+import { TourAddCoordinatorModalComponent } from '../../tours/tour-add-coordinator-modal/tour-add-coordinator-modal.component';
+import { TourAddDriverModalComponent } from '../../tours/tour-add-driver-modal/tour-add-driver-modal.component';
+import { TourAddAirplaneModalComponent } from '../../tours/tour-add-airplane-modal/tour-add-airplane-modal.component';
+import { TourAddHotelModalComponent } from '../../tours/tour-add-hotel-modal/tour-add-hotel-modal.component';
+import { TourAddDocumentModalComponent } from '../../tours/tour-add-document-modal/tour-add-document-modal.component';
+import { TourDownloadDocumentModalComponent } from '../../tours/tour-download-document-modal/tour-download-document-modal.component';
+import { TourDeleteModalComponent } from '../../tours/tour-delete-modal/tour-delete-modal.component';
 
 
 @NgModule({
@@ -45,6 +53,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogModule,
     MatTabsModule,
     MatIconModule,
+    MatOptionModule
     
     
   ],
@@ -59,6 +68,15 @@ import { MatIconModule } from '@angular/material/icon';
     UpgradeComponent,
     ToursComponent,
     ToursViewModalComponent,
+    TourDonwloadAlumnsModalComponent,
+    TourAddBusModalComponent,
+    TourAddCoordinatorModalComponent,
+    TourAddDriverModalComponent,
+    TourAddAirplaneModalComponent,
+    TourAddHotelModalComponent,
+    TourAddDocumentModalComponent,
+    TourDownloadDocumentModalComponent,
+    TourDeleteModalComponent,
 
   ]
 })
