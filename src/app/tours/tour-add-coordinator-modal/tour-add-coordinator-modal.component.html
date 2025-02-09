@@ -1,22 +1,26 @@
+<h3>Selecciona coordinadores</h3>
+
 <mat-form-field appearance="fill">
-    <mat-label>Selecciona un coordinador</mat-label>
-    <mat-select [(value)]="selectedCoordinator">
-      <!-- Trigger de selección -->
-      <mat-select-trigger>
-        {{ selectedCoordinator ? selectedCoordinator.coordinatorName + ' ' + selectedCoordinator.coordinatorLastname : 'Selecciona un coordinador' }}
-      </mat-select-trigger>
-  
-      <!-- Opción de búsqueda (fuera de mat-option para no cerrar el select) -->
-      <div mat-select-search>
-        <mat-form-field appearance="fill">
-          <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
-        </mat-form-field>
-      </div>
-  
-      <!-- Opciones filtradas -->
-      <mat-option *ngFor="let coordinator of filteredCoordinators()" [value]="coordinator">
-        {{ coordinator.coordinatorName }} {{ coordinator.coordinatorLastname }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  
+  <mat-label>Selecciona un coordinador</mat-label>
+  <mat-select [(value)]="selectedCoordinators" multiple>
+    <!-- Trigger de selección -->
+    <mat-select-trigger>
+      {{ selectedCoordinatorsText }}
+    </mat-select-trigger>
+
+    <!-- Opción de búsqueda -->
+    <div mat-select-search>
+      <mat-form-field appearance="fill">
+        <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
+      </mat-form-field>
+    </div>
+
+    <!-- Opciones filtradas -->
+    <mat-option *ngFor="let coordinator of filteredCoordinators()" [value]="coordinator">
+      {{ coordinator.coordinatorName }} {{ coordinator.coordinatorLastname }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Botón para enviar los coordinadores seleccionados -->
+<button mat-raised-button color="primary" (click)="sendCoordinators()">Enviar Selección</button>

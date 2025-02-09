@@ -13,7 +13,7 @@ export class TourAddCoordinatorModalComponent implements OnInit {
 
   coordinators: any[] = [];
   searchTerm: string = '';
-  selectedCoordinator: any;
+  selectedCoordinators: any[] = [];
 
 
   constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private coordinatorServices: CoordinatorService,) { }
@@ -36,11 +36,35 @@ export class TourAddCoordinatorModalComponent implements OnInit {
     });
   }
 
+  get selectedCoordinatorsText(): string {
+    return this.selectedCoordinators && this.selectedCoordinators.length > 0
+      ? this.selectedCoordinators.map(c => c.coordinatorName + ' ' + c.coordinatorLastname).join(', ')
+      : 'Selecciona coordinadores';
+  }
+
   filteredCoordinators() {
     return this.coordinators.filter(coordinator =>
       coordinator.coordinatorName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       coordinator.coordinatorLastname.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+  }
+
+  sendCoordinators() {
+    if (this.selectedCoordinators.length > 0) {
+      Swal.fire({
+        title: 'Coordinadores seleccionados',
+        text: 'Has seleccionado: ' + this.selectedCoordinators.map(c => c.coordinatorName + ' ' + c.coordinatorLastname).join(', '),
+        icon: 'success',
+        confirmButtonText: 'Cerrar'
+      });
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'No has seleccionado ningún coordinador.',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+    }
   }
 
 }
