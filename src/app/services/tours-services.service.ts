@@ -106,8 +106,7 @@ export class ToursServicesService {
   public uploadFile(file: any, id_tour_sale: number): Observable<ResponsePassengerUpload> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    formData.append('id_tour_sale', id_tour_sale.toString());  // Usamos el id_tour_sale recibido
-    console.log(id_tour_sale.toString());
+    formData.append('id_tour_sale', id_tour_sale.toString());
     const headers = new HttpHeaders().set('Authorization', this.token); // Reemplazar con el token si es necesario
 
     return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });

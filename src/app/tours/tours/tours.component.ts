@@ -112,6 +112,7 @@ export class ToursComponent implements AfterViewInit {
             }
             
           }, error => {
+            console.log(error);
             // Maneja cualquier error durante la carga
             Swal.fire({
               icon: "error",

@@ -40,6 +40,8 @@ import { BranchComponent } from 'app/branch/branch.component';
 import { ActivitiesComponent } from 'app/activities/activities.component';
 import { ProgramsComponent } from 'app/programs/programs.component';
 import { SuppliersComponent } from 'app/suppliers/suppliers.component';
+import { CoordinatorModalEditComponent } from 'app/coordinator/coordinator-modal-edit/coordinator-modal-edit.component';
+import { CoordinatorModalCreateComponent } from 'app/coordinator/coordinator-modal-create/coordinator-modal-create.component';
 
 
 @NgModule({
@@ -89,6 +91,8 @@ import { SuppliersComponent } from 'app/suppliers/suppliers.component';
     ActivitiesComponent,
     ProgramsComponent,
     SuppliersComponent,
+    CoordinatorModalEditComponent,
+    CoordinatorModalCreateComponent,
 
   ]
 })

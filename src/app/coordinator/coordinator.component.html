@@ -1,1 +1,168 @@
-<p>coordinator works!</p>
+<div class="main-content" style="width: 100%; padding: 20px">
+  <div class="container-fluid" style="width: 100%; padding: 20px">
+    <div class="row">
+      <div class="col-md-12" style="width: 100%; padding: 20px">
+        <div
+          class="button-container"
+          style="
+            display: flex;
+            gap: 15px;
+            justify-content: start;
+            margin-bottom: 10px;
+          "
+        >
+          <button mat-raised-button color="primary" (click)="addCoordinator()">
+            Agregar Coordinador
+          </button>
+          <button mat-raised-button color="accent" (click)="triggerFileInput()">
+            Agregar Coordinadores
+          </button>
+
+          <!-- Input file oculto -->
+          <input
+            #fileInput
+            type="file"
+            (change)="onFileSelected($event)"
+            accept=".xlsx,.xls"
+            style="display: none"
+          />
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="downloadCoordinators()"
+          >
+            Descargar Coordinadores
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Mantenedor Coordinadores</h4>
+          </div>
+          <div class="card-body">
+            <mat-form-field appearance="standard">
+              <mat-label>Filtro</mat-label>
+              <input
+                matInput
+                (keyup)="applyFilter($event)"
+                placeholder="Busqueda ...."
+                #input
+              />
+            </mat-form-field>
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              matSort
+              (matSortChange)="announceSortChange($event)"
+              class="mat-elevation-z8"
+            >
+              <!-- Position Column -->
+              <ng-container matColumnDef="coordinatorName">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by coordinatorName"
+                >
+                  Codigo Gira
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.coordinatorName }}
+                </td>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="coordinatorLastname">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by coordinatorLastname"
+                >
+                  Fecha Inicio
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.coordinatorLastname }}
+                </td>
+              </ng-container>
+
+              <!-- Weight Column -->
+              <ng-container matColumnDef="coordinatorOficina">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by coordinatorOficina"
+                >
+                  Fecha Termino
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.coordinatorOficina }}
+                </td>
+              </ng-container>
+
+              <!-- Symbol Column -->
+              <ng-container matColumnDef="coordinatorCelular">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by coordinatorCelular"
+                >
+                  Colegio
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.coordinatorCelular }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="coordinatorCorreo">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by coordinatorCorreo"
+                >
+                  Curso
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.coordinatorCorreo }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Acciones
+                </th>
+                <td mat-cell *matCellDef="let row" class="action-buttons">
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="applyDelete(row)"
+                    matTooltip="Editar"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="error"
+                    (click)="applyDelete(row)"
+                    matTooltip="Eliminar"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              aria-label="Select page of users"
+            ></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
