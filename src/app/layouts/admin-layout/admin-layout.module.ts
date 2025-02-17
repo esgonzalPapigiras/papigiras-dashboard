@@ -34,6 +34,12 @@ import { TourAddHotelModalComponent } from '../../tours/tour-add-hotel-modal/tou
 import { TourAddDocumentModalComponent } from '../../tours/tour-add-document-modal/tour-add-document-modal.component';
 import { TourDownloadDocumentModalComponent } from '../../tours/tour-download-document-modal/tour-download-document-modal.component';
 import { TourDeleteModalComponent } from '../../tours/tour-delete-modal/tour-delete-modal.component';
+import { CoordinatorComponent } from 'app/coordinator/coordinator.component';
+import { ComunnesComponent } from 'app/comunnes/comunnes.component';
+import { BranchComponent } from 'app/branch/branch.component';
+import { ActivitiesComponent } from 'app/activities/activities.component';
+import { ProgramsComponent } from 'app/programs/programs.component';
+import { SuppliersComponent } from 'app/suppliers/suppliers.component';
 
 
 @NgModule({
@@ -77,6 +83,12 @@ import { TourDeleteModalComponent } from '../../tours/tour-delete-modal/tour-del
     TourAddDocumentModalComponent,
     TourDownloadDocumentModalComponent,
     TourDeleteModalComponent,
+    CoordinatorComponent,
+    ComunnesComponent,
+    BranchComponent,
+    ActivitiesComponent,
+    ProgramsComponent,
+    SuppliersComponent,
 
   ]
 })

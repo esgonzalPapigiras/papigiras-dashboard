@@ -1,22 +1,25 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Importamos el Router para poder obtener la ruta actual
 
 declare const $: any;
+
 declare interface RouteInfo {
-    path: string;
-    title: string;
-    icon: string;
-    class: string;
+  path: string;
+  title: string;
+  icon: string;
+  class: string;
+  children?: RouteInfo[]; // Agregamos la propiedad children opcional
 }
+
 export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard', title: 'Dashboard',  icon: 'dashboard', class: '' },
-    { path: '/tours', title: 'giras',  icon:'flight', class: '' },
-    { path: '/user-profile', title: 'User Profile',  icon:'person', class: '' },
-    { path: '/table-list', title: 'Table List',  icon:'content_paste', class: '' },
-    { path: '/typography', title: 'Typography',  icon:'library_books', class: '' },
-    { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
-    { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },
-    { path: '/notifications', title: 'Notifications',  icon:'notifications', class: '' },
-    
+  { path: '/dashboard', title: 'Dashboard', icon: 'dashboard', class: '' },
+  { path: '/tours', title: 'Giras', icon: 'flight', class: '' },
+  { path: '/coordinator', title: 'Coordinadores', icon: 'nordic_walking', class: '' },
+  { path: '/branch', title: 'Oficina', icon: 'content_paste', class: '' },
+  { path: '/communes', title: 'Comunas', icon: 'library_books', class: '' },
+  { path: '/activities', title: 'Actividades', icon: 'assignment', class: '' },
+  { path: '/programs', title: 'Programas', icon: 'web', class: '' },
+  { path: '/suppliers', title: 'Clientes', icon: 'notifications', class: '' }
 ];
 
 @Component({
@@ -27,15 +30,21 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
+
   isMobileMenu() {
-      if ($(window).width() > 991) {
-          return false;
-      }
-      return true;
-  };
+    if ($(window).width() > 991) {
+      return false;
+    }
+    return true;
+  }
+
+  // Función para verificar si la ruta está activa
+  isActiveRoute(route: string): boolean {
+    return this.router.url.indexOf(route) > -1;
+  }
 }

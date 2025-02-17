@@ -1,0 +1,12 @@
+.submenu {
+    display: none;
+    padding-left: 20px;
+}
+
+.nav-item:hover .submenu {
+    display: block;
+}
+
+.submenu li {
+    padding: 5px 0;
+}
