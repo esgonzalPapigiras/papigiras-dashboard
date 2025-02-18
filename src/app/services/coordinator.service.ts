@@ -22,11 +22,11 @@ export class CoordinatorService {
   
   }
 
-  public obtenerCoordinadoresUpdate(id:number): Observable<Coordinator[]> {
+  public obtenerCoordinadoresUpdate(id:number): Observable<Coordinator> {
   
     const headers = new HttpHeaders().set('Authorization', this.token);
     const params = new HttpParams().set('id', id.toString());
-    return this.http.get<Coordinator[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/get/byid', { headers ,params})
+    return this.http.get<Coordinator>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/get/byid', { headers ,params})
 
 }
 
@@ -54,6 +54,19 @@ public coordinatorCreate(coordinator: Coordinator): Observable<any> {
   
 
   const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/create';
+
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+  });
+
+  return this.http.post(url, JSON.stringify(coordinator), { headers });
+}
+
+public coordinatorUpdate(coordinator: Coordinator): Observable<any> {
+  
+
+  const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/update';
 
   const headers = new HttpHeaders({
     'Content-Type': 'application/json',

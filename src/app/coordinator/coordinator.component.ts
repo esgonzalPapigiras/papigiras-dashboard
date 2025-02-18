@@ -9,6 +9,7 @@ import { CoordinatorService } from "app/services/coordinator.service";
 import Swal from "sweetalert2";
 import { CoordinatorModalCreateComponent } from "./coordinator-modal-create/coordinator-modal-create.component";
 import * as XLSX from 'xlsx';
+import { CoordinatorModalEditComponent } from "./coordinator-modal-edit/coordinator-modal-edit.component";
 
 
 @Component({
@@ -154,6 +155,18 @@ export class CoordinatorComponent implements OnInit {
       this._liveAnnouncer.announce("Sorting cleared");
     }
   }
+
+  editarCoordinator(row: any){
+    const dialogRef = this.dialog.open(CoordinatorModalEditComponent, {
+      width: '1300px',
+      height: '600px',
+      data: row.coordinatorId
+    });
+
+    dialogRef.afterClosed().subscribe({
+    });
+}
+  
 
   obtenerCoordinadores() {
     Swal.fire({
