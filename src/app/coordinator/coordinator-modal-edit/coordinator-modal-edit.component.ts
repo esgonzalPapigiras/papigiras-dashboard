@@ -1,7 +1,9 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { Branch } from "app/models/branch";
 import { Coordinator } from "app/models/coordinator";
+import { BranchService } from "app/services/branch.service";
 import { CoordinatorService } from "app/services/coordinator.service";
 import Swal from "sweetalert2";
 
@@ -12,17 +14,20 @@ import Swal from "sweetalert2";
 })
 export class CoordinatorModalEditComponent implements OnInit {
   coordinator: Coordinator;
+  branch : Branch[];
   sexOptions: string[] = ["Masculino", "Femenino"];
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private coordinatorServices: CoordinatorService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private branchService:BranchService
   ) {}
 
   ngOnInit(): void {
     this.obtenerCoordinador();
+    this.obtenerOficina();
   }
 
   obtenerCoordinador() {
@@ -36,6 +41,23 @@ export class CoordinatorModalEditComponent implements OnInit {
           .subscribe((respon) => {
             this.coordinator = respon;
             console.log(this.coordinator);
+            Swal.close();
+          });
+      },
+    });
+  }
+
+  obtenerOficina() {
+    Swal.fire({
+      title: "Cargando...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.branchService
+          .obtenerOficinas()
+          .subscribe((respon) => {
+            this.branch = respon;
+            console.log(this.branch);
             Swal.close();
           });
       },

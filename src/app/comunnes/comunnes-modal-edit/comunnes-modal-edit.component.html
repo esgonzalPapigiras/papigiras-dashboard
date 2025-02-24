@@ -1,1 +1,102 @@
-<p>comunnes-modal-edit works!</p>
+
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+  </div>
+  <div class="modal-body">
+    <form #coordinatorForm="ngForm">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="rut">Rut</label>
+          <input type="text" class="form-control" id="rut" [(ngModel)]="coordinator.coordinatorRut" name="rut" required />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorName">Nombre Coordinador</label>
+          <input type="text" class="form-control" id="coordinatorName" [(ngModel)]="coordinator.coordinatorName" name="coordinatorName" required />
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorLastname">Apellidos</label>
+          <input type="text" class="form-control" id="coordinatorLastname" [(ngModel)]="coordinator.coordinatorLastname" name="coordinatorLastname" required />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorSex">Sexo</label>
+          <select class="form-control" id="coordinatorSex" [(ngModel)]="coordinator.coordinatorSex" name="coordinatorSex" required>
+            <option *ngFor="let sex of sexOptions" [value]="sex">{{ sex }}</option>
+          </select>
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorResidencia">Residencia</label>
+          <input type="text" class="form-control" id="coordinatorResidencia" [(ngModel)]="coordinator.coordinatorResidencia" name="coordinatorResidencia" required />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="coordinatorOficina">Oficina</label>
+            <select class="form-control" id="coordinatorOficina" [(ngModel)]="coordinator.coordinatorOficina" name="coordinatorOficina" required>
+              <!-- Usamos 'branch' para obtener las oficinas -->
+              <option *ngFor="let office of branch" [value]="office.branchId">{{ office.branchName }}</option>
+            </select>
+          </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorFechaNacimiento">Fecha Nacimiento</label>
+          <input type="date" class="form-control" id="coordinatorFechaNacimiento" [(ngModel)]="coordinator.coordinatorFechaNacimiento" name="coordinatorFechaNacimiento" required />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorEdad">Edad</label>
+          <input type="number" class="form-control" id="coordinatorEdad" [(ngModel)]="coordinator.coordinatorEdad" name="coordinatorEdad" required />
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorCelular">Celular</label>
+          <input type="text" class="form-control" id="coordinatorCelular" [(ngModel)]="coordinator.coordinatorCelular" name="coordinatorCelular" required />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorCorreo">Correo</label>
+          <input type="email" class="form-control" id="coordinatorCorreo" [(ngModel)]="coordinator.coordinatorCorreo" name="coordinatorCorreo" required />
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorInstaPersonal">Instagram Personal</label>
+          <input type="text" class="form-control" id="coordinatorInstaPersonal" [(ngModel)]="coordinator.coordinatorInstaPersonal" name="coordinatorInstaPersonal" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorInstaAt">Instagram AT</label>
+          <input type="text" class="form-control" id="coordinatorInstaAt" [(ngModel)]="coordinator.coordinatorInstaAt" name="coordinatorInstaAt" />
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorUniversidad">Universidad</label>
+          <input type="text" class="form-control" id="coordinatorUniversidad" [(ngModel)]="coordinator.coordinatorUniversidad" name="coordinatorUniversidad" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorCarrera">Carrera</label>
+          <input type="text" class="form-control" id="coordinatorCarrera" [(ngModel)]="coordinator.coordinatorCarrera" name="coordinatorCarrera" />
+        </div>
+      </div>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="coordinatorProfesion">Profesión</label>
+          <input type="text" class="form-control" id="coordinatorProfesion" [(ngModel)]="coordinator.coordinatorProfesion" name="coordinatorProfesion" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="coordinatorEmpresa">Empresa</label>
+          <input type="text" class="form-control" id="coordinatorEmpresa" [(ngModel)]="coordinator.coordinatorEmpresa" name="coordinatorEmpresa" />
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" (click)="onSave()">Guardar</button>
+    </form>
+  </div>

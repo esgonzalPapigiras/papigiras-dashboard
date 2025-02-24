@@ -33,11 +33,12 @@
           <input type="text" class="form-control" id="coordinatorResidencia" [(ngModel)]="coordinator.coordinatorResidencia" name="coordinatorResidencia" required />
         </div>
         <div class="form-group col-md-6">
-          <label for="coordinatorOficina">Oficina</label>
-          <select class="form-control" id="coordinatorOficina" [(ngModel)]="coordinator.coordinatorOficina" name="coordinatorOficina" required>
-            <option *ngFor="let office of officeOptions" [value]="office">{{office}}</option>
-          </select>
-        </div>
+            <label for="coordinatorOficina">Oficina</label>
+            <select class="form-control" id="coordinatorOficina" [(ngModel)]="coordinator.coordinatorOficina" name="coordinatorOficina" required>
+              <!-- Usamos 'branch' para obtener las oficinas -->
+              <option *ngFor="let office of branch" [value]="office.branchId">{{ office.branchName }}</option>
+            </select>
+          </div>
       </div>
   
       <div class="form-row">

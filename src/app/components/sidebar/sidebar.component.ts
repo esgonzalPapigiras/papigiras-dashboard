@@ -19,7 +19,7 @@ export const ROUTES: RouteInfo[] = [
   { path: '/communes', title: 'Comunas', icon: 'library_books', class: '' },
   { path: '/activities', title: 'Actividades', icon: 'assignment', class: '' },
   { path: '/programs', title: 'Programas', icon: 'web', class: '' },
-  { path: '/suppliers', title: 'Clientes', icon: 'notifications', class: '' }
+  { path: '/suppliers', title: 'Proveedores', icon: 'notifications', class: '' }
 ];
 
 @Component({

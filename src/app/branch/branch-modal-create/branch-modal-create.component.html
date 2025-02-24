@@ -1,1 +1,20 @@
-<p>branch-modal-create works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #branchForm="ngForm">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="branchName">Nombre</label>
+          <input type="text" class="form-control" id="branchName" [(ngModel)]="branchName" name="branchName" required />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!branchForm.valid" (click)="onSave()">Guardar</button>
+  </div>

@@ -1,8 +1,11 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Branch } from 'app/models/branch';
 import { Coordinator } from 'app/models/coordinator';
+import { BranchService } from 'app/services/branch.service';
 import { CoordinatorService } from 'app/services/coordinator.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-coordinator-modal-create',
@@ -31,14 +34,33 @@ export class CoordinatorModalCreateComponent implements OnInit {
   };
 
   sexOptions = ['Masculino', 'Femenino', 'Otro'];
-  officeOptions = ['Oficina 1', 'Oficina 2', 'Oficina 3'];
+  branch : Branch[];
 
   constructor(private _liveAnnouncer: LiveAnnouncer,
       public dialog: MatDialog,
-      private coordinatorServices: CoordinatorService) { }
+      private coordinatorServices: CoordinatorService,
+      private branchService:BranchService) { }
 
   ngOnInit(): void {
+    this.obtenerOficina();
   }
+
+   obtenerOficina() {
+      Swal.fire({
+        title: "Cargando...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.branchService
+            .obtenerOficinas()
+            .subscribe((respon) => {
+              this.branch = respon;
+              console.log(this.branch);
+              Swal.close();
+            });
+        },
+      });
+    }
 
   onSave(): void {
     
