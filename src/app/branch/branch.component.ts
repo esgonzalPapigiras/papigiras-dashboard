@@ -85,7 +85,7 @@ export class BranchComponent implements OnInit {
     const dialogRef = this.dialog.open(BranchModalEditComponent, {
       width: "1300px",
       height: "600px",
-      data: row.branchId,
+      data: row,
     });
 
     dialogRef.afterClosed().subscribe({});

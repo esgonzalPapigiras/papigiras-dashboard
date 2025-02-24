@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Communes } from 'app/models/communes';
+import { CommunesUpdate } from 'app/models/communesUpdate';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -49,16 +50,18 @@ export class ComunnesService {
     return this.http.post(url, JSON.stringify(coordinator), { headers });
   }
 
-  public communesCreateUpdate(coordinator: Communes): Observable<any> {
+  public communesCreateUpdate(coordinator: CommunesUpdate,id:String): Observable<any> {
     
   
     const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/update';
   
+    const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
     });
-  
-    return this.http.post(url, JSON.stringify(coordinator), { headers });
+
+
+    return this.http.post(url, JSON.stringify(coordinator), { headers,params });
   }
 }

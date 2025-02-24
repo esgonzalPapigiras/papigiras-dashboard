@@ -1,1 +1,14 @@
-<p>branch-modal-edit works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+  </div>
+  <div class="modal-body">
+    <form #communesForm="ngForm">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="Nombre">Nombre</label>
+          <input type="text" class="form-control" id="Nombre" [(ngModel)]="oficina.branchName" name="Nombre" required />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="onSave()">Guardar</button>
+    </form>
+  </div>

@@ -49,16 +49,16 @@ export class BranchService {
       return this.http.post(url, JSON.stringify(coordinator), { headers });
     }
 
-    public branchUpdate(coordinator: Branch): Observable<any> {
+    public branchUpdate(coordinator: Branch,id:String): Observable<any> {
       
     
       const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/update';
-    
+      const params = new HttpParams().set('id', id.toString());
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
       });
     
-      return this.http.post(url, JSON.stringify(coordinator), { headers });
+      return this.http.post(url, JSON.stringify(coordinator), { headers,params });
     }
 }

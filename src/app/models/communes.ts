@@ -3,4 +3,5 @@ export class Communes {
   communesName: String;
   branchName: String;
   branchNameId: number;
+  
 }
