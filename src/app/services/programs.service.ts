@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ClientAddActivities } from 'app/models/clientAddActivities';
 import { Program } from 'app/models/program';
 import { TourActivities } from 'app/models/tourActivities';
 import { TourPackage } from 'app/models/tourPackage';
@@ -86,11 +87,11 @@ export class ProgramsService {
     return this.http.post(url, JSON.stringify(tourActivities), { headers, params });
   }
 
-  public listActivitiesProgram(id: String): Observable<Program[]> {
+  public listActivitiesProgram(id: String): Observable<ClientAddActivities[]> {
 
     const headers = new HttpHeaders().set('Authorization', this.token);
     const params = new HttpParams().set('id', id.toString());
-    return this.http.get<Program[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/touradd/web/activities/getlist', { headers,params })
+    return this.http.get<ClientAddActivities[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/touradd/web/activities/getlist', { headers,params })
 
   }
 

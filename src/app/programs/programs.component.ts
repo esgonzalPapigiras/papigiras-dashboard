@@ -9,6 +9,8 @@ import { Program } from 'app/models/program';
 import { MatDialog } from '@angular/material/dialog';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ProgramsService } from 'app/services/programs.service';
+import { ProgramsModalAddActivitiesComponent } from './programs-modal-add-activities/programs-modal-add-activities.component';
+import { ProgramsModalListActivitiesComponent } from './programs-modal-list-activities/programs-modal-list-activities.component';
 
 @Component({
   selector: 'app-programs',
@@ -48,9 +50,8 @@ export class ProgramsComponent implements OnInit {
         cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log(event.itinerary_id);
           // Llamamos al servicio para eliminar el coordinador
-          this.programService.deleteProgram(event.suppliers_id).subscribe(
+          this.programService.deleteProgram(event.tours_id).subscribe(
             (response) => {
               Swal.fire("Eliminado!", "Has eliminado el registro.", "success");
               this.obtenerSuppliers();
@@ -87,6 +88,26 @@ export class ProgramsComponent implements OnInit {
   
     editarBranch(row: any) {
       const dialogRef = this.dialog.open(ProgramsModalEditComponent, {
+        width: "1300px",
+        height: "600px",
+        data: row,
+      });
+  
+      dialogRef.afterClosed().subscribe({});
+    }
+
+    addActivities(row: any){
+      const dialogRef = this.dialog.open(ProgramsModalAddActivitiesComponent, {
+        width: "1300px",
+        height: "600px",
+        data: row,
+      });
+  
+      dialogRef.afterClosed().subscribe({});
+    }
+
+    listActivities(row: any){
+      const dialogRef = this.dialog.open(ProgramsModalListActivitiesComponent, {
         width: "1300px",
         height: "600px",
         data: row,

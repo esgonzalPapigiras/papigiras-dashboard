@@ -11,14 +11,11 @@
               margin-bottom: 10px;
             "
           >
-            <button mat-raised-button color="primary" (click)="addBranch()">
-              Agregar Programa
-            </button>
             
           </div>
           <div class="card">
             <div class="card-header card-header-danger">
-              <h4 class="card-title">Mantenedor Programas</h4>
+              <h4 class="card-title">Listado Actividades</h4>
             </div>
             <div class="card-body">
               <mat-form-field appearance="standard">
@@ -38,91 +35,63 @@
                 class="mat-elevation-z8"
               >
                 <!-- Position Column -->
-                <ng-container matColumnDef="tours_name">
+                <ng-container matColumnDef="itineraryName">
                   <th
                     mat-header-cell
                     *matHeaderCellDef
                     mat-sort-header
-                    sortActionDescription="Sort by tours_name"
+                    sortActionDescription="Sort by itineraryName"
                   >
-                    Nombre Programa
+                    Nombre Actividad
                   </th>
                   <td mat-cell *matCellDef="let element">
-                    {{ element.tours_name }}
+                    {{ element.itineraryName }}
                   </td>
                 </ng-container>
 
-                <ng-container matColumnDef="tour_day_quantity">
+                <ng-container matColumnDef="itineraryIncludes">
                     <th
                       mat-header-cell
                       *matHeaderCellDef
                       mat-sort-header
-                      sortActionDescription="Sort by tour_day_quantity"
+                      sortActionDescription="Sort by itineraryIncludes"
                     >
-                      Cantidad Dias
+                      Nombre Proveedor
                     </th>
                     <td mat-cell *matCellDef="let element">
-                      {{ element.tour_day_quantity }}
+                      {{ element.itineraryIncludes }}
                     </td>
                   </ng-container>
 
-                  <ng-container matColumnDef="tour_nigth_quantity">
+                  <ng-container matColumnDef="itineraryDescription">
                     <th
                       mat-header-cell
                       *matHeaderCellDef
                       mat-sort-header
-                      sortActionDescription="Sort by tour_nigth_quantity"
+                      sortActionDescription="Sort by itineraryDescription"
                     >
-                      Cantidad Noches
+                      Descripcion Actividad
                     </th>
                     <td mat-cell *matCellDef="let element">
-                      {{ element.tour_nigth_quantity }}
+                      {{ element.itineraryDescription }}
                     </td>
                   </ng-container>
-                  
+  
+                
   
                 <ng-container matColumnDef="acciones">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>
                     Acciones
                   </th>
                   <td mat-cell *matCellDef="let row" class="action-buttons">
-                    <div class="button-grid">
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        (click)="editarBranch(row)"
-                        matTooltip="Editar"
-                      >
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                  
-                      <button
-                        mat-icon-button
-                        color="error"
-                        (click)="applyDelete(row)"
-                        matTooltip="Eliminar"
-                      >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                  
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        (click)="addActivities(row)"
-                        matTooltip="Agregar Actividades"
-                      >
-                        <mat-icon>checklist_rtl</mat-icon>
-                      </button>
-                  
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        (click)="listActivities(row)"
-                        matTooltip="Detalle Programa"
-                      >
-                        <mat-icon>fact_check</mat-icon>
-                      </button>
-                    </div>
+                    <button
+                      mat-icon-button
+                      color="error"
+                      (click)="applyDelete(row)"
+                      matTooltip="Eliminar"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
                   </td>
                 </ng-container>
   
@@ -139,4 +108,3 @@
       </div>
     </div>
   </div>
-  

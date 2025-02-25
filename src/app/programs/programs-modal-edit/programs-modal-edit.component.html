@@ -1,1 +1,21 @@
-<p>programs-modal-edit works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form #programForm="ngForm">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="tours_name">Nombre Programa</label>
+                <input type="text" class="form-control" id="tours_name" [(ngModel)]="program.tours_name" name="tours_name"
+                    required />
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!programForm.valid" (click)="onSave()">Guardar</button>
+</div>

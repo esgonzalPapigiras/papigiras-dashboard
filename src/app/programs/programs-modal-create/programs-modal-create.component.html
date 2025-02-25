@@ -1,1 +1,31 @@
-<p>programs-modal-create works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form #programForm="ngForm">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="nombrePrograma">Nombre Programa</label>
+                <input type="text" class="form-control" id="nombrePrograma" [(ngModel)]="newProgram.nombrePrograma" name="nombrePrograma"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="cantidadDias">Cantidad Dias</label>
+                <input type="text" class="form-control" id="cantidadDias" [(ngModel)]="newProgram.cantidadDias" name="cantidadDias"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="cantidadNoches">Cantidad Noches</label>
+                <input type="text" class="form-control" id="cantidadNoches" [(ngModel)]="newProgram.cantidadNoches" name="cantidadNoches"
+                    required />
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!programForm.valid" (click)="onSave()">Guardar</button>
+</div>

@@ -42,6 +42,18 @@ import { ProgramsComponent } from 'app/programs/programs.component';
 import { SuppliersComponent } from 'app/suppliers/suppliers.component';
 import { CoordinatorModalEditComponent } from 'app/coordinator/coordinator-modal-edit/coordinator-modal-edit.component';
 import { CoordinatorModalCreateComponent } from 'app/coordinator/coordinator-modal-create/coordinator-modal-create.component';
+import { BranchModalCreateComponent } from '../../branch/branch-modal-create/branch-modal-create.component';
+import { BranchModalEditComponent } from '../../branch/branch-modal-edit/branch-modal-edit.component';
+import { ComunnesModalEditComponent } from '../../comunnes/comunnes-modal-edit/comunnes-modal-edit.component';
+import { ComunnesModalCreateComponent } from '../../comunnes/comunnes-modal-create/comunnes-modal-create.component';
+import { ProgramsModalCreateComponent } from '../../programs/programs-modal-create/programs-modal-create.component';
+import { ProgramsModalEditComponent } from '../../programs/programs-modal-edit/programs-modal-edit.component';
+import { SuppliersModalEditComponent } from '../../suppliers/suppliers-modal-edit/suppliers-modal-edit.component';
+import { SuppliersModalCreateComponent } from '../../suppliers/suppliers-modal-create/suppliers-modal-create.component';
+import { ActivitiesModalCreateComponent } from '../../activities/activities-modal-create/activities-modal-create.component';
+import { ActivitiesModalEditComponent } from '../../activities/activities-modal-edit/activities-modal-edit.component';
+import { ProgramsModalListActivitiesComponent } from '../../programs/programs-modal-list-activities/programs-modal-list-activities.component';
+import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-modal-add-activities/programs-modal-add-activities.component';
 
 
 @NgModule({
@@ -93,6 +105,18 @@ import { CoordinatorModalCreateComponent } from 'app/coordinator/coordinator-mod
     SuppliersComponent,
     CoordinatorModalEditComponent,
     CoordinatorModalCreateComponent,
+    BranchModalCreateComponent,
+    BranchModalEditComponent,
+    ComunnesModalEditComponent,
+    ComunnesModalCreateComponent,
+    ProgramsModalCreateComponent,
+    ProgramsModalEditComponent,
+    SuppliersModalEditComponent,
+    SuppliersModalCreateComponent,
+    ActivitiesModalCreateComponent,
+    ActivitiesModalEditComponent,
+    ProgramsModalListActivitiesComponent,
+    ProgramsModalAddActivitiesComponent,
 
   ]
 })

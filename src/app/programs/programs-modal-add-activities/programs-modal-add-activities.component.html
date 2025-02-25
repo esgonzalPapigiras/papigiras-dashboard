@@ -1,0 +1,26 @@
+<h3>Selecciona Actividades</h3>
+
+<mat-form-field appearance="fill">
+  <mat-label>Selecciona una Actividad</mat-label>
+  <mat-select [(value)]="selectedActivities" multiple>
+    <!-- Trigger de selección -->
+    <mat-select-trigger>
+      {{ selectedProgramsText }}
+    </mat-select-trigger>
+
+    <!-- Opción de búsqueda -->
+    <div mat-select-search>
+      <mat-form-field appearance="fill">
+        <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
+      </mat-form-field>
+    </div>
+
+    <!-- Opciones filtradas -->
+    <mat-option *ngFor="let programs of filteredPrograms()" [value]="programs">
+      {{ programs.itinerary_name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Botón para enviar los coordinadores seleccionados -->
+<button mat-raised-button color="primary" (click)="sendCoordinators()">Enviar Selección</button>
