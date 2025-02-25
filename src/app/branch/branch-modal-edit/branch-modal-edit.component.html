@@ -2,13 +2,16 @@
     <h5 class="modal-title">Ingresar Datos</h5>
   </div>
   <div class="modal-body">
-    <form #communesForm="ngForm">
+    <form #branchForm="ngForm">
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="Nombre">Nombre</label>
           <input type="text" class="form-control" id="Nombre" [(ngModel)]="oficina.branchName" name="Nombre" required />
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" (click)="onSave()">Guardar</button>
     </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!branchForm.valid" (click)="onSave()">Guardar</button>
   </div>

@@ -47,7 +47,7 @@ export class ComunnesComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           // Llamamos al servicio para eliminar el coordinador
-          this.comunnesService.deleteCommunes(event.branchId).subscribe(
+          this.comunnesService.deleteCommunes(event.communesId).subscribe(
             (response) => {
               Swal.fire("Eliminado!", "Has eliminado el registro.", "success");
               this.obtenerOficinas();

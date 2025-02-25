@@ -1,1 +1,38 @@
-<p>activities-modal-edit works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Editar Datos</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form #activitiesForm="ngForm">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="actividad">Nombre Actividad</label>
+                <input type="text" class="form-control" id="actividad" [(ngModel)]="actividad.itinerary_name" name="actividad"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="descripcion">Descripcion Actividad</label>
+                <input type="text" class="form-control" id="descripcion" [(ngModel)]="actividad.itinerary_description" name="descripcion"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="incluye">Que incluye</label>
+                <input type="text" class="form-control" id="incluye" [(ngModel)]="actividad.itinerary_includes" name="incluye"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="coordinatorOficina">Proveedor</label>
+                <select class="form-control" id="suppliers" [(ngModel)]="actividad.id_supplier" name="suppliers" required>
+                    <!-- Usamos 'branch' para obtener las oficinas -->
+                    <option *ngFor="let supplier of suppliers" [ngValue]="supplier.suppliers_id">{{ supplier.nameSuppliers }}</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!activitiesForm.valid" (click)="onSave()">Guardar</button>
+</div>

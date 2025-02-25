@@ -1,1 +1,137 @@
-<p>suppliers works!</p>
+
+<div class="main-content" style="width: 100%; padding: 20px">
+    <div class="container-fluid" style="width: 100%; padding: 20px">
+      <div class="row">
+        <div class="col-md-12" style="width: 100%; padding: 20px">
+          <div
+            class="button-container"
+            style="
+              display: flex;
+              gap: 15px;
+              justify-content: start;
+              margin-bottom: 10px;
+            "
+          >
+            <button mat-raised-button color="primary" (click)="addBranch()">
+              Agregar Proveedor
+            </button>
+            
+          </div>
+          <div class="card">
+            <div class="card-header card-header-danger">
+              <h4 class="card-title">Mantenedor Proveedor</h4>
+            </div>
+            <div class="card-body">
+              <mat-form-field appearance="standard">
+                <mat-label>Filtro</mat-label>
+                <input
+                  matInput
+                  (keyup)="applyFilter($event)"
+                  placeholder="Busqueda ...."
+                  #input
+                />
+              </mat-form-field>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                (matSortChange)="announceSortChange($event)"
+                class="mat-elevation-z8"
+              >
+                <!-- Position Column -->
+                <ng-container matColumnDef="nameSuppliers">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    sortActionDescription="Sort by nameSuppliers"
+                  >
+                    Nombre Proveedor
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.nameSuppliers }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="contactSuppliers">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      mat-sort-header
+                      sortActionDescription="Sort by contactSuppliers"
+                    >
+                      Contacto Proveedor
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.contactSuppliers }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="emailSuppliers">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      mat-sort-header
+                      sortActionDescription="Sort by emailSuppliers"
+                    >
+                      Correo Proveedor
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.emailSuppliers }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="phoneSuppliers">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      mat-sort-header
+                      sortActionDescription="Sort by phoneSuppliers"
+                    >
+                      Fono Proveedor
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.phoneSuppliers }}
+                    </td>
+                  </ng-container>
+  
+                
+  
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="action-buttons">
+                    <button
+                      mat-icon-button
+                      color="primary"
+                      (click)="editarBranch(row)"
+                      matTooltip="Editar"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      color="error"
+                      (click)="applyDelete(row)"
+                      matTooltip="Eliminar"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+              <mat-paginator
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                aria-label="Select page of users"
+              ></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

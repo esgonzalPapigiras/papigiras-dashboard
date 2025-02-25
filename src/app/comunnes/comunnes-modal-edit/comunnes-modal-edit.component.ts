@@ -62,7 +62,7 @@ export class ComunnesModalEditComponent implements OnInit {
             Swal.close();
             Swal.fire(
               "Éxito",
-              "Los datos de la comuna han sido guardados",
+              "Los datos de la comuna ha sido guardada",
               "success"
             ).then(() => {
               // Cierra el modal y retorna "true"
