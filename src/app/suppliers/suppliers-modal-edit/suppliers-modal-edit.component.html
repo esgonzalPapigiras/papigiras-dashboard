@@ -1,1 +1,41 @@
-<p>suppliers-modal-edit works!</p>
+<div class="modal-header">
+    <h5 class="modal-title">Ingresar Datos</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form #suppliersForm="ngForm">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="proveedor">Proveedor</label>
+                <input type="text" class="form-control" id="proveedor" [(ngModel)]="suppliers.nameSuppliers" name="proveedor"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="contacto">Contacto</label>
+                <input type="text" class="form-control" id="contacto" [(ngModel)]="suppliers.contactSuppliers" name="contacto"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" [(ngModel)]="suppliers.emailSuppliers" name="email"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="telefono">Telefono</label>
+                <input type="text" class="form-control" id="telefono" [(ngModel)]="suppliers.phoneSuppliers" name="telefono"
+                    required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="direccion">Direccion</label>
+                <input type="text" class="form-control" id="direccion" [(ngModel)]="suppliers.addressSuppliers" name="direccion"
+                    required />
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" [disabled]="!suppliersForm.valid" (click)="onSave()">Guardar</button>
+</div>
