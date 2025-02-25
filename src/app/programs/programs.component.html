@@ -1,1 +1,142 @@
-<p>programs works!</p>
+<div class="main-content" style="width: 100%; padding: 20px">
+    <div class="container-fluid" style="width: 100%; padding: 20px">
+      <div class="row">
+        <div class="col-md-12" style="width: 100%; padding: 20px">
+          <div
+            class="button-container"
+            style="
+              display: flex;
+              gap: 15px;
+              justify-content: start;
+              margin-bottom: 10px;
+            "
+          >
+            <button mat-raised-button color="primary" (click)="addBranch()">
+              Agregar Programa
+            </button>
+            
+          </div>
+          <div class="card">
+            <div class="card-header card-header-danger">
+              <h4 class="card-title">Mantenedor Programas</h4>
+            </div>
+            <div class="card-body">
+              <mat-form-field appearance="standard">
+                <mat-label>Filtro</mat-label>
+                <input
+                  matInput
+                  (keyup)="applyFilter($event)"
+                  placeholder="Busqueda ...."
+                  #input
+                />
+              </mat-form-field>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                (matSortChange)="announceSortChange($event)"
+                class="mat-elevation-z8"
+              >
+                <!-- Position Column -->
+                <ng-container matColumnDef="tours_name">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    sortActionDescription="Sort by tours_name"
+                  >
+                    Nombre Programa
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.tours_name }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="tour_day_quantity">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      mat-sort-header
+                      sortActionDescription="Sort by tour_day_quantity"
+                    >
+                      Cantidad Dias
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.tour_day_quantity }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="tour_nigth_quantity">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      mat-sort-header
+                      sortActionDescription="Sort by tour_nigth_quantity"
+                    >
+                      Cantidad Noches
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.tour_nigth_quantity }}
+                    </td>
+                  </ng-container>
+                  
+  
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="action-buttons">
+                    <div class="button-grid">
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        (click)="editarBranch(row)"
+                        matTooltip="Editar"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                  
+                      <button
+                        mat-icon-button
+                        color="error"
+                        (click)="applyDelete(row)"
+                        matTooltip="Eliminar"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                  
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        (click)="editarBranch(row)"
+                        matTooltip="Agregar Actividades"
+                      >
+                        <mat-icon>checklist_rtl</mat-icon>
+                      </button>
+                  
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        (click)="editarBranch(row)"
+                        matTooltip="Detalle Programa"
+                      >
+                        <mat-icon>fact_check</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+              <mat-paginator
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                aria-label="Select page of users"
+              ></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
