@@ -54,6 +54,7 @@ import { ActivitiesModalCreateComponent } from '../../activities/activities-moda
 import { ActivitiesModalEditComponent } from '../../activities/activities-modal-edit/activities-modal-edit.component';
 import { ProgramsModalListActivitiesComponent } from '../../programs/programs-modal-list-activities/programs-modal-list-activities.component';
 import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-modal-add-activities/programs-modal-add-activities.component';
+import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-image/coordinator-modal-view-image.component';
 
 
 @NgModule({
@@ -117,6 +118,7 @@ import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-mod
     ActivitiesModalEditComponent,
     ProgramsModalListActivitiesComponent,
     ProgramsModalAddActivitiesComponent,
+    CoordinatorModalViewImageComponent,
 
   ]
 })

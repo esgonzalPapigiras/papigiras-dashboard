@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { CoordinatorModalCreateComponent } from "./coordinator-modal-create/coordinator-modal-create.component";
 import * as XLSX from 'xlsx';
 import { CoordinatorModalEditComponent } from "./coordinator-modal-edit/coordinator-modal-edit.component";
+import { CoordinatorModalViewImageComponent } from "app/coordinator-modal-view-image/coordinator-modal-view-image.component";
 
 
 @Component({
@@ -182,6 +183,22 @@ export class CoordinatorComponent implements OnInit {
         });
       },
     });
+  }
+
+  verImagen(row:any){
+    console.log(row);
+    const dialogRef = this.dialog.open(CoordinatorModalViewImageComponent, {
+      width: '1300px',
+      height: '600px',
+      data: row.coordinatorRut
+    });
+
+    dialogRef.afterClosed().subscribe({
+    });
+  }
+
+  EnviarImagen(row:any){
+    row.coordinatorRut
   }
 
   addCoordinator() {

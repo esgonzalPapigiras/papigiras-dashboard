@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Coordinator } from 'app/models/coordinator';
 import { ResponseUploadCoordinator } from 'app/models/responseUploadCoordinator';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +76,20 @@ public coordinatorUpdate(coordinator: Coordinator): Observable<any> {
 
   return this.http.post(url, JSON.stringify(coordinator), { headers });
 }
+
+fetchImage(rut: string): Observable<Blob> {
+
+  const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/images/${rut}`;
+  
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${this.token}`
+  });
+
+  return this.http.get<Blob>(url, { headers, responseType: 'blob' as 'json' });
+}
+
+
 
 
 }
