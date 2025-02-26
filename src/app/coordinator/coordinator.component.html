@@ -117,7 +117,7 @@
                     >
                       <mat-icon>photo_camera</mat-icon>
                     </button>
-                
+                    
                     <button
                       mat-icon-button
                       color="primary"
@@ -126,6 +126,7 @@
                     >
                       <mat-icon>add_photo_alternate</mat-icon>
                     </button>
+                    <input #fileInputImage type="file" (change)="onFileSelectedImage($event,row)" accept="image/*" style="display:none" />
                   </div>
                 </td>
               </ng-container>

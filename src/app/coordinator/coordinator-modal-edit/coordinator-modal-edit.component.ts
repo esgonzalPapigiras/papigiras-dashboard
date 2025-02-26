@@ -1,6 +1,6 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { Component, Inject, OnInit } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Branch } from "app/models/branch";
 import { Coordinator } from "app/models/coordinator";
 import { BranchService } from "app/services/branch.service";
@@ -22,7 +22,8 @@ export class CoordinatorModalEditComponent implements OnInit {
     public dialog: MatDialog,
     private coordinatorServices: CoordinatorService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private branchService:BranchService
+    private branchService:BranchService,
+    public dialogRef: MatDialogRef<CoordinatorModalEditComponent>
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +72,7 @@ export class CoordinatorModalEditComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.coordinatorServices.coordinatorUpdate(this.coordinator).subscribe(
+        this.coordinatorServices.coordinatorUpdate(this.coordinator,this.data).subscribe(
           (response) => {
             Swal.close();
             Swal.fire(
@@ -79,6 +80,8 @@ export class CoordinatorModalEditComponent implements OnInit {
               "Los datos del coordinador han sido guardados",
               "success"
             );
+            this.dialogRef.close(true);
+            
             // Aquí puedes redirigir o hacer lo que necesites después de guardar
           },
           (error) => {

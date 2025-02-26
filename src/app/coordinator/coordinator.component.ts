@@ -29,16 +29,20 @@ export class CoordinatorComponent implements OnInit {
     "acciones",
   ];
   dataSource = new MatTableDataSource<Coordinator>();
+  selectedFile: File | null = null;
+  id: string;
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild("fileInput") fileInput: any;
+  @ViewChild("fileInputImage") fileInputImage: any;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private coordinatorServices: CoordinatorService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.obtenerCoordinadores();
@@ -55,7 +59,7 @@ export class CoordinatorComponent implements OnInit {
   }
 
   applyDelete(event: any) {
-    
+
     Swal.fire({
       title: "Estas Seguro?",
       text: "No puedes revertir esto!!!",
@@ -71,6 +75,7 @@ export class CoordinatorComponent implements OnInit {
         this.coordinatorServices.deleteCoordinador(event.coordinatorId).subscribe(
           (response) => {
             Swal.fire("Eliminado!", "Has eliminado el registro.", "success");
+            this.obtenerCoordinadores();
           },
           (error) => {
             Swal.fire("Error", "No se pudo eliminar el registro.", "error");
@@ -86,64 +91,64 @@ export class CoordinatorComponent implements OnInit {
   }
 
   onFileSelected(event: any) {
-      
-      const file = event.target.files[0];
-      if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
-        // Muestra un mensaje de carga con SweetAlert2
-        Swal.fire({
-          title: 'Cargando...',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
 
-            this.coordinatorServices.uploadFile(file).subscribe(response => {
-              console.log('response.status');
-              if (response.code === "0") {
-                this.showSuccessDialog();
-                this.obtenerCoordinadores();
-              }else{
-                this.showSuccessDialogError();
-              }
-                
-                
-            }, error => {
-              console.log(error);
-              // Maneja cualquier error durante la carga
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Hubo un problema al cargar el archivo"
-              });
-            });
-          },
-        });
-    
-        // Restablecer el input de tipo file
-        event.target.value = '';
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Debes cargar un archivo Excel para continuar"
-        });
-      }
-  }
-
-  showSuccessDialog() {
+    const file = event.target.files[0];
+    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+      // Muestra un mensaje de carga con SweetAlert2
       Swal.fire({
-        icon: "success",
-        title: "Oops...",
-        text: "Archivo cargado exitosamente"
-      });
-    }
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
 
-    showSuccessDialogError() {
+          this.coordinatorServices.uploadFile(file).subscribe(response => {
+            console.log('response.status');
+            if (response.code === "0") {
+              this.showSuccessDialog();
+              this.obtenerCoordinadores();
+            } else {
+              this.showSuccessDialogError();
+            }
+
+
+          }, error => {
+            console.log(error);
+            // Maneja cualquier error durante la carga
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Hubo un problema al cargar el archivo"
+            });
+          });
+        },
+      });
+
+      // Restablecer el input de tipo file
+      event.target.value = '';
+    } else {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Archivo no se logro cargar"
+        text: "Debes cargar un archivo Excel para continuar"
       });
     }
+  }
+
+  showSuccessDialog() {
+    Swal.fire({
+      icon: "success",
+      title: "Oops...",
+      text: "Archivo cargado exitosamente"
+    });
+  }
+
+  showSuccessDialogError() {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Archivo no se logro cargar"
+    });
+  }
   /** Announce the change in sort state for assistive technology. */
   announceSortChange(sortState: Sort) {
     // This example uses English messages. If your application supports
@@ -157,17 +162,21 @@ export class CoordinatorComponent implements OnInit {
     }
   }
 
-  editarCoordinator(row: any){
+  editarCoordinator(row: any) {
     const dialogRef = this.dialog.open(CoordinatorModalEditComponent, {
       width: '1300px',
       height: '600px',
       data: row.coordinatorId
     });
 
-    dialogRef.afterClosed().subscribe({
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        // Suponiendo que se retorna "true" cuando la creación es exitosa
+        this.obtenerCoordinadores(); // O llama a tu método de refresco de data
+      }
     });
-}
-  
+  }
+
 
   obtenerCoordinadores() {
     Swal.fire({
@@ -185,8 +194,7 @@ export class CoordinatorComponent implements OnInit {
     });
   }
 
-  verImagen(row:any){
-    console.log(row);
+  verImagen(row: any) {
     const dialogRef = this.dialog.open(CoordinatorModalViewImageComponent, {
       width: '1300px',
       height: '600px',
@@ -197,29 +205,32 @@ export class CoordinatorComponent implements OnInit {
     });
   }
 
-  EnviarImagen(row:any){
-    row.coordinatorRut
-  }
+
 
   addCoordinator() {
     const dialogRef = this.dialog.open(CoordinatorModalCreateComponent, {
-          width: '1300px',
-          height: '600px',
-        });
-    
-        dialogRef.afterClosed().subscribe({
-        });
-    }
+      width: '1300px',
+      height: '600px',
+      
+    });
 
-  downloadCoordinators() : void {
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        // Suponiendo que se retorna "true" cuando la creación es exitosa
+        this.obtenerCoordinadores(); // O llama a tu método de refresco de data
+      }
+    });
+  }
+
+  downloadCoordinators(): void {
     this.coordinatorServices.obtenerCoordinadores().subscribe(
       (coordinatorDetails: any[]) => {
         try {
           // Crear una hoja de Excel
           const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
             [
-              'ID', 'RUT', 'Nombre', 'Apellido', 'Sexo', 'Residencia', 'Oficina', 
-              'Fecha Nacimiento', 'Edad', 'Celular', 'Correo', 'Insta Personal', 
+              'ID', 'RUT', 'Nombre', 'Apellido', 'Sexo', 'Residencia', 'Oficina',
+              'Fecha Nacimiento', 'Edad', 'Celular', 'Correo', 'Insta Personal',
               'Insta AT', 'Universidad', 'Carrera', 'Profesión', 'Empresa', 'Foto'
             ]
           ]);
@@ -262,6 +273,62 @@ export class CoordinatorComponent implements OnInit {
       }
     );
   }
-  
+
+  EnviarImagen(row: any) {
+
+    this.fileInputImage.nativeElement.click();
+    this.id = row.coordinatorRut
+  }
+
+  onFileSelectedImage(event: any, row: any) {
+
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      // Llamar a la función de carga cuando el archivo es seleccionado
+      this.uploadFile(file,);
+    }
+  }
+
+  uploadFile(file: File): void {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      // Llamar al servicio para subir el archivo
+      Swal.fire({
+        title: "Guardando Imagen...",
+        text: "Por favor espera mientras se guarda la imagen.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.coordinatorServices.uploadDocumentsPicture(uint8Array, file.name, this.id, 'coordinadores').subscribe({
+            next: (response) => {
+              Swal.close();
+              Swal.fire(
+                "Éxito",
+                "La imagen fue encontrada",
+                "success"
+              );
+            },
+            error: (err) => {
+              Swal.close();
+              Swal.fire(
+                "Error",
+                "No existe imagen del coordinador",
+                "error"
+              );
+            }
+          });
+        }
+      });
       
+    };
+    reader.readAsArrayBuffer(file); // Lee el archivo como ArrayBuffer
+  }
+
+
+
+
 }

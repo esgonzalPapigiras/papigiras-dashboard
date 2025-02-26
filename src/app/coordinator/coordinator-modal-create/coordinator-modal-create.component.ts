@@ -1,6 +1,6 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Branch } from 'app/models/branch';
 import { Coordinator } from 'app/models/coordinator';
 import { BranchService } from 'app/services/branch.service';
@@ -39,7 +39,8 @@ export class CoordinatorModalCreateComponent implements OnInit {
   constructor(private _liveAnnouncer: LiveAnnouncer,
       public dialog: MatDialog,
       private coordinatorServices: CoordinatorService,
-      private branchService:BranchService) { }
+      private branchService:BranchService,
+      public dialogRef: MatDialogRef<CoordinatorModalCreateComponent>) { }
 
   ngOnInit(): void {
     this.obtenerOficina();
@@ -55,7 +56,6 @@ export class CoordinatorModalCreateComponent implements OnInit {
             .obtenerOficinas()
             .subscribe((respon) => {
               this.branch = respon;
-              console.log(this.branch);
               Swal.close();
             });
         },
@@ -84,7 +84,23 @@ export class CoordinatorModalCreateComponent implements OnInit {
       coordinatorEmpresa: this.coordinator.coordinatorEmpresa,
       coordinatorPicture: false // Valor por defecto como false
     };
-    this.coordinatorServices.coordinatorCreate(coordinatorObj);
+    
+    this.coordinatorServices.coordinatorCreate(coordinatorObj).subscribe({
+      next: () => {
+        // Llamamos al método que refresca la lista de oficinas
+        // Cerramos el modal indicando éxito (true)
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.error('Error al guardar la oficina:', err);
+        // Puedes optar por cerrar el modal con false o mostrar un mensaje de error sin cerrarlo
+        this.dialogRef.close(false);
+      }
+    });
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(false);
   }
 
 }

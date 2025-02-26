@@ -87,8 +87,12 @@ export class BranchComponent implements OnInit {
       height: "600px",
       data: row,
     });
-
-    dialogRef.afterClosed().subscribe({});
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        // Suponiendo que se retorna "true" cuando la creación es exitosa
+        this.obtenerOficinas(); // O llama a tu método de refresco de data
+      }
+    });
   }
 
   obtenerOficinas() {
