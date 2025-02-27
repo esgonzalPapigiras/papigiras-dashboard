@@ -19,14 +19,14 @@ export class CoordinatorService {
 
   public obtenerCoordinadores(): Observable<Coordinator[]> {
   
-      const headers = new HttpHeaders().set('Authorization', this.token);
+      const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
       return this.http.get<Coordinator[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/get', { headers })
   
   }
 
   public obtenerCoordinadoresUpdate(id:number): Observable<Coordinator> {
   
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.get<Coordinator>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/get/byid', { headers ,params})
 
@@ -34,7 +34,7 @@ export class CoordinatorService {
 
   public deleteCoordinador(id:number): Observable<any[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/delete', { headers, params })
 
@@ -46,7 +46,7 @@ public uploadFile(file: any): Observable<ResponseUploadCoordinator> {
   
   const formData = new FormData();
   formData.append('file', file, file.name);
-  const headers = new HttpHeaders().set('Authorization', this.token); // Reemplazar con el token si es necesario
+  const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
 
   return this.http.post<ResponseUploadCoordinator>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/coordinator/web/upload', formData, { headers });
     
@@ -59,7 +59,7 @@ public coordinatorCreate(coordinator: Coordinator): Observable<any> {
 
   const headers = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
   });
 
   return this.http.post(url, JSON.stringify(coordinator), { headers });
@@ -72,7 +72,7 @@ public coordinatorUpdate(coordinator: Coordinator,id:number): Observable<any> {
   const params = new HttpParams().set('id', id.toString());
   const headers = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
   });
 
   return this.http.post(url, JSON.stringify(coordinator), { headers,params });
@@ -84,7 +84,7 @@ fetchImage(rut: string): Observable<Blob> {
   
   const headers = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${this.token}`
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
   });
 
   return this.http.get<Blob>(url, { headers, responseType: 'blob' as 'json' });
@@ -103,7 +103,7 @@ uploadDocumentsPicture(result: Uint8Array, name: string, rut: string, folder: st
 
     // Configurar los encabezados de la solicitud
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.token}` // Si es necesario, agrega el token de autorización
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Si es necesario, agrega el token de autorización
     });
 
     // Realizar la solicitud POST para subir el archivo

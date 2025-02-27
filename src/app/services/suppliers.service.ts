@@ -16,14 +16,14 @@ export class SuppliersService {
       
         public obtenerSuppliers(): Observable<Suppliers[]> {
         
-            const headers = new HttpHeaders().set('Authorization', this.token);
+            const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
             return this.http.get<Suppliers[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/suppliers/web/get', { headers })
         
         }
   
         public listStatusTour(): Observable<statusTour[]> {
         
-          const headers = new HttpHeaders().set('Authorization', this.token);
+          const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
           return this.http.get<statusTour[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/suppliers/web/get', { headers })
       
       }
@@ -31,7 +31,7 @@ export class SuppliersService {
     
         public deletesuppliers(id:number): Observable<any[]> {
         
-            const headers = new HttpHeaders().set('Authorization', this.token);
+            const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
             const params = new HttpParams().set('id', id.toString());
             return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/suppliers/web/delete', { headers, params })
         
@@ -45,7 +45,7 @@ export class SuppliersService {
         
           const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+            'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
           });
         
           return this.http.post(url, JSON.stringify(coordinator), { headers });
@@ -58,7 +58,7 @@ export class SuppliersService {
           const params = new HttpParams().set('id', id.toString());
           const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+            'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
           });
         
           return this.http.post(url, JSON.stringify(coordinator), { headers,params });

@@ -22,7 +22,7 @@ export class ToursServicesService {
 
   public obtenerGiras(): Observable<TourSalesDTO[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<TourSalesDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get', { headers })
 
   }
@@ -31,7 +31,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -44,7 +44,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -57,7 +57,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -69,7 +69,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -82,7 +82,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -95,7 +95,7 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: this.token,
+      Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams().set('id', id.toString());
@@ -107,7 +107,7 @@ export class ToursServicesService {
     const formData = new FormData();
     formData.append('file', file, file.name);
     formData.append('id_tour_sale', id_tour_sale.toString());
-    const headers = new HttpHeaders().set('Authorization', this.token); // Reemplazar con el token si es necesario
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
 
     return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });
       

@@ -16,14 +16,14 @@ export class ComunnesService {
   
     public ObtenerCommunes(): Observable<Communes[]> {
     
-        const headers = new HttpHeaders().set('Authorization', this.token);
+        const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
         return this.http.get<Communes[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get', { headers })
     
     }
 
     public deleteCommunes(id:number): Observable<any[]> {
     
-      const headers = new HttpHeaders().set('Authorization', this.token);
+      const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
       const params = new HttpParams().set('id', id.toString());
       return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/delete', { headers, params })
   
@@ -31,7 +31,7 @@ export class ComunnesService {
 
   public obtenerCommunesUpdate(id:number): Observable<Communes> {
     
-      const headers = new HttpHeaders().set('Authorization', this.token);
+      const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
       const params = new HttpParams().set('id', id.toString());
       return this.http.get<Communes>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get/byid', { headers ,params})
   
@@ -44,7 +44,7 @@ export class ComunnesService {
   
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
   
     return this.http.post(url, JSON.stringify(coordinator), { headers });
@@ -58,7 +58,7 @@ export class ComunnesService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
 

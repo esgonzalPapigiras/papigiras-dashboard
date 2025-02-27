@@ -18,7 +18,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
     
       return this.http.get<{ [year: string]: number }>(
@@ -31,7 +31,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
     
       return this.http.get<String>(
@@ -44,7 +44,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
     
       return this.http.get<String>(
@@ -57,7 +57,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
     
       return this.http.get<String>(
@@ -70,7 +70,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
     
       return this.http.get<String>(
@@ -83,7 +83,7 @@ export class StadisticsService {
       // Reemplaza con tu lógica para obtener el token dinámicamente
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: this.token,
+        Authorization: localStorage.getItem('token'),
       });
 
       const params = new HttpParams().set('year', year.toString());

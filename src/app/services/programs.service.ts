@@ -18,7 +18,7 @@ export class ProgramsService {
 
   public obtenerProgram(): Observable<Program[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<Program[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tours/web/get', { headers })
 
   }
@@ -28,7 +28,7 @@ export class ProgramsService {
 
   public deleteProgram(id: number): Observable<any[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tours/web/delete', { headers, params })
 
@@ -42,7 +42,7 @@ export class ProgramsService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(coordinator), { headers });
@@ -55,7 +55,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(coordinator), { headers, params });
@@ -68,7 +68,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(tourPackage), { headers, params });
@@ -81,7 +81,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(tourActivities), { headers, params });
@@ -89,7 +89,7 @@ export class ProgramsService {
 
   public listActivitiesProgram(id: String): Observable<ClientAddActivities[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.get<ClientAddActivities[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/touradd/web/activities/getlist', { headers,params })
 
@@ -97,7 +97,7 @@ export class ProgramsService {
 
   public activitiesProgramDeleteList(id: number): Observable<any[]> {
 
-    const headers = new HttpHeaders().set('Authorization', this.token);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/touradd/web/activities/deleteList', { headers, params })
 

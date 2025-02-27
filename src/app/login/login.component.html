@@ -1,0 +1,22 @@
+<div class="login-container">
+    <div class="login-logo-container">
+      <img src="assets/img/logotipo.png" alt="Logo" class="login-logo" />
+    </div>
+    <div class="login-form">
+      <div class="login-header">
+        <h2>Inicio Sesion</h2>
+      </div>
+      <form (ngSubmit)="onSubmit()">
+        <div class="input-container">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" [(ngModel)]="email" required placeholder="youremail@email.com">
+        </div>
+        <div class="input-container">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="********">
+        </div>
+        
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+    </div>
+  </div>

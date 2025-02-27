@@ -57,6 +57,7 @@ import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-mod
 import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-image/coordinator-modal-view-image.component';
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -119,6 +120,7 @@ import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-i
     ProgramsModalListActivitiesComponent,
     ProgramsModalAddActivitiesComponent,
     CoordinatorModalViewImageComponent,
+    
 
   ]
 })
