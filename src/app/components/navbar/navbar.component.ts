@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { ROUTES } from '../sidebar/sidebar.component';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
@@ -122,4 +123,27 @@ export class NavbarComponent implements OnInit {
       }
       return 'Dashboard';
     }
+
+    logout() {
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: '¿Deseas cerrar sesión?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Cerrar sesión'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Elimina el token de localStorage o sessionStorage
+            localStorage.removeItem('token');  // Asegúrate de usar el mismo nombre del token
+    
+            // Redirige al login
+            this.router.navigate(['/login']).then(() => {
+              // Evitar que el usuario regrese a la vista anterior
+              window.location.reload();
+            });
+          }
+        });
+      }
 }
