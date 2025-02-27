@@ -57,13 +57,14 @@ export class LoginComponent implements OnInit{
                 });
               },
               (error) => {
-                
+                localStorage.removeItem('token');
                 Swal.close();
                 Swal.fire(
                   "Error",
                   "Hubo un problema al encontrar el usuario",
                   "error"
                 );
+
               }
             );
           },

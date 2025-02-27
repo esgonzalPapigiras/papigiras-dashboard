@@ -12,7 +12,6 @@ export class LoginService {
   login(email: string, password: string): Observable<any> {
     // Obtener el token de almacenamiento local
     const token = localStorage.getItem('token');
-    console.log(token);
   
     if (!token) {
       return new Observable(observer => {
