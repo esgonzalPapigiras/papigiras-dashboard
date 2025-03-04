@@ -1,14 +1,16 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TripulationAvionDTO } from 'app/models/avionList';
+import { DocumentDTO } from 'app/models/document';
 import { HotelDTOList } from 'app/models/hotelList';
 import { PassengerDTO } from 'app/models/passengerList';
+import { ResponseUploadService } from 'app/models/responseUploadService';
 import { TourSalesDTO } from 'app/models/tourSales';
 import { TourSalesDetail } from 'app/models/toursalesdetail';
 import { TripulationBus } from 'app/models/tripulationBus';
 import { TripulationsDTO } from 'app/models/tripulations';
-import { Observable } from 'rxjs';
-import Swal from 'sweetalert2';
+import { catchError, Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -111,6 +113,91 @@ export class ToursServicesService {
 
     return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });
       
+  }
+
+  uploadDocumentsExtra(result: Uint8Array, name: string, uuid: string, folder: string, tipoDoc: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', new Blob([result]), name);
+    formData.append('Uuid', uuid);
+    formData.append('folder', folder);
+    formData.append('tipoDoc', tipoDoc);
+
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+
+    return this.http.post<ResponseUploadService>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/s3/upload', formData, { headers });
+  }
+
+  getDocument(id: number): Observable<DocumentDTO[]> {
+    
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDocument`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+
+    const params = { idtour: id.toString() };
+
+    return this.http.get<DocumentDTO[]>(url, { headers, params });
+
+  }
+
+  downloadDocument(name: string, supplier: any): Observable<any> {
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/download`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+  
+    const params = new HttpParams()
+      .set('folderName', name)
+      .set('fileName', supplier);
+  
+    return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
+  }
+
+  deleteDocument(name: string, supplier: any): Observable<any> {
+    
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/deleteDocument`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+
+    console.log();
+    const params = new HttpParams()
+      .set('folderName', name)
+      .set('fileName', supplier);
+
+    return this.http.delete(url, { headers, params }).pipe(
+      catchError(error => {
+        console.error('Error deleting document:', error);
+        throw new Error('Failed to delete document');
+      })
+    );
+  }
+  
+  listPDF(id: number):  Observable<ArrayBuffer> {
+    if (!this.token) {
+      console.error('Token is not available');
+      return;
+    }
+
+    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/generate-pdf';
+    const params = new HttpParams().set('id', id.toString());
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+
+    return this.http.get(url, {
+      headers,
+      params,
+      responseType: 'arraybuffer'  // Recibir la respuesta como arraybuffer para el PDF
+    });
+  
   }
 
   

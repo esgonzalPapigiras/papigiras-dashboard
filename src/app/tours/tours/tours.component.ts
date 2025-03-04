@@ -15,7 +15,8 @@ import { TourAddCoordinatorModalComponent } from '../tour-add-coordinator-modal/
 import { TourAddHotelModalComponent } from '../tour-add-hotel-modal/tour-add-hotel-modal.component';
 import { TourAddDocumentModalComponent } from '../tour-add-document-modal/tour-add-document-modal.component';
 import { TourDownloadDocumentModalComponent } from '../tour-download-document-modal/tour-download-document-modal.component';
-
+import { TourAddAirplaneModalComponent } from '../tour-add-airplane-modal/tour-add-airplane-modal.component';
+import { saveAs } from 'file-saver';
 
 
 
@@ -31,7 +32,11 @@ export class ToursComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('fileInput') fileInput: any;
+  @ViewChild('fileInputContract') fileInputContract : any;
+  @ViewChild('fileInputPoliciHealth') fileInputPoliciHealth : any;
+  @ViewChild('fileInputProgram') fileInputProgram : any;
   id : number;
+  uuid:string;
 
 
   constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private girasServices: ToursServicesService,) { }
@@ -76,6 +81,17 @@ export class ToursComponent implements AfterViewInit {
 
   openViewDialog(row: any): void {
     const dialogRef = this.dialog.open(ToursViewModalComponent, {
+      width: '1300px',
+      height: '600px',
+      data: row.tourSalesId
+    });
+
+    dialogRef.afterClosed().subscribe({
+    });
+  }
+
+  openViewDialogAvion(row: any): void{
+    const dialogRef = this.dialog.open(TourAddAirplaneModalComponent, {
       width: '1300px',
       height: '600px',
       data: row.tourSalesId
@@ -134,6 +150,130 @@ export class ToursComponent implements AfterViewInit {
     }
   }
 
+  onFileSelectedContract(event: any, row: any) {
+    
+    const file = event.target.files[0];
+    if (file) {
+      // Muestra un mensaje de carga con SweetAlert2
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices.uploadDocumentsExtra(file,file.name,this.uuid,"documentosextras","contract").subscribe(response => {
+            
+            if(response){
+              this.showSuccessDialog();
+              this.obtenerGiras();
+            }else{
+            }
+            
+          }, error => {
+            console.log(error);
+            // Maneja cualquier error durante la carga
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Hubo un problema al cargar el archivo"
+            });
+          });
+        },
+      });
+  
+      // Restablecer el input de tipo file
+      event.target.value = '';
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Debes cargar un archivo para continuar"
+      });
+    }
+  }
+
+  onFileSelectedPolicies(event: any, row: any) {
+    
+    const file = event.target.files[0];
+    if (file) {
+      // Muestra un mensaje de carga con SweetAlert2
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices.uploadDocumentsExtra(file,file.name,this.uuid,"documentosextras","poliza").subscribe(response => {
+            
+            if(response){
+              this.showSuccessDialog();
+              this.obtenerGiras();
+            }else{
+              
+            }
+            
+          }, error => {
+            console.log(error);
+            // Maneja cualquier error durante la carga
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Hubo un problema al cargar el archivo"
+            });
+          });
+        },
+      });
+  
+      // Restablecer el input de tipo file
+      event.target.value = '';
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Debes cargar un archivo  para continuar"
+      });
+    }
+  }
+
+  onFileSelectedProgram(event: any, row: any) {
+    
+    const file = event.target.files[0];
+    if (file) {
+      // Muestra un mensaje de carga con SweetAlert2
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices.uploadDocumentsExtra(file,file.name,this.uuid,"documentosextras","gira").subscribe(response => {
+            
+            if(response){
+              this.showSuccessDialog();
+              this.obtenerGiras();
+            }else{
+            }
+            
+          }, error => {
+            console.log(error);
+            // Maneja cualquier error durante la carga
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Hubo un problema al cargar el archivo"
+            });
+          });
+        },
+      });
+  
+      // Restablecer el input de tipo file
+      event.target.value = '';
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Debes cargar un archivo para continuar"
+      });
+    }
+  }
+
 
 
   openViewDialogBus(row: any): void {
@@ -170,46 +310,53 @@ export class ToursComponent implements AfterViewInit {
   }
 
   openViewDialogContract(row: any): void {
-    const dialogRef = this.dialog.open(TourAddHotelModalComponent, {
-      width: '1300px',
-      height: '600px',
-      data: row.tourSalesId
-    });
 
-    dialogRef.afterClosed().subscribe({
-    });
+    this.fileInputContract.nativeElement.click();
+    this.uuid = row.tourSalesUuid
   }
 
   openViewDialogProgram(row: any): void {
-    const dialogRef = this.dialog.open(TourAddDocumentModalComponent, {
-      width: '1300px',
-      height: '600px',
-      data: row.tourSalesId
-    });
-
-    dialogRef.afterClosed().subscribe({
-    });
+    this.fileInputProgram.nativeElement.click();
+    this.uuid = row.tourSalesUuid
   }
 
   openViewDialogPolizaSeguro(row: any): void {
-    const dialogRef = this.dialog.open(TourAddDocumentModalComponent, {
-      width: '1300px',
-      height: '600px',
-      data: row.tourSalesId
-    });
-
-    dialogRef.afterClosed().subscribe({
-    });
+    this.fileInputPoliciHealth.nativeElement.click();
+    this.uuid = row.tourSalesUuid
+    
   }
 
   openViewDialogDownloadDocuments(row: any): void {
     const dialogRef = this.dialog.open(TourDownloadDocumentModalComponent, {
       width: '1300px',
       height: '600px',
-      data: row.tourSalesId
+      data: row
     });
 
     dialogRef.afterClosed().subscribe({
+    });
+  }
+  
+  openViewDownloadDocuments(row: any): void {
+    Swal.fire({
+      title: "Buscando el archivo...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.girasServices.listPDF(row.tourSalesId).subscribe({
+          next: (response: ArrayBuffer) => {
+            if (response) {
+              const blob = new Blob([response], { type: 'application/pdf' });
+              saveAs(blob, `manifiesto_gira_${row.tourSalesUuid}.pdf`);
+            }
+            Swal.close();
+          },
+          error: (err) => {
+            console.error('Error downloading the file: ', err);
+            Swal.close();
+          }
+        });
+      },
     });
   }
 

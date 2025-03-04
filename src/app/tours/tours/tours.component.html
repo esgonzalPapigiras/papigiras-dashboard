@@ -1,114 +1,133 @@
 <div class="main-content" style="width: 100%; padding: 20px;">
-    <div class="container-fluid" style="width: 100%; padding: 20px;">
-        <div class="row">
-            <div class="col-md-12" style="width: 100%; padding: 20px;">
-                <div class="card" >
-                    <div class="card-header card-header-danger">
-                        <h4 class="card-title">Mantenedor Giras</h4>
-                        
-                    </div>
-                    <div class="card-body" >
-                        <mat-form-field appearance="standard">
-                            <mat-label>Filtro</mat-label>
-                            <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
-                        </mat-form-field>
-                        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
-                            class="mat-elevation-z8">
+  <div class="container-fluid" style="width: 100%; padding: 20px;">
+    <div class="row">
+      <div class="col-md-12" style="width: 100%; padding: 20px;">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Mantenedor Giras</h4>
+
+          </div>
+          <div class="card-body">
+            <mat-form-field appearance="standard">
+              <mat-label>Filtro</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
+            </mat-form-field>
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+              class="mat-elevation-z8">
 
 
-                            <!-- Position Column -->
-                            <ng-container matColumnDef="tourSalesUuid">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                                    sortActionDescription="Sort by tourSalesUuid">
-                                    Codigo Gira
-                                </th>
-                                <td mat-cell *matCellDef="let element"> {{element.tourSalesUuid}} </td>
-                            </ng-container>
+              <!-- Position Column -->
+              <ng-container matColumnDef="tourSalesUuid">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesUuid">
+                  Codigo Gira
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.tourSalesUuid}} </td>
+              </ng-container>
 
-                            <!-- Name Column -->
-                            <ng-container matColumnDef="tourSalesInit">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                                    sortActionDescription="Sort by tourSalesInit">
-                                    Fecha Inicio
-                                </th>
-                                <td mat-cell *matCellDef="let element"> {{element.tourSalesInit}} </td>
-                            </ng-container>
+              <!-- Name Column -->
+              <ng-container matColumnDef="tourSalesInit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesInit">
+                  Fecha Inicio
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.tourSalesInit}} </td>
+              </ng-container>
 
-                            <!-- Weight Column -->
-                            <ng-container matColumnDef="tourSalesFinal">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                                    sortActionDescription="Sort by tourSalesFinal">
-                                    Fecha Termino
-                                </th>
-                                <td mat-cell *matCellDef="let element"> {{element.tourSalesFinal}} </td>
-                            </ng-container>
+              <!-- Weight Column -->
+              <ng-container matColumnDef="tourSalesFinal">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesFinal">
+                  Fecha Termino
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.tourSalesFinal}} </td>
+              </ng-container>
 
-                            <!-- Symbol Column -->
-                            <ng-container matColumnDef="collegeName">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                                    sortActionDescription="Sort by collegeName">
-                                    Colegio
-                                </th>
-                                <td mat-cell *matCellDef="let element"> {{element.collegeName}} </td>
-                            </ng-container>
+              <!-- Symbol Column -->
+              <ng-container matColumnDef="collegeName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by collegeName">
+                  Colegio
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.collegeName}} </td>
+              </ng-container>
 
-                            <ng-container matColumnDef="addCourse">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                                    sortActionDescription="Sort by addCourse">
-                                    Curso
-                                </th>
-                                <td mat-cell *matCellDef="let element"> {{element.addCourse}} </td>
-                            </ng-container>
+              <ng-container matColumnDef="addCourse">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by addCourse">
+                  Curso
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.addCourse}} </td>
+              </ng-container>
 
-                            <ng-container matColumnDef="acciones">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
-                                <td mat-cell *matCellDef="let row" class="action-buttons">
-                                  <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Ver detalles">
-                                    <mat-icon>visibility</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogAlumn(row)" matTooltip="Cargar Planilla Alumnos y Acompañantes">
-                                    <mat-icon>person_add</mat-icon>
-                                  </button>
-                                  <input #fileInput type="file" (change)="onFileSelected($event,row)" accept=".xlsx,.xls" style="display:none" />
-                                  <button mat-icon-button color="primary" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
-                                    <mat-icon>directions_bus</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogTripulation(row)" matTooltip="Agregar tripulación">
-                                    <mat-icon>people</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogContract(row)" matTooltip="Contrato">
-                                    <mat-icon>gavel</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogCoordinator(row)" matTooltip="Agregar coordinador">
-                                    <mat-icon>nordic_walking</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogProgram(row)" matTooltip="Lista Programa">
-                                    <mat-icon>fact_check</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogPolizaSeguro(row)" matTooltip="Poliza Seguro">
-                                    <mat-icon>health_and_safety</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadDocuments(row)" matTooltip="Descargar Documentos Extras">
-                                    <mat-icon>upload_file</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadManifest(row)" matTooltip="Descargar Manifiesto">
-                                    <mat-icon>checklist_rtl</mat-icon>
-                                  </button>
-                                  <button mat-icon-button color="primary" (click)="applyDelete(row)" matTooltip="Eliminar">
-                                    <mat-icon>delete</mat-icon>
-                                  </button>
-                                </td>
-                              </ng-container>
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+                <td mat-cell *matCellDef="let row" class="action-buttons">
+                  <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Ver detalles">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" 
+                   [color]="row.addAlumnListDoc ? 'accent' : 'primary'"
+                   [disabled]="row.addAlumnListDoc"(click)="openViewDialogAlumn(row)"
+                    matTooltip="Cargar Planilla Alumnos y Acompañantes">
+                    <mat-icon>person_add</mat-icon>
+                  </button>
+                  <input #fileInput type="file" (change)="onFileSelected($event,row)" accept=".xlsx,.xls"
+                    style="display:none" />
+                  <button mat-icon-button color="primary" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
+                    <mat-icon>directions_bus</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" (click)="openViewDialogAvion(row)" matTooltip="Agregar avion">
+                    <mat-icon>flight</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" (click)="openViewDialogTripulation(row)"
+                    matTooltip="Agregar tripulación">
+                    <mat-icon>people</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" 
+                  [color]="row.addDetailHotelDoc ? 'accent' : 'primary'"
+                  [disabled]="row.addDetailHotelDoc"(click)="openViewDialogContract(row)" matTooltip="Contrato">
+                    <mat-icon>gavel</mat-icon>
+                  </button>
+                  <input #fileInputContract type="file" (change)="onFileSelectedContract($event,row)" accept="*"
+                    style="display:none" />
+                  <button mat-icon-button color="primary" (click)="openViewDialogCoordinator(row)"
+                    matTooltip="Agregar coordinador">
+                    <mat-icon>nordic_walking</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" 
+                  [color]="row.addProgramDoc ? 'accent' : 'primary'"
+                  [disabled]="row.addProgramDoc"(click)="openViewDialogProgram(row)"
+                    matTooltip="Lista Programa">
+                    <mat-icon>fact_check</mat-icon>
+                  </button>
+                  <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
+                    style="display:none" />
+                  <button mat-icon-button 
+                    [color]="row.addSegurityPolicyDoc ? 'accent' : 'primary'"
+                    [disabled]="row.addSegurityPolicyDoc" (click)="openViewDialogPolizaSeguro(row)"
+                    matTooltip="Poliza Seguro">
+                    <mat-icon>health_and_safety</mat-icon>
+                  </button>
+                  <input #fileInputPoliciHealth type="file" (change)="onFileSelectedPolicies($event, row)" accept="*"
+                    style="display:none" />
+                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadDocuments(row)"
+                    matTooltip="Descargar Documentos Extras">
+                    <mat-icon>upload_file</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" (click)="openViewDownloadDocuments(row)"
+                    matTooltip="Descargar Manifiesto">
+                    <mat-icon>checklist_rtl</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" (click)="applyDelete(row)" matTooltip="Eliminar">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                        </table>
-                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
-                            aria-label="Select page of users"></mat-paginator>
-                    </div>
-                </div>
-            </div>
-
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+          </div>
         </div>
+      </div>
+
     </div>
+  </div>
 </div>

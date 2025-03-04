@@ -1,1 +1,26 @@
-<p>tour-add-bus-modal works!</p>
+<h3>Selecciona Buses</h3>
+
+<mat-form-field appearance="fill">
+  <mat-label>Selecciona un bus</mat-label>
+  <mat-select [(value)]="selectedBuses" multiple>
+    <!-- Trigger de selección -->
+    <mat-select-trigger>
+      {{ selectedBusText }}
+    </mat-select-trigger>
+
+    <!-- Opción de búsqueda -->
+    <div mat-select-search>
+      <mat-form-field appearance="fill">
+        <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
+      </mat-form-field>
+    </div>
+
+    <!-- Opciones filtradas -->
+    <mat-option *ngFor="let bus of filteredBus()" [value]="bus">
+      {{ bus.tourTripulationNameId }} {{ bus.tourTripulationIdentificationId }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Botón para enviar los coordinadores seleccionados -->
+<button mat-raised-button color="primary" (click)="sendBus()">Enviar Selección</button>

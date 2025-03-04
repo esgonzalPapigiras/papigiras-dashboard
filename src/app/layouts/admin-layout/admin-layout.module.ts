@@ -28,7 +28,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { TourDonwloadAlumnsModalComponent } from '../../tours/tour-donwload-alumns-modal/tour-donwload-alumns-modal.component';
 import { TourAddBusModalComponent } from '../../tours/tour-add-bus-modal/tour-add-bus-modal.component';
 import { TourAddCoordinatorModalComponent } from '../../tours/tour-add-coordinator-modal/tour-add-coordinator-modal.component';
-import { TourAddDriverModalComponent } from '../../tours/tour-add-driver-modal/tour-add-driver-modal.component';
 import { TourAddAirplaneModalComponent } from '../../tours/tour-add-airplane-modal/tour-add-airplane-modal.component';
 import { TourAddHotelModalComponent } from '../../tours/tour-add-hotel-modal/tour-add-hotel-modal.component';
 import { TourAddDocumentModalComponent } from '../../tours/tour-add-document-modal/tour-add-document-modal.component';
@@ -55,6 +54,7 @@ import { ActivitiesModalEditComponent } from '../../activities/activities-modal-
 import { ProgramsModalListActivitiesComponent } from '../../programs/programs-modal-list-activities/programs-modal-list-activities.component';
 import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-modal-add-activities/programs-modal-add-activities.component';
 import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-image/coordinator-modal-view-image.component';
+import { TourAddDriverModalComponent } from 'app/tours/tour-add-driver-modal/tour-add-driver-modal.component';
 
 
 
@@ -91,9 +91,8 @@ import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-i
     ToursComponent,
     ToursViewModalComponent,
     TourDonwloadAlumnsModalComponent,
-    TourAddBusModalComponent,
     TourAddCoordinatorModalComponent,
-    TourAddDriverModalComponent,
+    TourAddBusModalComponent,
     TourAddAirplaneModalComponent,
     TourAddHotelModalComponent,
     TourAddDocumentModalComponent,
@@ -120,6 +119,7 @@ import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-i
     ProgramsModalListActivitiesComponent,
     ProgramsModalAddActivitiesComponent,
     CoordinatorModalViewImageComponent,
+    TourAddDriverModalComponent
     
 
   ]
