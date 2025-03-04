@@ -17,6 +17,7 @@ import { TourAddDocumentModalComponent } from '../tour-add-document-modal/tour-a
 import { TourDownloadDocumentModalComponent } from '../tour-download-document-modal/tour-download-document-modal.component';
 import { TourAddAirplaneModalComponent } from '../tour-add-airplane-modal/tour-add-airplane-modal.component';
 import { saveAs } from 'file-saver';
+import { NewTourModalComponent } from '../new-tour-modal/new-tour-modal.component';
 
 
 
@@ -372,29 +373,30 @@ export class ToursComponent implements AfterViewInit {
   }
 
   applyDelete(event: any) {
-    event.id_bus
-    Swal.fire({
-      title: 'Estas Seguro?',
-      text: "No puedes revertir esto!!!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si,Estoy Seguro',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        //this.carService.deleteCars(event.id_bus).subscribe(respon=>{
-        Swal.fire(
-          'Eliminado!',
-          'Has eliminado el registro.',
-          'success'
-        );
-
-
+        Swal.fire({
+          title: "Estas Seguro?",
+          text: "No puedes revertir esto!!!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si,Estoy Seguro",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Llamamos al servicio para eliminar el coordinador
+            this.girasServices.deleteGira(event.tourSalesId).subscribe(
+              (response) => {
+                Swal.fire("Eliminado!", "Has eliminado el registro.", "success");
+                this.obtenerGiras();
+              },
+              (error) => {
+                Swal.fire("Error", "No se pudo eliminar el registro.", "error");
+              }
+            );
+          }
+        });
       }
-    })
-  }
 
   showSuccessDialog() {
     Swal.fire({
@@ -439,5 +441,16 @@ export class ToursComponent implements AfterViewInit {
     } else {
       this._liveAnnouncer.announce('Sorting cleared');
     }
+  }
+
+  addTour(){
+
+    const dialogRef = this.dialog.open(NewTourModalComponent, {
+      width: '1300px',
+      height: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe({
+    });
   }
 }

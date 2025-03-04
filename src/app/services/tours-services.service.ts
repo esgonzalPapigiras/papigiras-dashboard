@@ -200,6 +200,14 @@ export class ToursServicesService {
   
   }
 
+  public deleteGira(id:number): Observable<any[]> {
+    
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.delete<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete', { headers, params })
+
+}
+
   
 
   

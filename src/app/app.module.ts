@@ -11,7 +11,6 @@ import { LoginComponent } from 'app/login/login.component';
 
 
 
-
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -26,6 +25,7 @@ import { LoginComponent } from 'app/login/login.component';
     AppComponent,
     AdminLayoutComponent,
     LoginComponent,
+    
     
     
     

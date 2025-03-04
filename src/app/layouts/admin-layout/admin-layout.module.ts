@@ -55,7 +55,9 @@ import { ProgramsModalListActivitiesComponent } from '../../programs/programs-mo
 import { ProgramsModalAddActivitiesComponent } from '../../programs/programs-modal-add-activities/programs-modal-add-activities.component';
 import { CoordinatorModalViewImageComponent } from 'app/coordinator-modal-view-image/coordinator-modal-view-image.component';
 import { TourAddDriverModalComponent } from 'app/tours/tour-add-driver-modal/tour-add-driver-modal.component';
-
+import { NewTourModalComponent } from 'app/tours/new-tour-modal/new-tour-modal.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -75,7 +77,9 @@ import { TourAddDriverModalComponent } from 'app/tours/tour-add-driver-modal/tou
     MatDialogModule,
     MatTabsModule,
     MatIconModule,
-    MatOptionModule
+    MatOptionModule,
+    MatDatepickerModule,
+    MatNativeDateModule
     
     
   ],
@@ -119,7 +123,8 @@ import { TourAddDriverModalComponent } from 'app/tours/tour-add-driver-modal/tou
     ProgramsModalListActivitiesComponent,
     ProgramsModalAddActivitiesComponent,
     CoordinatorModalViewImageComponent,
-    TourAddDriverModalComponent
+    TourAddDriverModalComponent,
+    NewTourModalComponent,
     
 
   ]
