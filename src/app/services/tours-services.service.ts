@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TripulationAvionDTO } from 'app/models/avionList';
+import { CollegeList } from 'app/models/collegeList';
 import { DocumentDTO } from 'app/models/document';
 import { HotelDTOList } from 'app/models/hotelList';
 import { PassengerDTO } from 'app/models/passengerList';
@@ -112,7 +113,7 @@ export class ToursServicesService {
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
 
     return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });
-      
+
   }
 
   uploadDocumentsExtra(result: Uint8Array, name: string, uuid: string, folder: string, tipoDoc: string): Observable<any> {
@@ -128,7 +129,7 @@ export class ToursServicesService {
   }
 
   getDocument(id: number): Observable<DocumentDTO[]> {
-    
+
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDocument`;
     const headers = new HttpHeaders({
@@ -148,16 +149,16 @@ export class ToursServicesService {
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
     });
-  
+
     const params = new HttpParams()
       .set('folderName', name)
       .set('fileName', supplier);
-  
+
     return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
   }
 
   deleteDocument(name: string, supplier: any): Observable<any> {
-    
+
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/deleteDocument`;
     const headers = new HttpHeaders({
@@ -177,8 +178,8 @@ export class ToursServicesService {
       })
     );
   }
-  
-  listPDF(id: number):  Observable<ArrayBuffer> {
+
+  listPDF(id: number): Observable<ArrayBuffer> {
     if (!this.token) {
       console.error('Token is not available');
       return;
@@ -197,18 +198,25 @@ export class ToursServicesService {
       params,
       responseType: 'arraybuffer'  // Recibir la respuesta como arraybuffer para el PDF
     });
-  
+
   }
 
-  public deleteGira(id:number): Observable<any[]> {
-    
+  public deleteGira(id: number): Observable<any[]> {
+
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete', { headers, params })
 
-}
+  }
 
-  
+  public listCollege():Observable<CollegeList[]>{
 
-  
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+        return this.http.get<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get/college', { headers})
+
+  }
+
+
+
+
 }

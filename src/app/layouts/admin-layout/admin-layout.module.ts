@@ -59,7 +59,6 @@ import { NewTourModalComponent } from 'app/tours/new-tour-modal/new-tour-modal.c
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
-
 @NgModule({
   imports: [
     CommonModule,

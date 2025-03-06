@@ -13,33 +13,51 @@
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Oficina</mat-label>
-      <mat-select formControlName="oficina">
-        <mat-option *ngFor="let oficina of data.oficinas" [value]="oficina">{{ oficina }}</mat-option>
+    <div class="form-group col-md-6">
+      <label for="oficina">Oficina</label>
+      <select class="form-control" id="office" [(ngModel)]="newComunnes.office" name="office" required>
+        <!-- Usamos 'branch' para obtener las oficinas -->
+        <option *ngFor="let office of branch" [ngValue]="office">{{ office.branchName }}</option>
+      </select>
+    </div>
+
+
+
+    <h3>Selecciona una comuna</h3>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Selecciona una comuna</mat-label>
+      <mat-select [(value)]="selectedComunnes">
+        
+
+        <!-- Opción de búsqueda -->
+        <mat-form-field appearance="fill">
+          <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
+        </mat-form-field>
+        
+        <mat-option *ngFor="let comunne of filteredComunnes()" [value]="comunne">
+          {{ comunne.communesName }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Comuna</mat-label>
-      <mat-select formControlName="comuna">
-        <mat-option *ngFor="let comuna of data.comunas" [value]="comuna">{{ comuna }}</mat-option>
-      </mat-select>
-    </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Colegio</mat-label>
-      <mat-select formControlName="colegio">
-        <mat-option *ngFor="let colegio of data.colegios" [value]="colegio">{{ colegio }}</mat-option>
-      </mat-select>
-    </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Programa</mat-label>
-      <mat-select formControlName="programa">
-        <mat-option *ngFor="let programa of data.programas" [value]="programa">{{ programa }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="form-group col-md-6">
+      <label for="colegio">Colegio</label>
+      <select class="form-control" id="college" [(ngModel)]="newComunnes.college" name="college" required>
+        <!-- Usamos 'branch' para obtener las oficinas -->
+        <option *ngFor="let college of colleges" [ngValue]="college">{{ college.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="programa">Programa</label>
+      <select class="form-control" id="program" [(ngModel)]="newComunnes.program" name="program" required>
+        <!-- Usamos 'branch' para obtener las oficinas -->
+        <option *ngFor="let program of programs" [ngValue]="program">{{ program.tours_name }}</option>
+      </select>
+    </div>
 
     <mat-form-field>
       <mat-label>Curso</mat-label>

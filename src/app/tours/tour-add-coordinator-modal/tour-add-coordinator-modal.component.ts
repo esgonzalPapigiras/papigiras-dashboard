@@ -43,6 +43,7 @@ export class TourAddCoordinatorModalComponent implements OnInit {
   }
 
   filteredCoordinators() {
+    console.log(this.searchTerm);
     return this.coordinators.filter(coordinator =>
       coordinator.coordinatorName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       coordinator.coordinatorLastname.toLowerCase().includes(this.searchTerm.toLowerCase())
