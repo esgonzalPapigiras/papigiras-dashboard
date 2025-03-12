@@ -20,11 +20,16 @@ export class NewTourModalComponent implements OnInit {
 
   form: FormGroup;
   branch: Branch[] = [];
-  programs: Program[] = [];
-  colleges: CollegeList[] = [];
+  programs: any[] = [];
+  colleges: any[] = [];
   comunnes: any[] = [];
   searchTerm: string = '';
-  selectedComunnes: any[] = [];
+  searchTermCollege:string ='';
+  searchTermPrograms:string ='';
+  selectedProgram: any;
+  selectedComuna: any;
+  selectedCollege: any;
+  
 
   newComunnes = {
     office: null,
@@ -44,7 +49,7 @@ export class NewTourModalComponent implements OnInit {
     private branchService: BranchService,
     private programService: ProgramsService,
     private tourService: ToursServicesService
-  ) {
+  ){} /*{
     this.form = this.fb.group({
       fechaInicio: ['', Validators.required],
       fechaTermino: ['', Validators.required],
@@ -52,7 +57,7 @@ export class NewTourModalComponent implements OnInit {
       temporada: ['', Validators.required],
       numeroGrupo: ['', Validators.required]
     });
-  }
+  }*/
 
   ngOnInit(): void {
     Swal.fire({
@@ -71,18 +76,23 @@ export class NewTourModalComponent implements OnInit {
 
   // Función para filtrar comunas basándose en el término de búsqueda
   filteredComunnes() {
-    console.log(this.searchTerm);
-    return this.comunnes.filter(comunne =>
-      comunne.communesName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.comunnes.filter(comunnes =>     
+      comunnes.communesName.includes(this.searchTerm.toLowerCase())
     );
   }
 
-  // Mostrar las comunas seleccionadas como texto
-  get selectedComunnesText(): string {
-    return this.selectedComunnes && this.selectedComunnes.length > 0
-      ? this.selectedComunnes.map(c => c.communesName).join(', ')
-      : 'Selecciona comunas';
+  filteredColleges() {
+    return this.colleges.filter(colleges =>     
+      colleges.name.includes(this.searchTermCollege.toLowerCase())
+    );
   }
+
+  filteredPrograms(){
+    return this.programs.filter(programs =>     
+      programs.tours_name.includes(this.searchTermPrograms.toLowerCase())
+    );
+  }
+
 
   // Función para enviar las comunas seleccionadas
   

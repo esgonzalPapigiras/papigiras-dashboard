@@ -42,7 +42,7 @@ export class ProgramsService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(coordinator), { headers });
@@ -55,7 +55,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(coordinator), { headers, params });
@@ -68,7 +68,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(tourPackage), { headers, params });
@@ -81,7 +81,7 @@ export class ProgramsService {
     const params = new HttpParams().set('id', id.toString());
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
     return this.http.post(url, JSON.stringify(tourActivities), { headers, params });

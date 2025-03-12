@@ -216,6 +216,54 @@ export class ToursServicesService {
 
   }
 
+  public addAvion(objeto: TripulationAvionDTO, id: number): Observable<any> {
+    if (!this.token || this.token === '') {
+      return new Observable(observer => {
+        observer.error('Token is not available');
+      });
+    }
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/avion?id=${id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
+  public addBus(objeto: TripulationBus, id: number): Observable<any> {
+    if (!this.token || this.token === '') {
+      return new Observable(observer => {
+        observer.error('Token is not available');
+      });
+    }
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/bus?id=${id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
+  public addTripulation(objeto: TripulationsDTO, id: number): Observable<any> {
+    if (!this.token || this.token === '') {
+      return new Observable(observer => {
+        observer.error('Token is not available');
+      });
+    }
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
 
 
 

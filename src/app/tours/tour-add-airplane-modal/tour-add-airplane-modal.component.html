@@ -1,1 +1,45 @@
-<p>tour-add-airplane-modal works!</p>
+<form [formGroup]="flightForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="flights">
+      <div *ngFor="let flight of flightForm.get('flights')?.controls; let i = index" [formGroupName]="i">
+        <div class="flight-row">
+          
+          <mat-form-field appearance="fill">
+            <mat-label>Aerolinea</mat-label>
+            <input matInput formControlName="aerolinea" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Numero Vuelo</mat-label>
+            <input matInput formControlName="numeroVuelo" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Origen</mat-label>
+            <input matInput formControlName="origen" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Destino</mat-label>
+            <input matInput formControlName="destino" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Hora Vuelo</mat-label>
+            <input matInput formControlName="horaVuelo" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha Salida</mat-label>
+            <input matInput formControlName="fechaSalida" />
+          </mat-form-field>
+  
+          <button mat-icon-button type="button" (click)="removeFlight(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <button mat-raised-button type="button" (click)="addFlight()">Agregar Otro Vuelo</button>
+    <button mat-raised-button type="submit" [disabled]="flightForm.invalid">Guardar Avion</button>
+  </form>

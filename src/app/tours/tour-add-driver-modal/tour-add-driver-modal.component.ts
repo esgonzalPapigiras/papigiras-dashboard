@@ -1,7 +1,9 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { TripulationsDTO } from 'app/models/driver';
 import { DriverService } from 'app/services/driver.service';
+import { ToursServicesService } from 'app/services/tours-services.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,7 +18,9 @@ export class TourAddDriverModalComponent implements OnInit {
   selectedDrivers: any[] = [];
 
 
-  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private driverService: DriverService) { }
+  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private driverService: DriverService,
+    private tourService:ToursServicesService,public dialogRef: MatDialogRef<TourAddDriverModalComponent>,@Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 
   ngOnInit() {
     this.obtenerConductores();
@@ -65,6 +69,30 @@ export class TourAddDriverModalComponent implements OnInit {
         confirmButtonText: 'Cerrar'
       });
     }
+    this.selectedDrivers.forEach((coordinators: any) => {
+                  const coordinator = new TripulationsDTO(
+                    0,
+                    1,
+                    coordinators.tourTripulationNameId,
+                    "Conductor",
+                    coordinators.tourTripulationIdentificationId,
+                    coordinators.tourTripulationPhoneId,
+                    0,
+                    this.data,
+                    coordinators.fechaNacimiento
+                  );
+                  
+                  this.tourService.addTripulation(coordinator,this.data).subscribe({
+                    next: () => {
+                      this.dialogRef.close(true);
+                    },
+                    error: (err) => {
+                      console.error('Error al guardar el buses:', err);
+                      this.dialogRef.close(false);
+                    }
+                  });
+                  
+                });
   }
 
 }

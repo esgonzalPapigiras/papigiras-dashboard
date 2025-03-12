@@ -45,6 +45,7 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
     }
   
     filteredPrograms() {
+      console.log(this.searchTerm)
       return this.programs.filter(programs =>
         programs.itinerary_name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );

@@ -58,6 +58,17 @@ import { TourAddDriverModalComponent } from 'app/tours/tour-add-driver-modal/tou
 import { NewTourModalComponent } from 'app/tours/new-tour-modal/new-tour-modal.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+
+const MY_DATE_FORMATS = {
+  display: {
+    dateInput: 'DD/MM/YYYY', // Cambiar el formato aquí
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @NgModule({
   imports: [
@@ -78,9 +89,13 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatIconModule,
     MatOptionModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    BrowserAnimationsModule
     
     
+  ],
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS } // Aquí configuramos el formato
   ],
   declarations: [
     DashboardComponent,

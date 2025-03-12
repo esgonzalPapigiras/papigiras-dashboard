@@ -1,7 +1,9 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { TripulationBus } from 'app/models/bus';
 import { BusService } from 'app/services/bus.service';
+import { ToursServicesService } from 'app/services/tours-services.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,7 +18,7 @@ export class TourAddBusModalComponent implements OnInit {
     selectedBuses: any[] = [];
   
   
-    constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private busService: BusService) { }
+    constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private busService: BusService,private tourService:ToursServicesService,public dialogRef: MatDialogRef<TourAddBusModalComponent>,@Inject(MAT_DIALOG_DATA) public data: any) { }
   
     ngOnInit() {
       this.obtenerBuses();
@@ -65,6 +67,27 @@ export class TourAddBusModalComponent implements OnInit {
           confirmButtonText: 'Cerrar'
         });
       }
+      this.selectedBuses.forEach((buses: any) => {
+          const bus = new TripulationBus(
+            0,
+            buses.tourTripulationBusPatent,
+            buses.tourTripulationBusBrand,
+            buses.tourTripulationBusModel,
+            buses.tourTripulationBusYear,
+            buses.tourTripulationBusEnterprise
+          );
+          
+          this.tourService.addBus(bus,this.data).subscribe({
+            next: () => {
+              this.dialogRef.close(true);
+            },
+            error: (err) => {
+              console.error('Error al guardar el buses:', err);
+              this.dialogRef.close(false);
+            }
+          });
+          
+        });
     }
 
 }
