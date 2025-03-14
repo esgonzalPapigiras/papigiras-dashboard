@@ -1,4 +1,4 @@
-<mat-tab-group animationDuration="2000ms" style="width: 100%">
+<mat-tab-group (selectedTabChange)="onTabChange($event)" animationDuration="2000ms" style="width: 100%">
   <mat-tab label="Gira">
     <table
       mat-table
@@ -8,70 +8,70 @@
     >
       <ng-container matColumnDef="tourSalesUuid">
         <th mat-header-cell *matHeaderCellDef>Codigo Gira</th>
-        <td mat-cell *matCellDef="let row">{{ row.tourSalesUuid }}</td>
+        <td mat-cell *matCellDef="let rows">{{ rows.tourSalesUuid }}</td>
       </ng-container>
 
       <ng-container matColumnDef="tourSalesStudentCount">
         <th mat-header-cell *matHeaderCellDef>Cantidad Estudiantes</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.tourSalesStudentCount }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.tourSalesStudentCount }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="toursName">
         <th mat-header-cell *matHeaderCellDef>Nombre del tour</th>
-        <td mat-cell *matCellDef="let row">{{ row.toursName }}</td>
+        <td mat-cell *matCellDef="let rows">{{ rows.toursName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="tourDayQuantity">
         <th mat-header-cell *matHeaderCellDef>Dias</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.tourDayQuantity }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.tourDayQuantity }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="tourNightQuantity">
         <th mat-header-cell *matHeaderCellDef>Noches</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.tourNightQuantity }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.tourNightQuantity }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="cantidadHombres">
         <th mat-header-cell *matHeaderCellDef>Hombres a bordo</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.cantidadHombres }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.cantidadHombres }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="cantidadMujeres">
         <th mat-header-cell *matHeaderCellDef>Mujeres a bordo</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.cantidadMujeres }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.cantidadMujeres }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="acompananteFemenino">
         <th mat-header-cell *matHeaderCellDef>Acompañante Femenino</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.acompananteFemenino }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.acompananteFemenino }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="acompananteMasculino">
         <th mat-header-cell *matHeaderCellDef>Acompanante Masculino</th>
-        <td mat-cell *matCellDef="let row" class="center-text">
-          {{ row.acompananteMasculino }}
+        <td mat-cell *matCellDef="let rows" class="center-text">
+          {{ rows.acompananteMasculino }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
-        <td mat-cell *matCellDef="let row" class="action-buttons">
+        <td mat-cell *matCellDef="let rows" class="action-buttons">
           <button
             mat-icon-button
             color="primary"
-            (click)="openViewDialog(row)"
+            (click)="openViewDialog(rows)"
             matTooltip="Editar"
           >
             <mat-icon>edit</mat-icon>
@@ -80,7 +80,7 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="deleteAction(row)"
+            (click)="deleteAction(rows)"
             matTooltip="Eliminar"
           >
             <mat-icon>delete</mat-icon>
@@ -89,9 +89,10 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsGira"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsGira"></tr>
+      <tr mat-row *matRowDef="let rows; columns: displayedColumnsGira"></tr>
     </table>
     <mat-paginator
+      #paginatorGira
       [pageSizeOptions]="[5, 10, 25, 100]"
       aria-label="Select page of users"
     ></mat-paginator>
@@ -105,73 +106,73 @@
     >
       <ng-container matColumnDef="passengersIdentification">
         <th mat-header-cell *matHeaderCellDef>Identificación</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.passengersIdentification }}
+        <td mat-cell *matCellDef="let alumn">
+          {{ alumn.passengersIdentification }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="passengersNames">
         <th mat-header-cell *matHeaderCellDef>Nombres</th>
-        <td mat-cell *matCellDef="let row">{{ row.passengersNames }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.passengersNames }}</td>
       </ng-container>
 
       <ng-container matColumnDef="passengersFatherLastName">
         <th mat-header-cell *matHeaderCellDef>Apellidos</th>
-        <td mat-cell *matCellDef="let row">
+        <td mat-cell *matCellDef="let alumn">
           {{
-            row.passengersFatherLastName + " " + row.passengersMotherLastName
+            alumn.passengersFatherLastName + " " + alumn.passengersMotherLastName
           }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="passengersBirthDate">
         <th mat-header-cell *matHeaderCellDef>Fe.Nacimiento</th>
-        <td mat-cell *matCellDef="let row">{{ row.passengersBirthDate }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.passengersBirthDate }}</td>
       </ng-container>
 
       <ng-container matColumnDef="passengersSize">
         <th mat-header-cell *matHeaderCellDef>Talla</th>
-        <td mat-cell *matCellDef="let row">{{ row.passengersSize }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.passengersSize }}</td>
       </ng-container>
 
       <ng-container matColumnDef="passengersDiet">
         <th mat-header-cell *matHeaderCellDef>Dieta</th>
-        <td mat-cell *matCellDef="let row">{{ row.passengersDiet }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.passengersDiet }}</td>
       </ng-container>
 
       <ng-container matColumnDef="namePassengersAttorney">
         <th mat-header-cell *matHeaderCellDef>Acomp. Nombre</th>
-        <td mat-cell *matCellDef="let row">{{ row.namePassengersAttorney }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.namePassengersAttorney }}</td>
       </ng-container>
 
       <ng-container matColumnDef="emailPassengersAttorney">
         <th mat-header-cell *matHeaderCellDef>Acomp. Email</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.emailPassengersAttorney }}
+        <td mat-cell *matCellDef="let alumn">
+          {{ alumn.emailPassengersAttorney }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="phonePassengersAttorney">
         <th mat-header-cell *matHeaderCellDef>Acomp.Telefono</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.phonePassengersAttorney }}
+        <td mat-cell *matCellDef="let alumn">
+          {{ alumn.phonePassengersAttorney }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="active">
         <th mat-header-cell *matHeaderCellDef>Activo</th>
-        <td mat-cell *matCellDef="let row">{{ row.active }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.active }}</td>
       </ng-container>
 
       
 
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
-        <td mat-cell *matCellDef="let row" class="action-buttons">
+        <td mat-cell *matCellDef="let alumn" class="action-buttons">
           <button
             mat-icon-button
             color="primary"
-            (click)="medicalRecord(row)"
+            (click)="medicalRecord(alumn)"
             matTooltip="Ficha Medica"
           >
             <mat-icon>medical_information</mat-icon>
@@ -180,7 +181,7 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="voucherRecord(row)"
+            (click)="voucherRecord(alumn)"
             matTooltip="Voucher"
           >
             <mat-icon>file_open</mat-icon>
@@ -189,7 +190,7 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="openViewDialog(row)"
+            (click)="openViewDialog(alumn)"
             matTooltip="Editar"
           >
             <mat-icon>edit</mat-icon>
@@ -198,7 +199,7 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="deleteAction(row)"
+            (click)="deleteAction(alumn)"
             matTooltip="Eliminar"
           >
             <mat-icon>delete</mat-icon>
@@ -207,9 +208,10 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsAlumnos"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsAlumnos"></tr>
+      <tr mat-row *matRowDef="let alumn; columns: displayedColumnsAlumnos"></tr>
     </table>
     <mat-paginator
+      #paginatorAlumn
       [pageSizeOptions]="[5, 10, 25, 100]"
       aria-label="Select page of users"
     ></mat-paginator>
@@ -278,8 +280,215 @@
       ></tr>
     </table>
     <mat-paginator
+      #paginatorTripulante
       [pageSizeOptions]="[5, 10, 25, 100]"
       aria-label="Select page of users"
     ></mat-paginator>
   </mat-tab>
+  <mat-tab label="Buses">
+    <table
+      mat-table
+      [dataSource]="dataSourceTripulantes"
+      class="mat-elevation-z8"
+      style="width: 100%; padding: 20px"
+    >
+      <ng-container matColumnDef="tourTripulationIdentificationId">
+        <th mat-header-cell *matHeaderCellDef>Rut</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationIdentificationId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationNameId">
+        <th mat-header-cell *matHeaderCellDef>Nombres</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationNameId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationDescriptionId">
+        <th mat-header-cell *matHeaderCellDef>Funcion</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationDescriptionId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationPhoneId">
+        <th mat-header-cell *matHeaderCellDef>Telefono</th>
+        <td mat-cell *matCellDef="let row">{{ row.tourTripulationPhoneId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+        <td mat-cell *matCellDef="let row" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="openViewDialog(row)"
+            matTooltip="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="deleteAction(row)"
+            matTooltip="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsTripulantes"
+      ></tr>
+    </table>
+    <mat-paginator
+      #paginatorTripulante
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </mat-tab>
+  <mat-tab label="Aviones">
+    <table
+      mat-table
+      [dataSource]="dataSourceTripulantes"
+      class="mat-elevation-z8"
+      style="width: 100%; padding: 20px"
+    >
+      <ng-container matColumnDef="tourTripulationIdentificationId">
+        <th mat-header-cell *matHeaderCellDef>Rut</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationIdentificationId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationNameId">
+        <th mat-header-cell *matHeaderCellDef>Nombres</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationNameId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationDescriptionId">
+        <th mat-header-cell *matHeaderCellDef>Funcion</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationDescriptionId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationPhoneId">
+        <th mat-header-cell *matHeaderCellDef>Telefono</th>
+        <td mat-cell *matCellDef="let row">{{ row.tourTripulationPhoneId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+        <td mat-cell *matCellDef="let row" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="openViewDialog(row)"
+            matTooltip="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="deleteAction(row)"
+            matTooltip="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsTripulantes"
+      ></tr>
+    </table>
+    <mat-paginator
+      #paginatorTripulante
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </mat-tab>
+
+  <mat-tab label="Hoteles">
+    <table
+      mat-table
+      [dataSource]="dataSourceTripulantes"
+      class="mat-elevation-z8"
+      style="width: 100%; padding: 20px"
+    >
+      <ng-container matColumnDef="tourTripulationIdentificationId">
+        <th mat-header-cell *matHeaderCellDef>Rut</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationIdentificationId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationNameId">
+        <th mat-header-cell *matHeaderCellDef>Nombres</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationNameId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationDescriptionId">
+        <th mat-header-cell *matHeaderCellDef>Funcion</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.tourTripulationDescriptionId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tourTripulationPhoneId">
+        <th mat-header-cell *matHeaderCellDef>Telefono</th>
+        <td mat-cell *matCellDef="let row">{{ row.tourTripulationPhoneId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+        <td mat-cell *matCellDef="let row" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="openViewDialog(row)"
+            matTooltip="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="deleteAction(row)"
+            matTooltip="Eliminar"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsTripulantes"
+      ></tr>
+    </table>
+    <mat-paginator
+      #paginatorTripulante
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </mat-tab>
+  
 </mat-tab-group>

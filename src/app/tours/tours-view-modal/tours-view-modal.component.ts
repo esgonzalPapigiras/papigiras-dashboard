@@ -70,28 +70,58 @@ export class ToursViewModalComponent implements OnInit {
   
 
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('paginatorGira') paginatorGira: MatPaginator;
+  @ViewChild('paginatorAlumn') paginatorAlumn: MatPaginator;
+  @ViewChild('paginatorTripulante') paginatorTripulante: MatPaginator;
+  @ViewChild('paginatorBuses') paginatorBuses: MatPaginator;
+  @ViewChild('paginatorAvion') paginatorAvion: MatPaginator;
+  @ViewChild('paginatorHotel') paginatorHotel: MatPaginator;
+
+  @ViewChild('sort') sort: MatSort;
+  @ViewChild('sortAlumn') sortAlumn: MatSort;
+  @ViewChild('sortTripulante') sortTripulante: MatSort;
+  @ViewChild('sortBuses') sortBuses: MatSort;
+  @ViewChild('sortAvion') sortAvion: MatSort;
+  @ViewChild('sortHotel') sortHotel: MatSort;
 
   constructor(
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private girasServices: ToursServicesService
   ) {
-    console.log(data);
+    
   }
 
   ngOnInit(): void {
     this.obtenerDetalleGira();
-    this.obtenerListaTripulantes();
     this.ObtenerListaAlumnos();
+    this.obtenerListaTripulantes();
   }
 
   ngAfterViewInit() {
-    
-    this.dataSourceAlumnos.sort = this.sort;
-    this.dataSourceAlumnos.paginator = this.paginator;
+    // Asignación de paginator y sorter para cada tabla
+    this.dataSourceGira.paginator = this.paginatorGira;
+    this.dataSourceGira.sort = this.sort;
+  
+    this.dataSourceAlumnos.paginator = this.paginatorAlumn;
+    this.dataSourceAlumnos.sort = this.sortAlumn;
+  
+    this.dataSourceTripulantes.paginator = this.paginatorTripulante;
+    this.dataSourceTripulantes.sort = this.sortTripulante;
   }
+
+  onTabChange(event) {
+    if (event.index === 0) {
+      this.obtenerDetalleGira();
+    } else if (event.index === 1) {
+      this.ObtenerListaAlumnos();
+    } else if (event.index === 2) {
+      this.obtenerListaTripulantes();
+    }
+  }
+
+  
+  
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -105,9 +135,11 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.obtenerDetalleGira(this.data).subscribe((respon) => {
+          
           this.dataSourceGira = new MatTableDataSource([respon]);
-          this.dataSourceGira.paginator = this.paginator;
+          this.dataSourceGira.paginator = this.paginatorGira;
           this.dataSourceGira.sort = this.sort;
+          
           Swal.close();
         });
       },
@@ -121,9 +153,11 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listaTripulantes(this.data).subscribe((respon) => {
+          console.log(respon.length);
           this.dataSourceTripulantes = new MatTableDataSource(respon);
-          this.dataSourceTripulantes.paginator = this.paginator;
-          this.dataSourceTripulantes.sort = this.sort;
+          this.dataSourceTripulantes.paginator = this.paginatorTripulante;
+          this.dataSourceTripulantes.sort = this.sortTripulante;
+          this.dataSourceTripulantes.paginator.length = respon.length;
           Swal.close();
         });
       },
@@ -137,9 +171,12 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listAlumn(this.data).subscribe((respon) => {
+          
           this.dataSourceAlumnos = new MatTableDataSource(respon);
-          this.dataSourceAlumnos.paginator = this.paginator;
-          this.dataSourceAlumnos.sort = this.sort;
+          this.dataSourceAlumnos.paginator = this.paginatorAlumn;
+          
+          this.dataSourceAlumnos.sort = this.sortAlumn;
+          this.paginatorAlumn.length = respon.length;
           Swal.close();
         });
       },
@@ -153,8 +190,9 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listaBusGira(this.data).subscribe((respon) => {
+          console.log(respon);
           this.dataSourceBus = new MatTableDataSource(respon);
-          this.dataSourceBus.paginator = this.paginator;
+          //this.dataSourceBus.paginator = this.paginator;
           this.dataSourceBus.sort = this.sort;
           Swal.close();
         });
@@ -169,8 +207,9 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listAvion(this.data).subscribe((respon) => {
+          console.log(respon);
           this.dataSourceAvion = new MatTableDataSource(respon);
-          this.dataSourceAvion.paginator = this.paginator;
+          //this.dataSourceAvion.paginator = this.paginator;
           this.dataSourceAvion.sort = this.sort;
           Swal.close();
         });
@@ -185,8 +224,9 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listHotel(this.data).subscribe((respon) => {
+          console.log(respon);
           this.dataSourceHotel = new MatTableDataSource(respon);
-          this.dataSourceHotel.paginator = this.paginator;
+          //this.dataSourceHotel.paginator = this.paginator;
           this.dataSourceHotel.sort = this.sort;
           Swal.close();
         });
