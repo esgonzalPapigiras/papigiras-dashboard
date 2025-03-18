@@ -1,11 +1,6 @@
 <mat-tab-group (selectedTabChange)="onTabChange($event)" animationDuration="2000ms" style="width: 100%">
   <mat-tab label="Gira">
-    <table
-      mat-table
-      [dataSource]="dataSourceGira"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceGira" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="tourSalesUuid">
         <th mat-header-cell *matHeaderCellDef>Codigo Gira</th>
         <td mat-cell *matCellDef="let rows">{{ rows.tourSalesUuid }}</td>
@@ -68,21 +63,11 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let rows" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(rows)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(rows)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(rows)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(rows)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -91,19 +76,11 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsGira"></tr>
       <tr mat-row *matRowDef="let rows; columns: displayedColumnsGira"></tr>
     </table>
-    <mat-paginator
-      #paginatorGira
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorGira [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
   <mat-tab label="Alumnos">
-    <table
-      mat-table
-      [dataSource]="dataSourceAlumnos"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceAlumnos" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="passengersIdentification">
         <th mat-header-cell *matHeaderCellDef>Identificación</th>
         <td mat-cell *matCellDef="let alumn">
@@ -120,7 +97,7 @@
         <th mat-header-cell *matHeaderCellDef>Apellidos</th>
         <td mat-cell *matCellDef="let alumn">
           {{
-            alumn.passengersFatherLastName + " " + alumn.passengersMotherLastName
+          alumn.passengersFatherLastName + " " + alumn.passengersMotherLastName
           }}
         </td>
       </ng-container>
@@ -161,47 +138,28 @@
 
       <ng-container matColumnDef="active">
         <th mat-header-cell *matHeaderCellDef>Activo</th>
-        <td mat-cell *matCellDef="let alumn">{{ alumn.active }}</td>
+        <td mat-cell *matCellDef="let alumn">{{ alumn.passengersActive ? 'Activo' : 'Inactivo' }}</td>
       </ng-container>
 
-      
+
 
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let alumn" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="medicalRecord(alumn)"
-            matTooltip="Ficha Medica"
-          >
+          <button mat-icon-button [color]="alumn.medicalRecord ? 'accent' : 'primary'" (click)="medicalRecord(alumn)"
+            matTooltip="Ficha Medica">
             <mat-icon>medical_information</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="voucherRecord(alumn)"
-            matTooltip="Voucher"
-          >
+          <button mat-icon-button color="primary" (click)="voucherRecord(alumn)" matTooltip="Voucher">
             <mat-icon>file_open</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(alumn)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(alumn)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(alumn)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(alumn)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -210,20 +168,12 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsAlumnos"></tr>
       <tr mat-row *matRowDef="let alumn; columns: displayedColumnsAlumnos"></tr>
     </table>
-    <mat-paginator
-      #paginatorAlumn
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorAlumn [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
 
   <mat-tab label="Tripulacion">
-    <table
-      mat-table
-      [dataSource]="dataSourceTripulantes"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceTripulantes" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="tourTripulationIdentificationId">
         <th mat-header-cell *matHeaderCellDef>Rut</th>
         <td mat-cell *matCellDef="let row">
@@ -253,45 +203,24 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let row" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(row)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(row)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsTripulantes"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsTripulantes"></tr>
     </table>
-    <mat-paginator
-      #paginatorTripulante
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorTripulante [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
   <mat-tab label="Buses">
-    <table
-      mat-table
-      [dataSource]="dataSourceTripulantes"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceTripulantes" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="tourTripulationIdentificationId">
         <th mat-header-cell *matHeaderCellDef>Rut</th>
         <td mat-cell *matCellDef="let row">
@@ -321,45 +250,24 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let row" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(row)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(row)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsTripulantes"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsTripulantes"></tr>
     </table>
-    <mat-paginator
-      #paginatorTripulante
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorTripulante [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
   <mat-tab label="Aviones">
-    <table
-      mat-table
-      [dataSource]="dataSourceTripulantes"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceTripulantes" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="tourTripulationIdentificationId">
         <th mat-header-cell *matHeaderCellDef>Rut</th>
         <td mat-cell *matCellDef="let row">
@@ -389,46 +297,25 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let row" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(row)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(row)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsTripulantes"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsTripulantes"></tr>
     </table>
-    <mat-paginator
-      #paginatorTripulante
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorTripulante [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
 
   <mat-tab label="Hoteles">
-    <table
-      mat-table
-      [dataSource]="dataSourceTripulantes"
-      class="mat-elevation-z8"
-      style="width: 100%; padding: 20px"
-    >
+    <table mat-table [dataSource]="dataSourceTripulantes" class="mat-elevation-z8" style="width: 100%; padding: 20px">
       <ng-container matColumnDef="tourTripulationIdentificationId">
         <th mat-header-cell *matHeaderCellDef>Rut</th>
         <td mat-cell *matCellDef="let row">
@@ -458,37 +345,21 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
         <td mat-cell *matCellDef="let row" class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openViewDialog(row)"
-            matTooltip="Editar"
-          >
+          <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Editar">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="deleteAction(row)"
-            matTooltip="Eliminar"
-          >
+          <button mat-icon-button color="primary" (click)="deleteAction(row)" matTooltip="Eliminar">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsTripulantes"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsTripulantes"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsTripulantes"></tr>
     </table>
-    <mat-paginator
-      #paginatorTripulante
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
+    <mat-paginator #paginatorTripulante [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of users"></mat-paginator>
   </mat-tab>
-  
+
 </mat-tab-group>

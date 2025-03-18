@@ -11,6 +11,7 @@ import { TripulationBus } from "app/models/tripulationBus";
 import { TripulationsDTO } from "app/models/tripulations";
 import { ToursServicesService } from "app/services/tours-services.service";
 import Swal from "sweetalert2";
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: "app-tours-view-modal",
@@ -18,9 +19,9 @@ import Swal from "sweetalert2";
   styleUrls: ["./tours-view-modal.component.scss"],
 })
 export class ToursViewModalComponent implements OnInit {
-  
 
-  
+
+
 
   dataSourceGira = new MatTableDataSource<TourSalesDetail>();
   dataSourceTripulantes = new MatTableDataSource<TripulationsDTO>();
@@ -63,11 +64,11 @@ export class ToursViewModalComponent implements OnInit {
     "acciones",
   ];
 
-  
-  
 
 
-  
+
+
+
 
 
   @ViewChild('paginatorGira') paginatorGira: MatPaginator;
@@ -89,7 +90,7 @@ export class ToursViewModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private girasServices: ToursServicesService
   ) {
-    
+
   }
 
   ngOnInit(): void {
@@ -102,10 +103,10 @@ export class ToursViewModalComponent implements OnInit {
     // Asignación de paginator y sorter para cada tabla
     this.dataSourceGira.paginator = this.paginatorGira;
     this.dataSourceGira.sort = this.sort;
-  
+
     this.dataSourceAlumnos.paginator = this.paginatorAlumn;
     this.dataSourceAlumnos.sort = this.sortAlumn;
-  
+
     this.dataSourceTripulantes.paginator = this.paginatorTripulante;
     this.dataSourceTripulantes.sort = this.sortTripulante;
   }
@@ -120,8 +121,8 @@ export class ToursViewModalComponent implements OnInit {
     }
   }
 
-  
-  
+
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -135,11 +136,11 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.obtenerDetalleGira(this.data).subscribe((respon) => {
-          
+
           this.dataSourceGira = new MatTableDataSource([respon]);
           this.dataSourceGira.paginator = this.paginatorGira;
           this.dataSourceGira.sort = this.sort;
-          
+
           Swal.close();
         });
       },
@@ -171,10 +172,10 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listAlumn(this.data).subscribe((respon) => {
-          
+
           this.dataSourceAlumnos = new MatTableDataSource(respon);
           this.dataSourceAlumnos.paginator = this.paginatorAlumn;
-          
+
           this.dataSourceAlumnos.sort = this.sortAlumn;
           this.paginatorAlumn.length = respon.length;
           Swal.close();
@@ -182,6 +183,30 @@ export class ToursViewModalComponent implements OnInit {
       },
     });
   }
+
+
+
+  medicalRecord(row: any): void {
+    Swal.fire({
+      title: "Buscando el archivo...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.girasServices.downloadDocumentMedical(this.data.tourSalesUuid, row.passengersIdentification).subscribe({
+          next: (response) => {
+            const blob = new Blob([response]);
+            saveAs(blob, row.passengersIdentification);
+            Swal.close();
+          },
+          error: (err) => {
+            console.error('Error downloading the file: ', err);
+            Swal.close();
+          }
+        });
+      },
+    });
+  }
+
 
   obtenerListaBuses() {
     Swal.fire({
