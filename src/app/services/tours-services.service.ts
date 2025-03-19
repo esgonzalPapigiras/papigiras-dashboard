@@ -157,8 +157,8 @@ export class ToursServicesService {
     return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
   }
 
-  downloadDocumentMedical(name: string, supplier: any): Observable<any> {
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/medical-records`;
+  downloadDocumentMedical(name: string,idPassenger:string,supplier: any): Observable<any> {
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/view/medical-recordscm`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -166,7 +166,8 @@ export class ToursServicesService {
 
     const params = new HttpParams()
       .set('tourId', name)
-      .set('idPassenger', supplier);
+      .set('idPassenger', idPassenger)
+      .set('identificacion',supplier);
 
     return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
   }

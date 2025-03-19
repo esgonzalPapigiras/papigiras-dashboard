@@ -192,7 +192,7 @@ export class ToursViewModalComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.girasServices.downloadDocumentMedical(this.data.tourSalesUuid, row.passengersIdentification).subscribe({
+        this.girasServices.downloadDocumentMedical(this.data,row.passengersId,row.passengersIdentification).subscribe({
           next: (response) => {
             const blob = new Blob([response]);
             saveAs(blob, row.passengersIdentification);
