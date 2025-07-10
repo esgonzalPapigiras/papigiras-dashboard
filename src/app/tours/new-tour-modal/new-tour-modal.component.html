@@ -29,75 +29,45 @@
 
 
 
-    <h3>Selecciona una comuna</h3>
-
     <mat-form-field appearance="fill">
       <mat-label>Selecciona una comuna</mat-label>
-
-      <!-- mat-select para seleccionar la comuna -->
-      <mat-select [(ngModel)]="selectedComuna" placeholder="Selecciona una comuna">
-
-        <!-- Opción de búsqueda -->
-        <div mat-select-search>
-          <mat-form-field appearance="fill">
-            <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
+      <mat-select [(ngModel)]="selectedComuna" name="selectedComuna" [ngModelOptions]="{ standalone: true }"
+        panelClass="comuna-select-panel">
+        <!-- input de búsqueda dentro del panel -->
+        <mat-option disabled>
+          <mat-form-field appearance="standard" class="filter-input" style="width:100%; margin:0;">
+            <input matInput placeholder="Buscar..." [(ngModel)]="searchTerm" name="searchTermSelect"
+              [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSearchChange()"
+              (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" />
           </mat-form-field>
-        </div>
+        </mat-option>
 
-        <!-- Opciones filtradas -->
-        <mat-option *ngFor="let comuna of filteredComunnes()" [value]="comuna">
+        <!-- opciones filtradas -->
+        <mat-option *ngFor="let comuna of filteredList" [value]="comuna">
           {{ comuna.communesName }}
         </mat-option>
-
       </mat-select>
     </mat-form-field>
 
-    <h3>Selecciona un Colegio</h3>
-
     <mat-form-field appearance="fill">
-      <mat-label>Selecciona un colegio</mat-label>
-
-      <!-- mat-select para seleccionar el colegio -->
-      <mat-select [(ngModel)]="selectedCollege" placeholder="Selecciona un colegio">
-
-        <!-- Opción de búsqueda -->
-        <div mat-select-search>
-          <mat-form-field appearance="fill">
-            <input matInput placeholder="Buscar" [(ngModel)]="searchTermCollege" />
+      <mat-label>Selecciona una colegio</mat-label>
+      <mat-select [(ngModel)]="selectedCollege" name="selectedCollege" [ngModelOptions]="{ standalone: true }"
+        panelClass="college-select-panel">
+        <!-- input de búsqueda dentro del panel -->
+        <mat-option disabled>
+          <mat-form-field appearance="standard" class="filter-input" style="width:100%; margin:0;">
+            <input matInput placeholder="Buscar..." [(ngModel)]="searchTermCollege" name="searchTermCollegeSelect"
+              [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSearchChangeCollege()"
+              (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" />
           </mat-form-field>
-        </div>
+        </mat-option>
 
-        <!-- Opciones filtradas -->
-        <mat-option *ngFor="let college of filteredColleges()" [value]="college">
+        <!-- opciones filtradas -->
+        <mat-option *ngFor="let college of filteredListCollege" [value]="college">
           {{ college.name }}
         </mat-option>
-
       </mat-select>
     </mat-form-field>
-
-    <h3>Selecciona un Programa</h3>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Selecciona un programa</mat-label>
-
-      <!-- Aquí añadimos ngModel para enlazar el valor seleccionado -->
-      <mat-select [(ngModel)]="selectedProgram" placeholder="Selecciona un programa">
-
-        <!-- Opción de búsqueda -->
-        <div mat-select-search>
-          <mat-form-field appearance="fill">
-            <input matInput placeholder="Buscar" [(ngModel)]="searchTermPrograms" />
-          </mat-form-field>
-        </div>
-
-        <!-- Opciones filtradas -->
-        <mat-option *ngFor="let program of filteredPrograms()" [value]="program">
-          {{ program.tours_name }}
-        </mat-option>
-
-      </mat-select>
-    </mat-form-field>
-
 
 
     <mat-form-field>

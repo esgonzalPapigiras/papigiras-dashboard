@@ -11,6 +11,9 @@
           <button mat-raised-button color="primary" (click)="addCoordinator()">
             Agregar Coordinador
           </button>
+          <button mat-raised-button color="green" (click)="downloadTemplate()">
+            Descargar plantilla Ejemplo
+          </button>
           <button mat-raised-button color="accent" (click)="triggerFileInput()">
             Agregar Coordinadores
           </button>
@@ -84,49 +87,30 @@
                 </td>
               </ng-container>
 
-              
+
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
                   Acciones
                 </th>
                 <td mat-cell *matCellDef="let row" class="action-buttons">
                   <div class="button-grid">
-                    <button
-                      mat-icon-button
-                      color="primary"
-                      (click)="editarCoordinator(row)"
-                      matTooltip="Editar"
-                    >
+                    <button mat-icon-button color="primary" (click)="editarCoordinator(row)" matTooltip="Editar">
                       <mat-icon>edit</mat-icon>
                     </button>
-                
-                    <button
-                      mat-icon-button
-                      color="error"
-                      (click)="applyDelete(row)"
-                      matTooltip="Eliminar"
-                    >
+
+                    <button mat-icon-button color="error" (click)="applyDelete(row)" matTooltip="Eliminar">
                       <mat-icon>delete</mat-icon>
                     </button>
-                
-                    <button
-                      mat-icon-button
-                      color="primary"
-                      (click)="verImagen(row)"
-                      matTooltip="Ver Foto"
-                    >
+
+                    <button mat-icon-button color="primary" (click)="verImagen(row)" matTooltip="Ver Foto">
                       <mat-icon>photo_camera</mat-icon>
                     </button>
-                    
-                    <button
-                      mat-icon-button
-                      color="primary"
-                      (click)="EnviarImagen(row)"
-                      matTooltip="Subir Imagen"
-                    >
+
+                    <button mat-icon-button color="primary" (click)="EnviarImagen(row)" matTooltip="Subir Imagen">
                       <mat-icon>add_photo_alternate</mat-icon>
                     </button>
-                    <input #fileInputImage type="file" (change)="onFileSelectedImage($event,row)" accept="image/*" style="display:none" />
+                    <input #fileInputImage type="file" (change)="onFileSelectedImage($event,row)" accept="image/*"
+                      style="display:none" />
                   </div>
                 </td>
               </ng-container>

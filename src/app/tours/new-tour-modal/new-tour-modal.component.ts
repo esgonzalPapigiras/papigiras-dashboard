@@ -19,16 +19,15 @@ import Swal from 'sweetalert2';
 export class NewTourModalComponent implements OnInit {
 
   form: FormGroup;
-  branch: Branch[] = [];
-  programs: any[] = [];
-  colleges: any[] = [];
+  searchTerm = '';
+  searchTermCollege='';
   comunnes: any[] = [];
-  searchTerm: string = '';
-  searchTermCollege:string ='';
-  searchTermPrograms:string ='';
-  selectedProgram: any;
+  colleges: any[] =[];
+  branch: Branch[] = [];
+  filteredList: any[] = [];
+  filteredListCollege: any[] = [];
   selectedComuna: any;
-  selectedCollege: any;
+  selectedCollege:any;
   
 
   newComunnes = {
@@ -49,15 +48,7 @@ export class NewTourModalComponent implements OnInit {
     private branchService: BranchService,
     private programService: ProgramsService,
     private tourService: ToursServicesService
-  ){} /*{
-    this.form = this.fb.group({
-      fechaInicio: ['', Validators.required],
-      fechaTermino: ['', Validators.required],
-      curso: ['', Validators.required],
-      temporada: ['', Validators.required],
-      numeroGrupo: ['', Validators.required]
-    });
-  }*/
+  ){}
 
   ngOnInit(): void {
     Swal.fire({
@@ -65,39 +56,32 @@ export class NewTourModalComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.obtenerOficina();
+        //this.obtenerOficina();
         this.obtenerComunas();
-        this.obtenerPrograma();
+        //this.obtenerPrograma();
         this.obtenerColegios();
       },
     });
     Swal.close();
   }
 
-  // Función para filtrar comunas basándose en el término de búsqueda
   filteredComunnes() {
-    return this.comunnes.filter(comunnes =>     
-      comunnes.communesName.includes(this.searchTerm.toLowerCase())
-    );
+    const term = this.searchTerm.trim().toLowerCase();
+    return term
+      ? this.comunnes.filter(c =>
+          c.communesName.toLowerCase().includes(term)
+        )
+      : this.comunnes;
   }
 
-  filteredColleges() {
-    return this.colleges.filter(colleges =>     
-      colleges.name.includes(this.searchTermCollege.toLowerCase())
-    );
-  }
+  
 
-  filteredPrograms(){
-    return this.programs.filter(programs =>     
-      programs.tours_name.includes(this.searchTermPrograms.toLowerCase())
-    );
-  }
+  
 
 
   // Función para enviar las comunas seleccionadas
   
 
-  // Obtener las comunas del servicio
   obtenerComunas() {
     Swal.fire({
       title: "Cargando...",
@@ -108,11 +92,55 @@ export class NewTourModalComponent implements OnInit {
           .ObtenerCommunes()
           .subscribe((respon) => {
             this.comunnes = respon;
+            // inicializamos la lista filtrada
+            this.filteredList = [...this.comunnes];
+            // si ya había algo escrito, lo filtramos
+            if (this.searchTerm) {
+              this.onSearchChange();
+            }
             Swal.close();
           });
       },
     });
   }
+
+  onSearchChange() {
+    const term = this.searchTerm.trim().toLowerCase();
+    this.filteredList = term
+      ? this.comunnes.filter(c =>
+          c.communesName.toLowerCase().includes(term)
+        )
+      : [...this.comunnes];
+  }
+
+  // Función para obtener colegios
+  obtenerColegios() {
+    Swal.fire({
+      title: "Cargando...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.tourService
+          .listCollege()
+          .subscribe((respon) => {
+            this.colleges = respon;
+            this.filteredListCollege = [...this.colleges];
+            Swal.close();
+          });
+      },
+    });
+  }
+
+  onSearchChangeCollege() {
+    const term = this.searchTermCollege.trim().toLowerCase();
+    this.filteredListCollege = term
+      ? this.colleges.filter(c =>
+          c.name.toLowerCase().includes(term)
+        )
+      : [...this.colleges];
+  }
+
+  
 
   // Función para obtener oficinas
   obtenerOficina() {
@@ -131,6 +159,8 @@ export class NewTourModalComponent implements OnInit {
     });
   }
 
+
+  /*
   // Función para obtener programas
   obtenerPrograma() {
     Swal.fire({
@@ -147,23 +177,9 @@ export class NewTourModalComponent implements OnInit {
       },
     });
   }
+    */
 
-  // Función para obtener colegios
-  obtenerColegios() {
-    Swal.fire({
-      title: "Cargando...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        this.tourService
-          .listCollege()
-          .subscribe((respon) => {
-            this.colleges = respon;
-            Swal.close();
-          });
-      },
-    });
-  }
+  
 
   onClose(): void {
     this.dialogRef.close();  // Cerrar el modal sin guardar

@@ -11,7 +11,7 @@ import { CoordinatorModalCreateComponent } from "./coordinator-modal-create/coor
 import * as XLSX from 'xlsx';
 import { CoordinatorModalEditComponent } from "./coordinator-modal-edit/coordinator-modal-edit.component";
 import { CoordinatorModalViewImageComponent } from "app/coordinator-modal-view-image/coordinator-modal-view-image.component";
-
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: "app-coordinator",
@@ -32,6 +32,24 @@ export class CoordinatorComponent implements OnInit {
   selectedFile: File | null = null;
   id: string;
 
+  private headers: (keyof Coordinator)[] = [
+  'coordinatorCarrera',           // cell(0)
+  'coordinatorCelular',           // cell(1)
+  'coordinatorCorreo',            // cell(2)
+  'coordinatorEdad',              // cell(3)
+  'coordinatorEmpresa',           // cell(4)
+  'coordinatorFechaNacimiento',   // cell(5)
+  'coordinatorInstaAt',           // cell(6)
+  'coordinatorInstaPersonal',     // cell(7)
+  'coordinatorLastname',          // cell(8)
+  'coordinatorName',              // cell(9)
+  'coordinatorOficina',           // cell(10)
+  'coordinatorProfesion',         // cell(11)
+  'coordinatorResidencia',        // cell(12)
+  'coordinatorRut',               // cell(13)
+  'coordinatorSex',               // cell(14)
+  'coordinatorUniversidad'        // cell(15)
+];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild("fileInput") fileInput: any;
@@ -221,6 +239,32 @@ export class CoordinatorComponent implements OnInit {
       }
     });
   }
+
+  downloadTemplate(): void {
+    // 1) Generar la primera fila con los nombres de columna
+    const headerRow = this.headers.map(h => h);
+
+    // 2) Crear la hoja de cálculo a partir de un array de arrays
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([headerRow]);
+
+    // 3) Crear el libro y asignar la hoja
+    const wb: XLSX.WorkBook = {
+      Sheets: { 'Coordinators': ws },
+      SheetNames: ['Coordinators']
+    };
+
+    // 4) Generar el binario de Excel
+    const wbout: ArrayBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    // 5) Crear un Blob y disparar la descarga
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    saveAs(blob, 'template_coordinator.xlsx');
+  }
+
+  
 
   downloadCoordinators(): void {
     this.coordinatorServices.obtenerCoordinadores().subscribe(

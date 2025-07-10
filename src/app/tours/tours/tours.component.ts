@@ -108,6 +108,14 @@ export class ToursComponent implements AfterViewInit {
     
   }
 
+  downloadTemplateTour(){
+
+  }
+
+  downloadTemplatePassenger(){
+    
+  }
+
   onFileSelected(event: any, row: any) {
     
     const file = event.target.files[0];
