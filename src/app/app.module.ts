@@ -10,7 +10,6 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { LoginComponent } from 'app/login/login.component';
 
 
-
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -24,13 +23,7 @@ import { LoginComponent } from 'app/login/login.component';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-    LoginComponent,
-    
-    
-    
-    
-    
-    
+    LoginComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

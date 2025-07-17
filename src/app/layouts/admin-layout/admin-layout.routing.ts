@@ -15,6 +15,7 @@ import { ComunnesComponent } from 'app/comunnes/comunnes.component';
 import { ActivitiesComponent } from 'app/activities/activities.component';
 import { ProgramsComponent } from 'app/programs/programs.component';
 import { SuppliersComponent } from 'app/suppliers/suppliers.component';
+import { MapsCoordinatorComponent } from 'app/maps-coordinator/maps-coordinator.component';
 
 
 export const AdminLayoutRoutes: Routes = [
@@ -27,6 +28,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'activities', component: ActivitiesComponent },
     { path: 'programs', component: ProgramsComponent },
     { path: 'suppliers', component: SuppliersComponent },
+    { path: 'maps', component: MapsCoordinatorComponent },
     
 
 ];

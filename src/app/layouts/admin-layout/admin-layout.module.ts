@@ -60,6 +60,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MapsCoordinatorComponent } from '../../maps-coordinator/maps-coordinator.component';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -119,6 +120,7 @@ const MY_DATE_FORMATS = {
     CoordinatorComponent,
     ComunnesComponent,
     BranchComponent,
+    MapsCoordinatorComponent,
     ActivitiesComponent,
     ProgramsComponent,
     SuppliersComponent,
@@ -139,6 +141,7 @@ const MY_DATE_FORMATS = {
     CoordinatorModalViewImageComponent,
     TourAddDriverModalComponent,
     NewTourModalComponent,
+    
     
 
   ]
