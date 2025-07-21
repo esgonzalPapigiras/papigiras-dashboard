@@ -1,31 +1,40 @@
 <div class="logo">
     <a href="https://www.creative-tim.com" class="simple-text">
         <div class="logo-img">
-            <img src="/assets/img/papigiras-footer.png"/>
+            <img src="/assets/img/papigiras-footer.png" />
         </div>
         Papigiras
     </a>
 </div>
 <div class="sidebar-wrapper">
-  <div *ngIf="isMobileMenu()">
-    <ul class="nav navbar-nav nav-mobile-menu">
-        
-        <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0)">
-                <i class="material-icons">person</i>
-                <p>
-                    <span class="d-lg-none d-md-block">Account</span>
-                </p>
-            </a>
-        </li>
-    </ul>
-  </div>
+    <div *ngIf="isMobileMenu()">
+        <ul class="nav navbar-nav nav-mobile-menu">
+
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0)">
+                    <i class="material-icons">person</i>
+                    <p>
+                        <span class="d-lg-none d-md-block">Account</span>
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </div>
     <ul class="nav">
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-            <a class="nav-link" [routerLink]="[menuItem.path]">
-                <i class="material-icons">{{menuItem.icon}}</i>
-                <p>{{menuItem.title}}</p>
-            </a>
+        <li *ngFor="let item of menuItems" class="nav-item">
+            <ng-container *ngIf="item.path==='maps'; else inApp">
+                <a class="nav-link" href="#" (click)="openInNewWindow(item.path, $event)">
+                    <i class="material-icons">{{item.icon}}</i>
+                    <p>{{item.title}}</p>
+                </a>
+            </ng-container>
+
+            <ng-template #inApp>
+                <a class="nav-link" [routerLink]="[item.path]" routerLinkActive="active">
+                    <i class="material-icons">{{item.icon}}</i>
+                    <p>{{item.title}}</p>
+                </a>
+            </ng-template>
         </li>
     </ul>
 </div>

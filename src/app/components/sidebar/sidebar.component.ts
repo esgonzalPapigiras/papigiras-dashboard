@@ -12,15 +12,15 @@ declare interface RouteInfo {
 }
 
 export const ROUTES: RouteInfo[] = [
-  { path: '/dashboard', title: 'Dashboard', icon: 'dashboard', class: '' },
-  { path: '/maps', title: 'Seguimiento', icon: 'map', class: '' },
-  { path: '/tours', title: 'Giras', icon: 'flight', class: '' },
-  { path: '/coordinator', title: 'Coordinadores', icon: 'nordic_walking', class: '' },
-  { path: '/branch', title: 'Oficina', icon: 'content_paste', class: '' },
-  { path: '/communes', title: 'Comunas', icon: 'library_books', class: '' },
-  { path: '/activities', title: 'Actividades', icon: 'assignment', class: '' },
-  { path: '/programs', title: 'Programas', icon: 'web', class: '' },
-  { path: '/suppliers', title: 'Proveedores', icon: 'notifications', class: '' }
+  { path: 'dashboard', title: 'Dashboard', icon: 'dashboard', class: '' },
+  { path: 'tours', title: 'Giras', icon: 'flight', class: '' },
+  { path: 'coordinator', title: 'Coordinadores', icon: 'nordic_walking', class: '' },
+  { path: 'branch', title: 'Oficina', icon: 'content_paste', class: '' },
+  { path: 'communes', title: 'Comunas', icon: 'library_books', class: '' },
+  { path: 'activities', title: 'Actividades', icon: 'assignment', class: '' },
+  { path: 'programs', title: 'Programas', icon: 'web', class: '' },
+  { path: 'suppliers', title: 'Proveedores', icon: 'notifications', class: '' },
+  { path: 'maps', title: 'Seguimiento', icon: 'map', class: '' }
 ];
 
 @Component({
@@ -34,6 +34,7 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
+    console.log(this.router.url);
     this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
 
@@ -44,8 +45,23 @@ export class SidebarComponent implements OnInit {
     return true;
   }
 
+  openInNewWindow(path: string, event: MouseEvent) {
+    event.preventDefault();
+    // Genera la URL absoluta de la ruta
+    const url = window.location.origin +
+      this.router.serializeUrl(
+        this.router.createUrlTree([path])
+      );
+    window.open(url, '_blank', 'noopener');
+  }
+
+  
+
+  
+
   // Función para verificar si la ruta está activa
   isActiveRoute(route: string): boolean {
+    console.log(route); 
     return this.router.url.indexOf(route) > -1;
   }
 }

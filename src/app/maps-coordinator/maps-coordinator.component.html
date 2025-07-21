@@ -1,6 +1,24 @@
-<div class="main-content" style="width: 100%; padding: 20px;">
-    <div class="container-fluid" style="width: 100%; padding: 20px;">
-        
+<google-map
+  height="100vh"
+  width="100vw"
+  [center]="center"
+  [zoom]="zoom"
+  [options]="options"
+>
+  <map-marker
+    *ngFor="let m of markers"
+    #markerElem="mapMarker"
+    [position]="m.position"
+    [options]="m.options"
+    (mapClick)="openInfo(m, markerElem)"
+  >
+  </map-marker>
+
+  <!-- Template de InfoWindow más cuidada -->
+  <map-info-window>
+    <div class="info-window">
+      <h3>{{ selectedCoord?.coordinatorName }}</h3>
+      <h3>Codigo Gira: {{ selectedCoord?.uuidTour }}</h3>
     </div>
-</div>
-    
+  </map-info-window>
+</google-map>

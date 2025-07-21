@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth.guard';
+import { MapsCoordinatorComponent } from './maps-coordinator/maps-coordinator.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
     path: 'login', // Ruta para el login
     component: LoginComponent,
   },
+  { path: 'maps', component: MapsCoordinatorComponent },
   {
     path: '',
     component: AdminLayoutComponent,

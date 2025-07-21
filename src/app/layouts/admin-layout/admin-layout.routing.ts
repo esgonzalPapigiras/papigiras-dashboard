@@ -28,7 +28,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'activities', component: ActivitiesComponent },
     { path: 'programs', component: ProgramsComponent },
     { path: 'suppliers', component: SuppliersComponent },
-    { path: 'maps', component: MapsCoordinatorComponent },
+    { path: 'maps', component: MapsComponent },
     
 
 ];

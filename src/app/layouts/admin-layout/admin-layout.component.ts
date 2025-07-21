@@ -17,7 +17,16 @@ export class AdminLayoutComponent implements OnInit {
 
   constructor( public location: Location, private router: Router) {}
 
+  getExternalLink(path: string): string {
+    // Construye algo como "/maps" o "/#/maps" según tu estrategia
+    return window.location.origin +
+           this.router.serializeUrl(
+             this.router.createUrlTree([path])
+           );
+  }
+
   ngOnInit() {
+    console.log("hola");
       const isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
       if (isWindows && !document.getElementsByTagName('body')[0].classList.contains('sidebar-mini')) {
@@ -126,6 +135,9 @@ export class AdminLayoutComponent implements OnInit {
           }
       });
   }
+
+  
+  
   ngAfterViewInit() {
       this.runOnRouteChange();
   }
