@@ -1,0 +1,32 @@
+.resumen-wrapper {
+  margin: 12px 0 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+.resumen-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.resumen-participantes .mat-list-item {
+  height: 36px;
+}
+.resumen-participantes .total strong {
+  font-size: 14px;
+}
+.acciones-resumen {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.spacer { flex: 1; }
+.tabla-alumnos {
+  width: 100%;
+  margin-top: 10px;
+}
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}

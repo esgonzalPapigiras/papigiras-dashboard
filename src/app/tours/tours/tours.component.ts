@@ -173,7 +173,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
   private refreshAlumnosCount(row: any) {
     this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
       next: (detalle) => {
-        console.log(detalle)
         row.detalle = detalle;
         row.alumnosCount = this.calcTotalParticipantes(detalle);
         row.addAlumnListDoc = (row.alumnosCount ?? 0) > 0;
@@ -183,16 +182,10 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   private calcTotalParticipantes(d: any): number {
-    console.log(d)
     const hombres = Number(d?.cantidadHombres ?? 0);
     const mujeres = Number(d?.cantidadMujeres ?? 0);
     const acompF = Number(d?.acompananteFemenino ?? 0);
     const acompM = Number(d?.acompananteMasculino ?? 0);
-
-    console.log(hombres)
-    console.log(mujeres)
-    console.log(acompM)
-    console.log(acompF)
     const sum = hombres + mujeres + acompF + acompM;
     if (Number.isFinite(sum) && sum > 0) return sum;
 
@@ -201,12 +194,12 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   openAlumnosModal(row: any) {
+    console.log(row)
     this.dialog.open(TourViewAlumnsModalComponent, {
-      width: '720px',
+      width: '1200px',
+      height:'800px',
       data: {
-        id: row.tourSalesId, // usar tourSalesId
-        detalle: row.detalle,
-        total: row.alumnosCount
+        id: row.tourSalesId
       },
       autoFocus: false,
     });

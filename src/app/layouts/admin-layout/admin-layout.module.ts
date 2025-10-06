@@ -63,7 +63,8 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MapsCoordinatorComponent } from 'app/maps-coordinator/maps-coordinator.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { TourViewAlumnsModalComponent } from 'app/tours/tour-view-alumns-modal/tour-view-alumns-modal.component';
-
+import { MatListModule } from '@angular/material/list';
+import { MatSortModule } from '@angular/material/sort';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -94,8 +95,9 @@ const MY_DATE_FORMATS = {
     MatOptionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    GoogleMapsModule
-    
+    GoogleMapsModule,
+    MatListModule,
+    MatSortModule,
     
   ],
   providers: [

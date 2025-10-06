@@ -28,7 +28,7 @@ import { TourViewAlumnsModalComponent } from './tours/tour-view-alumns-modal/tou
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
-    MatChipsModule
+    MatChipsModule,
   ],
   declarations: [
     AppComponent,
