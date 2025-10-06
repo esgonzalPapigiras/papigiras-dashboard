@@ -1,91 +1,138 @@
 <h2 mat-dialog-title>Ingresar Datos</h2>
+
 <mat-dialog-content>
   <form [formGroup]="form">
+
+    <!-- Fecha Inicio -->
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Fecha Inicio</mat-label>
-      <input matInput [matDatepicker]="picker">
+      <input matInput [matDatepicker]="picker" formControlName="startDate">
       <mat-datepicker-toggle matSuffix [for]="picker">
         <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
       </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
+    <!-- Fecha Término -->
     <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Fecha Termino</mat-label>
-      <input matInput [matDatepicker]="picker2">
+      <mat-label>Fecha Término</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="endDate">
       <mat-datepicker-toggle matSuffix [for]="picker2">
         <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
       </mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
 
-    <div class="form-group col-md-6">
-      <label for="oficina">Oficina</label>
-      <select class="form-control" id="office" [(ngModel)]="newComunnes.office" name="office" required>
-        <!-- Usamos 'branch' para obtener las oficinas -->
-        <option *ngFor="let office of branch" [ngValue]="office">{{ office.branchName }}</option>
-      </select>
-    </div>
-
-
-
+    <!-- Comuna (ngModel para buscador en panel) -->
     <mat-form-field appearance="fill">
       <mat-label>Selecciona una comuna</mat-label>
-      <mat-select [(ngModel)]="selectedComuna" name="selectedComuna" [ngModelOptions]="{ standalone: true }"
-        panelClass="comuna-select-panel">
-        <!-- input de búsqueda dentro del panel -->
+      <mat-select
+        [(ngModel)]="selectedComuna"
+        name="selectedComuna"
+        [ngModelOptions]="{ standalone: true }"
+        panelClass="comuna-select-panel"
+        (selectionChange)="onSelectComuna($event.value)"
+      >
+        <!-- input búsqueda dentro del panel -->
         <mat-option disabled>
           <mat-form-field appearance="standard" class="filter-input" style="width:100%; margin:0;">
-            <input matInput placeholder="Buscar..." [(ngModel)]="searchTerm" name="searchTermSelect"
-              [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSearchChange()"
-              (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" />
+            <input
+              matInput
+              placeholder="Buscar..."
+              [(ngModel)]="searchTerm"
+              name="searchTermSelect"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onSearchChange()"
+              (click)="$event.stopPropagation()"
+              (keydown)="$event.stopPropagation()"
+            />
           </mat-form-field>
         </mat-option>
 
-        <!-- opciones filtradas -->
         <mat-option *ngFor="let comuna of filteredList" [value]="comuna">
           {{ comuna.communesName }}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
+    <!-- Colegio -->
     <mat-form-field appearance="fill">
-      <mat-label>Selecciona una colegio</mat-label>
-      <mat-select [(ngModel)]="selectedCollege" name="selectedCollege" [ngModelOptions]="{ standalone: true }"
-        panelClass="college-select-panel">
-        <!-- input de búsqueda dentro del panel -->
+      <mat-label>Selecciona un colegio</mat-label>
+      <mat-select
+        [(ngModel)]="selectedCollege"
+        name="selectedCollege"
+        [ngModelOptions]="{ standalone: true }"
+        panelClass="college-select-panel"
+        (selectionChange)="onSelectCollege($event.value)"
+      >
         <mat-option disabled>
           <mat-form-field appearance="standard" class="filter-input" style="width:100%; margin:0;">
-            <input matInput placeholder="Buscar..." [(ngModel)]="searchTermCollege" name="searchTermCollegeSelect"
-              [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSearchChangeCollege()"
-              (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" />
+            <input
+              matInput
+              placeholder="Buscar..."
+              [(ngModel)]="searchTermCollege"
+              name="searchTermCollegeSelect"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onSearchChangeCollege()"
+              (click)="$event.stopPropagation()"
+              (keydown)="$event.stopPropagation()"
+            />
           </mat-form-field>
         </mat-option>
 
-        <!-- opciones filtradas -->
         <mat-option *ngFor="let college of filteredListCollege" [value]="college">
           {{ college.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-
+    <!-- Curso -->
     <mat-form-field>
       <mat-label>Curso</mat-label>
       <input matInput formControlName="curso" />
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Temporada</mat-label>
-      <input matInput formControlName="temporada" />
+    <!-- Programa -->
+    <mat-form-field appearance="fill">
+      <mat-label>Selecciona un programa</mat-label>
+      <mat-select
+        [(ngModel)]="selectPrograma"
+        name="selectPrograma"
+        [ngModelOptions]="{ standalone: true }"
+        panelClass="programa-select-panel"
+        (selectionChange)="onSelectProgram($event.value)"
+      >
+        <mat-option disabled>
+          <mat-form-field appearance="standard" class="filter-input" style="width:100%; margin:0;">
+            <input
+              matInput
+              placeholder="Buscar..."
+              [(ngModel)]="searchTermProgram"
+              name="searchTermProgramSelect"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onSearchChangeProgram()"
+              (click)="$event.stopPropagation()"
+              (keydown)="$event.stopPropagation()"
+            />
+          </mat-form-field>
+        </mat-option>
+
+        <mat-option *ngFor="let programas of filteredListProgram" [value]="programas">
+          {{ programas.toursName }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Número Grupo</mat-label>
-      <input matInput formControlName="numeroGrupo" />
+    <!-- Temporada -->
+    <mat-form-field appearance="fill">
+      <mat-label>Temporada</mat-label>
+      <mat-select formControlName="temporada">
+        <mat-option *ngFor="let y of years" [value]="y">{{ y }}</mat-option>
+      </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
+
 <mat-dialog-actions>
   <button mat-button (click)="onClose()">Cancelar</button>
   <button mat-button color="primary" (click)="onSave()">Guardar</button>

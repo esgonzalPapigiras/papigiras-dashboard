@@ -19,7 +19,7 @@ import { ProgramsModalListActivitiesComponent } from './programs-modal-list-acti
 })
 export class ProgramsComponent implements OnInit {
 
-  displayedColumns: string[] = ["tours_name", "tour_day_quantity", "tour_nigth_quantity", "acciones"];
+  displayedColumns: string[] = ["toursName", "tour_day_quantity", "tour_nigth_quantity", "acciones"];
     dataSource = new MatTableDataSource<Program>();
   
     @ViewChild(MatPaginator) paginator: MatPaginator;

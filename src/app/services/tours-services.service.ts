@@ -19,9 +19,6 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-
-  token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzk3NTYyNTMsImV4cCI6MTc0MDYyMDI1M30.KzjMglLVW6Sy9IDI4xNoYf8SZU1NAlVCQRQhVZsAaig_c4N0or8JRYkKLv53i20e2I9EAE0GHlA_2bwAd8IDag';
-
   constructor(private http: HttpClient) { }
 
   public obtenerGiras(): Observable<TourSalesDTO[]> {
@@ -44,37 +41,37 @@ export class ToursServicesService {
   }
 
   public obtenerDetalleGiraWeb(id: number): Observable<TourSalesDetailWeb> {
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    Authorization: localStorage.getItem('token') || '',
-  });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || '',
+    });
 
-  const params = new HttpParams().set('id', id.toString());
+    const params = new HttpParams().set('id', id.toString());
 
-  return this.http
-    .get<TourSalesDetailWeb>(
-      'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails',
-      { headers, params }
-    )
-    .pipe(
-      // 🔢 Calcula la suma aquí mismo
-      map((d) => {
-        const hombres = Number(d.cantidadHombres ?? 0);
-        const mujeres = Number(d.cantidadMujeres ?? 0);
-        const acompF = Number(d.acompananteFemenino ?? 0);
-        const acompM = Number(d.acompananteMasculino ?? 0);
+    return this.http
+      .get<TourSalesDetailWeb>(
+        'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails',
+        { headers, params }
+      )
+      .pipe(
+        // 🔢 Calcula la suma aquí mismo
+        map((d) => {
+          const hombres = Number(d.cantidadHombres ?? 0);
+          const mujeres = Number(d.cantidadMujeres ?? 0);
+          const acompF = Number(d.acompananteFemenino ?? 0);
+          const acompM = Number(d.acompananteMasculino ?? 0);
 
-        const total = hombres + mujeres + acompF + acompM;
+          const total = hombres + mujeres + acompF + acompM;
 
-        return {
-          ...d,
-          totalParticipantes: Number.isFinite(total) && total > 0
-            ? total
-            : Number(d.tourSalesStudentCount ?? 0) // fallback si no vinieran los campos
-        };
-      })
-    );
-}
+          return {
+            ...d,
+            totalParticipantes: Number.isFinite(total) && total > 0
+              ? total
+              : Number(d.tourSalesStudentCount ?? 0) // fallback si no vinieran los campos
+          };
+        })
+      );
+  }
 
   public listaBusGira(id: number): Observable<TripulationBus[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
@@ -140,6 +137,14 @@ export class ToursServicesService {
     return this.http.get<PassengerDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/get/tour', { headers, params });
   }
 
+  public uploadFileMasiveTour(file: any) {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
+
+    return this.http.post<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload/massive', formData, { headers });
+  }
+
   public uploadFile(file: any, id_tour_sale: number): Observable<ResponsePassengerUpload> {
     const formData = new FormData();
     formData.append('file', file, file.name);
@@ -150,16 +155,38 @@ export class ToursServicesService {
 
   }
 
-  uploadDocumentsExtra(result: Uint8Array, name: string, uuid: string, folder: string, tipoDoc: string): Observable<any> {
+  uploadDocumentsExtra(
+    result: Uint8Array,
+    name: string,
+    uuid: string,
+    folder: string,
+    tipoDoc: string
+  ): Observable<any> {
     const formData = new FormData();
-    formData.append('file', new Blob([result]), name);
+
+    // 1) Copia a un Uint8Array nuevo => su buffer es un ArrayBuffer "puro"
+    const safeU8 = new Uint8Array(result.byteLength);
+    safeU8.set(result);
+
+    // 2) Puedes pasar el Uint8Array directamente (ArrayBufferView) o su buffer
+    const blob = new Blob([safeU8], { type: 'application/octet-stream' });
+    // Alternativa equivalente:
+    // const blob = new Blob([safeU8.buffer], { type: 'application/octet-stream' });
+
+    formData.append('file', blob, name);
     formData.append('Uuid', uuid);
     formData.append('folder', folder);
     formData.append('tipoDoc', tipoDoc);
 
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    // No seteas Content-Type (FormData lo define con boundary)
+    const token = localStorage.getItem('token') ?? '';
+    const headers = token ? new HttpHeaders({ Authorization: token }) : undefined;
 
-    return this.http.post<ResponseUploadService>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/s3/upload', formData, { headers });
+    return this.http.post(
+      'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/s3/upload',
+      formData,
+      { headers }
+    );
   }
 
   getDocument(id: number): Observable<DocumentDTO[]> {
@@ -191,7 +218,7 @@ export class ToursServicesService {
     return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
   }
 
-  downloadDocumentMedical(name: string,idPassenger:string,supplier: any): Observable<any> {
+  downloadDocumentMedical(name: string, idPassenger: string, supplier: any): Observable<any> {
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/view/medical-recordscm`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -201,7 +228,7 @@ export class ToursServicesService {
     const params = new HttpParams()
       .set('tourId', name)
       .set('idPassenger', idPassenger)
-      .set('identificacion',supplier);
+      .set('identificacion', supplier);
 
     return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
   }
@@ -229,11 +256,6 @@ export class ToursServicesService {
   }
 
   listPDF(id: number): Observable<ArrayBuffer> {
-    if (!this.token) {
-      console.error('Token is not available');
-      return;
-    }
-
     const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/generate-pdf';
     const params = new HttpParams().set('id', id.toString());
 
@@ -258,19 +280,14 @@ export class ToursServicesService {
 
   }
 
-  public listCollege():Observable<CollegeList[]>{
+  public listCollege(): Observable<CollegeList[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-        return this.http.get<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get/college', { headers})
+    return this.http.get<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get/college', { headers })
 
   }
 
   public addAvion(objeto: TripulationAvionDTO, id: number): Observable<any> {
-    if (!this.token || this.token === '') {
-      return new Observable(observer => {
-        observer.error('Token is not available');
-      });
-    }
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/avion?id=${id}`;
     const headers = new HttpHeaders({
@@ -282,11 +299,6 @@ export class ToursServicesService {
   }
 
   public addBus(objeto: TripulationBus, id: number): Observable<any> {
-    if (!this.token || this.token === '') {
-      return new Observable(observer => {
-        observer.error('Token is not available');
-      });
-    }
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/bus?id=${id}`;
     const headers = new HttpHeaders({
@@ -297,12 +309,20 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(objeto), { headers });
   }
 
+  public tourCreate(tour: any): Observable<any> {
+
+
+    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create';
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(tour), { headers });
+  }
+
   public addTripulation(objeto: TripulationsDTO, id: number): Observable<any> {
-    if (!this.token || this.token === '') {
-      return new Observable(observer => {
-        observer.error('Token is not available');
-      });
-    }
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}`;
     const headers = new HttpHeaders({

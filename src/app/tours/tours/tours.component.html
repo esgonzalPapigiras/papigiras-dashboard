@@ -11,9 +11,12 @@
           <button mat-raised-button color="primary" (click)="addTour()">
             Agregar Gira
           </button>
-          <button mat-raised-button color="primary" (click)="addTour()">
+          <button mat-raised-button color="primary" type="button" (click)="fileInput.value=''; fileInput.click()">
             Carga Masiva de Giras
           </button>
+
+          <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
+            (change)="onFileSelectedMassiveTour($event)" />
           <button mat-raised-button color="warning" (click)="downloadTemplateTour()">
             Descargar plantilla Gira
           </button>

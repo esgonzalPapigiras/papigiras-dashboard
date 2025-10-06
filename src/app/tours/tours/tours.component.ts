@@ -170,6 +170,8 @@ export class ToursComponent implements AfterViewInit, OnInit {
     }
   }
 
+  
+
   private refreshAlumnosCount(row: any) {
     this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
       next: (detalle) => {
@@ -203,6 +205,40 @@ export class ToursComponent implements AfterViewInit, OnInit {
       },
       autoFocus: false,
     });
+  }
+
+  onFileSelectedMassiveTour(event: any) {
+    const file = event.target.files?.[0];
+    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+      this.isUploading = true;
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices.uploadFileMasiveTour(file).pipe(
+            tap((response: any) => {
+              if ((response?.repeatPassenger?.length ?? 0) === 0) {
+                this.showSuccessDialog();
+              } else {
+              }
+            }),
+            catchError(error => {
+              console.log(error);
+              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
+              return of(null);
+            }),
+            finalize(() => {
+              this.isUploading = false;
+              event.target.value = '';
+              Swal.close();
+            })
+          ).subscribe();
+        },
+      });
+    } else {
+      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo Excel para continuar' });
+    }
   }
 
   onFileSelectedContract(event: any, row: any) {

@@ -55,7 +55,7 @@ export class ProgramsModalCreateComponent implements OnInit {
   
         const newActivitie: Program = {
           tour_id: 0, // o null, según cómo manejes la creación en el backend
-          tours_name: this.newProgram.nombrePrograma,
+          toursName: this.newProgram.nombrePrograma,
           tour_day_quantity: this.newProgram.cantidadDias,
           tour_nigth_quantity: this.newProgram.cantidadNoches
         };
