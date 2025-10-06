@@ -19,7 +19,7 @@ import { TourAddAirplaneModalComponent } from '../tour-add-airplane-modal/tour-a
 import { saveAs } from 'file-saver';
 import { NewTourModalComponent } from '../new-tour-modal/new-tour-modal.component';
 import { TourViewAlumnsModalComponent } from '../tour-view-alumns-modal/tour-view-alumns-modal.component';
-
+import * as XLSX from 'xlsx';
 // RXJS
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
@@ -50,7 +50,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private girasServices: ToursServicesService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.obtenerGiras();
@@ -125,11 +125,60 @@ export class ToursComponent implements AfterViewInit, OnInit {
 
   openViewDialogAlumn(row: any): void {
     this.fileInput.nativeElement.click();
-    this.id = row.tourSalesId; // importante: usar tourSalesId
+    this.id = row.tourSalesId;
   }
 
-  downloadTemplateTour() {}
-  downloadTemplatePassenger() {}
+  downloadTemplateTour() {
+
+    const headers = [
+      'fecha salida',
+      'fecha llegada',
+      'identificador gira',
+      'programa',
+      'temporada',
+      'colegio',
+      'comuna',
+      'curso',
+      'bus',
+      'rut conductor 1',
+      'nombre conductor 1',
+      'rut conductor 2',
+      'nombre conductor 2',
+      'hotel',
+      'coordinador'
+    ];
+    const hints = [
+      '(dd-MM-yyyy)', 
+      '(dd-MM-yyyy)', 
+      '',             
+      '',            
+      '2025',         
+      '1234',         
+      '1101',         
+      '4B',           
+      '',           
+      '12.345.678-9', 
+      'NOMBRE APELLIDO',
+      '12.345.678-9', 
+      'NOMBRE APELLIDO',
+      '',             
+      ''              
+    ];
+    const note = ['Estos campos son los mínimos necesarios para ejecutar la carga. Complete según corresponda.'];
+    while (note.length < headers.length) note.push('');
+    const wsData = [headers, hints, note];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = headers.map(h => ({ wch: Math.max(18, h.length + 2) }));
+    const lastColLetter = XLSX.utils.encode_col(headers.length - 1);
+    ws['!autofilter'] = { ref: `A1:${lastColLetter}1` };
+    ws['!ref'] = `A1:${lastColLetter}${wsData.length}`;
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Template Carga Masiva Giras.xlsx');
+  }
+  downloadTemplatePassenger() {
+
+  }
 
   onFileSelected(event: any, row: any) {
     const file = event.target.files?.[0];
@@ -170,7 +219,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
     }
   }
 
-  
+
 
   private refreshAlumnosCount(row: any) {
     this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
@@ -199,7 +248,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
     console.log(row)
     this.dialog.open(TourViewAlumnsModalComponent, {
       width: '1200px',
-      height:'800px',
+      height: '800px',
       data: {
         id: row.tourSalesId
       },
@@ -218,10 +267,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
           Swal.showLoading();
           this.girasServices.uploadFileMasiveTour(file).pipe(
             tap((response: any) => {
-              if ((response?.repeatPassenger?.length ?? 0) === 0) {
-                this.showSuccessDialog();
-              } else {
-              }
+
             }),
             catchError(error => {
               console.log(error);
