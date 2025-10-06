@@ -8,9 +8,10 @@ import { PassengerDTO } from 'app/models/passengerList';
 import { ResponseUploadService } from 'app/models/responseUploadService';
 import { TourSalesDTO } from 'app/models/tourSales';
 import { TourSalesDetail } from 'app/models/toursalesdetail';
+import { TourSalesDetailWeb } from 'app/models/TourSalesDetailWeb';
 import { TripulationBus } from 'app/models/tripulationBus';
 import { TripulationsDTO } from 'app/models/tripulations';
-import { catchError, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -41,6 +42,39 @@ export class ToursServicesService {
 
     return this.http.get<TourSalesDetail>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails', { headers, params });
   }
+
+  public obtenerDetalleGiraWeb(id: number): Observable<TourSalesDetailWeb> {
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: localStorage.getItem('token') || '',
+  });
+
+  const params = new HttpParams().set('id', id.toString());
+
+  return this.http
+    .get<TourSalesDetailWeb>(
+      'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails',
+      { headers, params }
+    )
+    .pipe(
+      // 🔢 Calcula la suma aquí mismo
+      map((d) => {
+        const hombres = Number(d.cantidadHombres ?? 0);
+        const mujeres = Number(d.cantidadMujeres ?? 0);
+        const acompF = Number(d.acompananteFemenino ?? 0);
+        const acompM = Number(d.acompananteMasculino ?? 0);
+
+        const total = hombres + mujeres + acompF + acompM;
+
+        return {
+          ...d,
+          totalParticipantes: Number.isFinite(total) && total > 0
+            ? total
+            : Number(d.tourSalesStudentCount ?? 0) // fallback si no vinieran los campos
+        };
+      })
+    );
+}
 
   public listaBusGira(id: number): Observable<TripulationBus[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente

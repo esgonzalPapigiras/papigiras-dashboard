@@ -15,11 +15,11 @@ export const ROUTES: RouteInfo[] = [
   { path: 'dashboard', title: 'Dashboard', icon: 'dashboard', class: '' },
   { path: 'tours', title: 'Giras', icon: 'flight', class: '' },
   { path: 'coordinator', title: 'Coordinadores', icon: 'nordic_walking', class: '' },
-  { path: 'branch', title: 'Oficina', icon: 'content_paste', class: '' },
-  { path: 'communes', title: 'Comunas', icon: 'library_books', class: '' },
+  //{ path: 'branch', title: 'Oficina', icon: 'content_paste', class: '' },
+  //{ path: 'communes', title: 'Comunas', icon: 'library_books', class: '' },
   { path: 'activities', title: 'Actividades', icon: 'assignment', class: '' },
   { path: 'programs', title: 'Programas', icon: 'web', class: '' },
-  { path: 'suppliers', title: 'Proveedores', icon: 'notifications', class: '' },
+  //{ path: 'suppliers', title: 'Proveedores', icon: 'notifications', class: '' },
   { path: 'maps', title: 'Seguimiento', icon: 'map', class: '' }
 ];
 

@@ -7,4 +7,9 @@ table {
   width: 100%;
 }
 
-
+.alumnos-count{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:22px; height:22px; padding:0 6px; border-radius:999px;
+  font-weight:600; font-size:12px; background:#e8f5e9; color:#1b5e20;
+  border:1px solid #c8e6c9;
+}

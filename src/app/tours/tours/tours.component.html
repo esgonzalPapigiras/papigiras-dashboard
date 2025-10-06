@@ -2,26 +2,23 @@
   <div class="container-fluid" style="width: 100%; padding: 20px;">
     <div class="row">
       <div class="col-md-12" style="width: 100%; padding: 20px;">
-        <div
-            class="button-container"
-            style="
+        <div class="button-container" style="
               display: flex;
               gap: 15px;
               justify-content: start;
               margin-bottom: 10px;
-            "
-          >
-            <button mat-raised-button color="primary" (click)="addTour()">
-              Agregar Gira
-            </button>
-            <button mat-raised-button color="warning" (click)="downloadTemplateTour()">
+            ">
+          <button mat-raised-button color="primary" (click)="addTour()">
+            Agregar Gira
+          </button>
+          <button mat-raised-button color="warning" (click)="downloadTemplateTour()">
             Descargar plantilla Gira
-            </button>
-            <button mat-raised-button color="green" (click)="downloadTemplatePassenger()">
+          </button>
+          <button mat-raised-button color="green" (click)="downloadTemplatePassenger()">
             Descargar plantilla Alumnos
-            </button>
-            
-          </div>
+          </button>
+
+        </div>
         <div class="card">
           <div class="card-header card-header-danger">
             <h4 class="card-title">Mantenedor Giras</h4>
@@ -81,14 +78,20 @@
                   <button mat-icon-button color="primary" (click)="openViewDialog(row)" matTooltip="Ver detalles">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button color="primary" 
-                   [color]="row.addAlumnListDoc ? 'accent' : 'primary'"
-                   [disabled]="row.addAlumnListDoc"(click)="openViewDialogAlumn(row)"
-                    matTooltip="Cargar Planilla Alumnos y Acompañantes">
-                    <mat-icon>person_add</mat-icon>
+                  <button mat-icon-button [color]="row.addAlumnListDoc ? 'accent' : 'primary'" [disabled]="isUploading"
+                    (click)="row.addAlumnListDoc ? openAlumnosModal(row) : fileInput.click()"
+                    [matTooltip]="row.addAlumnListDoc ? 'Ver alumnos cargados' : 'Cargar Planilla Alumnos y Acompañantes'">
+
+                    <ng-container *ngIf="row.addAlumnListDoc; else addIcon">
+                      <span class="alumnos-count">{{ row.alumnosCount ?? 0 }}</span>
+                    </ng-container>
+                    <ng-template #addIcon>
+                      <mat-icon>person_add</mat-icon>
+                    </ng-template>
                   </button>
-                  <input #fileInput type="file" (change)="onFileSelected($event,row)" accept=".xlsx,.xls"
-                    style="display:none" />
+
+                  <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
+                    (change)="onFileSelected($event, row)" />
                   <button mat-icon-button color="primary" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                     <mat-icon>directions_bus</mat-icon>
                   </button>
@@ -99,9 +102,8 @@
                     matTooltip="Agregar tripulación">
                     <mat-icon>people</mat-icon>
                   </button>
-                  <button mat-icon-button color="primary" 
-                  [color]="row.addDetailHotelDoc ? 'accent' : 'primary'"
-                  [disabled]="row.addDetailHotelDoc"(click)="openViewDialogContract(row)" matTooltip="Contrato">
+                  <button mat-icon-button color="primary" [color]="row.addDetailHotelDoc ? 'accent' : 'primary'"
+                    [disabled]="row.addDetailHotelDoc" (click)="openViewDialogContract(row)" matTooltip="Contrato">
                     <mat-icon>gavel</mat-icon>
                   </button>
                   <input #fileInputContract type="file" (change)="onFileSelectedContract($event,row)" accept="*"
@@ -110,16 +112,13 @@
                     matTooltip="Agregar coordinador">
                     <mat-icon>nordic_walking</mat-icon>
                   </button>
-                  <button mat-icon-button color="primary" 
-                  [color]="row.addProgramDoc ? 'accent' : 'primary'"
-                  [disabled]="row.addProgramDoc"(click)="openViewDialogProgram(row)"
-                    matTooltip="Lista Programa">
+                  <button mat-icon-button color="primary" [color]="row.addProgramDoc ? 'accent' : 'primary'"
+                    [disabled]="row.addProgramDoc" (click)="openViewDialogProgram(row)" matTooltip="Lista Programa">
                     <mat-icon>fact_check</mat-icon>
                   </button>
                   <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
                     style="display:none" />
-                  <button mat-icon-button 
-                    [color]="row.addSegurityPolicyDoc ? 'accent' : 'primary'"
+                  <button mat-icon-button [color]="row.addSegurityPolicyDoc ? 'accent' : 'primary'"
                     [disabled]="row.addSegurityPolicyDoc" (click)="openViewDialogPolizaSeguro(row)"
                     matTooltip="Poliza Seguro">
                     <mat-icon>health_and_safety</mat-icon>
@@ -143,7 +142,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+            <mat-paginator #paginator [pageSizeOptions]="[5,10,25]" [pageSize]="10"></mat-paginator>
           </div>
         </div>
       </div>
