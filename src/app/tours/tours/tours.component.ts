@@ -22,7 +22,7 @@ import { TourViewAlumnsModalComponent } from '../tour-view-alumns-modal/tour-vie
 import * as XLSX from 'xlsx';
 // RXJS
 import { forkJoin, of } from 'rxjs';
-import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tours',
@@ -148,21 +148,21 @@ export class ToursComponent implements AfterViewInit, OnInit {
       'coordinador'
     ];
     const hints = [
-      '(dd-MM-yyyy)', 
-      '(dd-MM-yyyy)', 
-      '',             
-      '',            
-      '2025',         
-      '1234',         
-      '1101',         
-      '4B',           
-      '',           
-      '12.345.678-9', 
+      '(dd-MM-yyyy)',
+      '(dd-MM-yyyy)',
+      '',
+      '',
+      '2025',
+      '1234',
+      '1101',
+      '4B',
+      '',
+      '12.345.678-9',
       'NOMBRE APELLIDO',
-      '12.345.678-9', 
+      '12.345.678-9',
       'NOMBRE APELLIDO',
-      '',             
-      ''              
+      '',
+      ''
     ];
     const note = ['Estos campos son los mínimos necesarios para ejecutar la carga. Complete según corresponda.'];
     while (note.length < headers.length) note.push('');
@@ -176,9 +176,108 @@ export class ToursComponent implements AfterViewInit, OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Template Carga Masiva Giras.xlsx');
   }
-  downloadTemplatePassenger() {
 
+  private loadGiras$() {
+  Swal.fire({
+    title: 'Cargando...',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading(),
+  });
+
+  return this.girasServices.obtenerGiras().pipe(
+    tap((respon: TourSalesDTO[]) => {
+      this.dataSource = new MatTableDataSource(respon);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }),
+    switchMap(() => {
+      const rows: TourSalesDTO[] = this.dataSource?.data ?? [];
+      if (!rows.length) return of(rows);
+
+      const tasks = rows.map(row =>
+        this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
+          tap(detalle => {
+            (row as any).detalle = detalle;
+            (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
+            (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
+          }),
+          catchError(err => {
+            console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
+            (row as any).addAlumnListDoc = false;
+            (row as any).alumnosCount = 0;
+            return of(null);
+          })
+        )
+      );
+
+      return forkJoin(tasks).pipe(map(() => rows));
+    }),
+    finalize(() => Swal.close())
+  );
+}
+
+  downloadTemplatePassenger() {
+    // Mensaje específico para la generación del Excel
+    Swal.fire({
+      title: 'Generando plantilla...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    this.loadGiras$().pipe(
+      tap(rows => {
+        // Si quieres filtrar solo con alumnos, descomenta la línea de abajo:
+        // rows = rows.filter(r => r.addAlumnListDoc);
+
+        const fileName = `giras_template_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        this.buildExcel(rows, fileName);
+      }),
+      finalize(() => Swal.close())
+    ).subscribe({
+      next: () => {
+        Swal.fire({ icon: 'success', title: 'Plantilla generada', timer: 1200, showConfirmButton: false });
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'Error al generar plantilla', text: 'Intenta nuevamente.' });
+      }
+    });
   }
+
+  private getExcelRows(rows: TourSalesDTO[]) {
+    return rows.map(r => ([
+      r.addCourse ?? '',
+      r.collegeName ?? '',
+      r.tour ?? '',
+      r.tourSalesUuid ?? '',
+      r.tourSalesInit ?? '',
+      r.tourSalesFinal ?? ''
+    ]));
+  }
+
+  private buildExcel(rows: TourSalesDTO[], fileName: string) {
+    const headers = ['Curso', 'Colegio', 'Tour', 'UUID', 'Fecha Inicio', 'Fecha Término'];
+    const aoa = [headers, ...this.getExcelRows(rows)];
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    ws['!cols'] = [
+      { wch: 10 }, // Curso
+      { wch: 30 }, // Colegio
+      { wch: 24 }, // Tour
+      { wch: 22 }, // UUID
+      { wch: 14 }, // Fecha Inicio
+      { wch: 14 }, // Fecha Término
+    ];
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { c: 0, r: 0 }, e: { c: 5, r: rows.length } }) };
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Giras');
+
+    const name = fileName || `giras_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, name);
+  }
+
+
 
   onFileSelected(event: any, row: any) {
     const file = event.target.files?.[0];
