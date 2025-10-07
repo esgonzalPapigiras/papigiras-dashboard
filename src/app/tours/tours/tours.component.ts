@@ -23,6 +23,9 @@ import * as XLSX from 'xlsx';
 // RXJS
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { TourViewCoordinatorModalComponent } from '../tour-view-coordinator-modal/tour-view-coordinator-modal.component';
+import { TourViewBusModalComponent } from '../tour-view-bus-modal/tour-view-bus-modal.component';
+import { TourViewDriverModalComponent } from '../tour-view-driver-modal/tour-view-driver-modal.component';
 
 @Component({
   selector: 'app-tours',
@@ -483,7 +486,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   openViewDialogBus(row: any): void {
-    this.dialog.open(TourAddBusModalComponent, {
+    this.dialog.open(TourViewBusModalComponent, {
       width: '1300px',
       height: '600px',
       data: row.tourSalesId
@@ -491,7 +494,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   openViewDialogTripulation(row: any): void {
-    this.dialog.open(TourAddDriverModalComponent, {
+    this.dialog.open(TourViewDriverModalComponent, {
       width: '1300px',
       height: '600px',
       data: row.tourSalesId

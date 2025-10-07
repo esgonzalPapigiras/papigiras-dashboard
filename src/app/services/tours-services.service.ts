@@ -10,6 +10,7 @@ import { TourSalesDTO } from 'app/models/tourSales';
 import { TourSalesDetail } from 'app/models/toursalesdetail';
 import { TourSalesDetailWeb } from 'app/models/TourSalesDetailWeb';
 import { TripulationBus } from 'app/models/tripulationBus';
+import { TripulationBusDTO } from 'app/models/tripulationBusDTO';
 import { TripulationsDTO } from 'app/models/tripulations';
 import { catchError, map, Observable } from 'rxjs';
 
@@ -18,6 +19,58 @@ import { catchError, map, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ToursServicesService {
+
+
+  public eliminarBus(id: number,idTour:number) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token'),
+    });
+
+    const params = new HttpParams()
+  .set('id', id.toString())
+  .set('idTour', idTour.toString());
+    
+    return this.http.delete<TripulationBusDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/bus', { headers, params });
+  }
+
+
+  public actualizarBus(payload: TripulationBusDTO) {
+    
+    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/bus';
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(payload), { headers });
+  }
+
+  public updateTripulation(payload: TripulationsDTO) {
+    
+    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/tripulation';
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(payload), { headers });
+  }
+
+  public deleteTripulation(id: number,idTour:number) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token'),
+    });
+
+    const params = new HttpParams()
+  .set('id', id.toString())
+  .set('idTour', idTour.toString());
+    
+    return this.http.delete<TripulationsDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/tripulation', { headers, params });
+  }
 
   constructor(private http: HttpClient) { }
 
@@ -73,7 +126,7 @@ export class ToursServicesService {
       );
   }
 
-  public listaBusGira(id: number): Observable<TripulationBus[]> {
+  public listaBusGira(id: number): Observable<TripulationBusDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
     const headers = new HttpHeaders({
@@ -83,7 +136,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<TripulationBus[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/bus', { headers, params });
+    return this.http.get<TripulationBusDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/bus', { headers, params });
   }
 
   public listaTripulantes(id: number): Observable<TripulationsDTO[]> {
@@ -309,6 +362,17 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(objeto), { headers });
   }
 
+  public addBusNew(objeto: TripulationBusDTO, id: number): Observable<any> {
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/bus?id=${id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
   public tourCreate(tour: any): Observable<any> {
 
 
@@ -322,9 +386,20 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(tour), { headers });
   }
 
-  public addTripulation(objeto: TripulationsDTO, id: number): Observable<any> {
+  public addTripulation(objeto: TripulationsDTO, id: string): Observable<any> {
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
+  public addTripulationNew(objeto: TripulationsDTO, id: string,confirma:boolean): Observable<any> {
+
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token

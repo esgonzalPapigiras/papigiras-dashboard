@@ -13,7 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { LoginComponent } from './login/login.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatChipsModule } from '@angular/material/chips';
-import { TourViewAlumnsModalComponent } from './tours/tour-view-alumns-modal/tour-view-alumns-modal.component';
+
 
 @NgModule({
   imports: [
@@ -33,7 +33,7 @@ import { TourViewAlumnsModalComponent } from './tours/tour-view-alumns-modal/tou
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-    LoginComponent,
+    LoginComponent
     
   ],
   providers: [],

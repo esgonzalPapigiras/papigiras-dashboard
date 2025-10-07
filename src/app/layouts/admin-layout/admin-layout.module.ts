@@ -65,6 +65,9 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { TourViewAlumnsModalComponent } from 'app/tours/tour-view-alumns-modal/tour-view-alumns-modal.component';
 import { MatListModule } from '@angular/material/list';
 import { MatSortModule } from '@angular/material/sort';
+import { TourViewBusModalComponent } from 'app/tours/tour-view-bus-modal/tour-view-bus-modal.component';
+import { TourViewCoordinatorModalComponent } from 'app/tours/tour-view-coordinator-modal/tour-view-coordinator-modal.component';
+import { TourViewDriverModalComponent } from 'app/tours/tour-view-driver-modal/tour-view-driver-modal.component';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -146,7 +149,10 @@ const MY_DATE_FORMATS = {
     TourAddDriverModalComponent,
     NewTourModalComponent,
     TourViewAlumnsModalComponent,
-    MapsCoordinatorComponent
+    MapsCoordinatorComponent,
+    TourViewBusModalComponent,
+    TourViewCoordinatorModalComponent,
+    TourViewDriverModalComponent,
     
     
 

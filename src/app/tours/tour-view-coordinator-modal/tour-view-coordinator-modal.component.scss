@@ -1,0 +1,16 @@
+::ng-deep .tabla-buses {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+::ng-deep .tabla-buses th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+}
+
+::ng-deep .tabla-buses tr.mat-row:hover {
+  background: #f0f8ff;
+  transition: background 0.3s;
+}
