@@ -8,6 +8,7 @@ import { MatSort } from '@angular/material/sort';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ToursServicesService } from 'app/services/tours-services.service';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { PassengerEditDialogComponent } from '../passenger-edit-dialog/passenger-edit-dialog.component';
 
 @Component({
   selector: 'app-tour-view-alumns-modal',
@@ -97,10 +98,53 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   voucherRecord(_row: PassengerDTO): void {
     // TODO: implementar si lo necesitas
   }
-  openViewDialog(_row: PassengerDTO): void {
-    // TODO
+  openViewDialog(row: PassengerDTO): void {
+    this.dialog.open(PassengerEditDialogComponent, {
+      width: '720px',
+      disableClose: true,
+      data: row
+    });
   }
-  deleteAction(_row: PassengerDTO): void {
-    // TODO
-  }
+
+
+  eliminarPasajero(row: PassengerDTO) {
+  const nombre = row.passengersNames || row.namePassengersAttorney || '';
+  const identificacion = row.passengersIdentification || '';
+
+  Swal.fire({
+    title: '¿Eliminar pasajero?',
+    html: `
+      <div style="text-align:left">
+        <div><strong>Nombre:</strong> ${nombre}</div>
+        <div><strong>Identificación:</strong> ${identificacion}</div>
+      </div>
+    `,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true,
+  }).then(result => {
+    if (!result.isConfirmed) return;
+
+    // define qué id mandar: UUID preferente, si no existe usa el numérico
+    const idParam = (row.passengersUuid && String(row.passengersUuid).trim().length > 0)
+      ? String(row.passengersUuid)
+      : String(row.passengersId);
+
+    Swal.fire({ title: 'Eliminando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    this.girasServices.deletePassenger(row.passengersId).subscribe({
+      next: () => {
+        this.dataSourceAlumnos.data = this.dataSourceAlumnos.data.filter(
+          p => (p.passengersUuid ?? String(p.passengersId)) !== (row.passengersUuid ?? String(row.passengersId))
+        );
+        Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Pasajero eliminado correctamente', timer: 1500, showConfirmButton: false });
+      },
+      error: (err) => {
+        Swal.fire({ icon: 'error', title: 'Error', text: err?.error?.message || 'No se pudo eliminar el pasajero' });
+      }
+    });
+  });
+}
 }

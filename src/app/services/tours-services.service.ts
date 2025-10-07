@@ -21,22 +21,22 @@ import { catchError, map, Observable } from 'rxjs';
 export class ToursServicesService {
 
 
-  public eliminarBus(id: number,idTour:number) {
+  public eliminarBus(id: number, idTour: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams()
-  .set('id', id.toString())
-  .set('idTour', idTour.toString());
-    
+      .set('id', id.toString())
+      .set('idTour', idTour.toString());
+
     return this.http.delete<TripulationBusDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/bus', { headers, params });
   }
 
 
   public actualizarBus(payload: TripulationBusDTO) {
-    
+
     const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/bus';
 
     const headers = new HttpHeaders({
@@ -48,7 +48,7 @@ export class ToursServicesService {
   }
 
   public updateTripulation(payload: TripulationsDTO) {
-    
+
     const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/tripulation';
 
     const headers = new HttpHeaders({
@@ -59,16 +59,16 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(payload), { headers });
   }
 
-  public deleteTripulation(id: number,idTour:number) {
+  public deleteTripulation(id: number, idTour: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: localStorage.getItem('token'),
     });
 
     const params = new HttpParams()
-  .set('id', id.toString())
-  .set('idTour', idTour.toString());
-    
+      .set('id', id.toString())
+      .set('idTour', idTour.toString());
+
     return this.http.delete<TripulationsDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/tripulation', { headers, params });
   }
 
@@ -386,7 +386,7 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(tour), { headers });
   }
 
-  public addTripulation(objeto: TripulationsDTO, id: string,confirma:boolean): Observable<any> {
+  public addTripulation(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
@@ -397,7 +397,7 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(objeto), { headers });
   }
 
-  public addTripulationNew(objeto: TripulationsDTO, id: string,confirma:boolean): Observable<any> {
+  public addTripulationNew(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
 
     const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
@@ -406,6 +406,30 @@ export class ToursServicesService {
     });
 
     return this.http.post(url, JSON.stringify(objeto), { headers });
+  }
+
+  updatePassenger(dto: PassengerDTO, id: number): Observable<PassengerDTO> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+
+    const params = new HttpParams().set('id', id.toString());
+
+    // Tu backend usa POST /update con @RequestParam id y body = dto
+    return this.http.post<PassengerDTO>(`https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/update`, dto, { headers, params });
+  }
+
+  deletePassenger(id: number) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token'),
+    });
+
+    const params = new HttpParams()
+      .set('id', id.toString());
+
+    return this.http.delete<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/delete', { headers, params });
   }
 
 

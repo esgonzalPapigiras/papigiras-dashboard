@@ -1,0 +1,28 @@
+export interface PassengerDTO {
+  passengersId: number;
+  passengersCourse: string;
+  passengersFatherLastName: string;
+  passengersMotherLastName: string;
+  passengersNames: string;
+  passengersIdentification: string;
+  passengersBirthDate: string;
+  passengersPhone: string;
+  passengersEmail: string;
+  passengersSex: string;
+  passengersSize: string;
+  passengersDiet: string;
+  passengersPaidOrReleased: string;
+  passengersType: string;
+  passengersComment: string;
+  passengersTotalPayment: string;
+  passengersUuid: string;
+  passengersTotalTruePayment: boolean;
+  idPassengerAttorney: number;
+  emailPassengersAttorney: string;
+  namePassengersAttorney: string;
+  phonePassengersAttorney: string;
+  passengersIdAttorney: number;
+  passengersActive: boolean;
+  passengersVoucher: boolean;
+  medicalRecord: boolean;
+}

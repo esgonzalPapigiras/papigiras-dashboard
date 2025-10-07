@@ -68,6 +68,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { TourViewBusModalComponent } from 'app/tours/tour-view-bus-modal/tour-view-bus-modal.component';
 import { TourViewCoordinatorModalComponent } from 'app/tours/tour-view-coordinator-modal/tour-view-coordinator-modal.component';
 import { TourViewDriverModalComponent } from 'app/tours/tour-view-driver-modal/tour-view-driver-modal.component';
+import { PassengerEditDialogComponent } from 'app/tours/passenger-edit-dialog/passenger-edit-dialog.component';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -153,6 +154,7 @@ const MY_DATE_FORMATS = {
     TourViewBusModalComponent,
     TourViewCoordinatorModalComponent,
     TourViewDriverModalComponent,
+    PassengerEditDialogComponent
     
     
 
