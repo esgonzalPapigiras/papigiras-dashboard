@@ -99,22 +99,22 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     // TODO: implementar si lo necesitas
   }
   openViewDialog(row: PassengerDTO): void {
-  const ref = this.dialog.open(PassengerEditDialogComponent, {
-    width: '720px',
-    disableClose: true,
-    data: row
-  });
+    const ref = this.dialog.open(PassengerEditDialogComponent, {
+      width: '720px',
+      disableClose: true,
+      data: row
+    });
 
-  ref.afterClosed().subscribe((updated?: PassengerDTO) => {
-    if (updated) {
-      // opción A: recargar toda la lista
-      this.ObtenerListaAlumnos();
+    ref.afterClosed().subscribe((updated?: PassengerDTO) => {
+      if (updated) {
+        // opción A: recargar toda la lista
+        this.ObtenerListaAlumnos();
 
-      // opción B (opcional): si prefieres no recargar todo, actualiza solo la fila
-      // this.updateRowInTable(updated);
-    }
-  });
-}
+        // opción B (opcional): si prefieres no recargar todo, actualiza solo la fila
+        // this.updateRowInTable(updated);
+      }
+    });
+  }
 
 
   eliminarPasajero(row: PassengerDTO) {
@@ -176,6 +176,27 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
           });
         }
       });
+    });
+  }
+
+  medicalRecord(row: any): void {
+    Swal.fire({
+      title: "Buscando el archivo...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.girasServices.downloadDocumentMedical(this.data.id, row.passengersId, row.passengersIdentification).subscribe({
+          next: (response) => {
+            const blob = new Blob([response]);
+            saveAs(blob, row.passengersIdentification);
+            Swal.close();
+          },
+          error: (err) => {
+            console.error('Error downloading the file: ', err);
+            Swal.close();
+          }
+        });
+      },
     });
   }
 }

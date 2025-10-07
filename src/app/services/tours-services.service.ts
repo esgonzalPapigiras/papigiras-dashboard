@@ -273,7 +273,7 @@ export class ToursServicesService {
   }
 
   downloadDocumentMedical(name: string, idPassenger: string, supplier: any): Observable<any> {
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/view/medical-recordscm`;
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/view/medical-records`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
