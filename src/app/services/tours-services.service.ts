@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TripulationAvionDTO } from 'app/models/avionList';
 import { CollegeList } from 'app/models/collegeList';
+import { DeleteResponse } from 'app/models/DeleteResponse';
 import { DocumentDTO } from 'app/models/document';
 import { HotelDTOList } from 'app/models/hotelList';
 import { PassengerDTO } from 'app/models/passengerList';
@@ -421,16 +422,18 @@ export class ToursServicesService {
   }
 
   deletePassenger(id: number) {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: localStorage.getItem('token'),
-    });
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: localStorage.getItem('token') ?? '',
+  });
 
-    const params = new HttpParams()
-      .set('id', id.toString());
+  const params = new HttpParams().set('id', id.toString());
 
-    return this.http.delete<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/delete', { headers, params });
-  }
+  return this.http.delete<DeleteResponse>(
+    'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/delete',
+    { headers, params }
+  );
+}
 
 
 

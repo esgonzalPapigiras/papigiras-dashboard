@@ -40,9 +40,9 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data,
     private girasServices: ToursServicesService
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngAfterViewInit(): void {
     this.dataSourceAlumnos.paginator = this.paginatorAlumn;
@@ -99,52 +99,83 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     // TODO: implementar si lo necesitas
   }
   openViewDialog(row: PassengerDTO): void {
-    this.dialog.open(PassengerEditDialogComponent, {
-      width: '720px',
-      disableClose: true,
-      data: row
-    });
-  }
+  const ref = this.dialog.open(PassengerEditDialogComponent, {
+    width: '720px',
+    disableClose: true,
+    data: row
+  });
+
+  ref.afterClosed().subscribe((updated?: PassengerDTO) => {
+    if (updated) {
+      // opción A: recargar toda la lista
+      this.ObtenerListaAlumnos();
+
+      // opción B (opcional): si prefieres no recargar todo, actualiza solo la fila
+      // this.updateRowInTable(updated);
+    }
+  });
+}
 
 
   eliminarPasajero(row: PassengerDTO) {
-  const nombre = row.passengersNames || row.namePassengersAttorney || '';
-  const identificacion = row.passengersIdentification || '';
+    const nombre = row.passengersNames || row.namePassengersAttorney || '';
+    const identificacion = row.passengersIdentification || '';
 
-  Swal.fire({
-    title: '¿Eliminar pasajero?',
-    html: `
+    Swal.fire({
+      title: '¿Eliminar pasajero?',
+      html: `
       <div style="text-align:left">
         <div><strong>Nombre:</strong> ${nombre}</div>
         <div><strong>Identificación:</strong> ${identificacion}</div>
       </div>
     `,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    reverseButtons: true,
-  }).then(result => {
-    if (!result.isConfirmed) return;
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+    }).then(result => {
+      if (!result.isConfirmed) return;
 
-    // define qué id mandar: UUID preferente, si no existe usa el numérico
-    const idParam = (row.passengersUuid && String(row.passengersUuid).trim().length > 0)
-      ? String(row.passengersUuid)
-      : String(row.passengersId);
+      // 1) Definir ID a enviar
+      const idParam = (row.passengersUuid && String(row.passengersUuid).trim().length > 0)
+        ? String(row.passengersUuid)
+        : String(row.passengersId ?? '');
 
-    Swal.fire({ title: 'Eliminando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-    this.girasServices.deletePassenger(row.passengersId).subscribe({
-      next: () => {
-        this.dataSourceAlumnos.data = this.dataSourceAlumnos.data.filter(
-          p => (p.passengersUuid ?? String(p.passengersId)) !== (row.passengersUuid ?? String(row.passengersId))
-        );
-        Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Pasajero eliminado correctamente', timer: 1500, showConfirmButton: false });
-      },
-      error: (err) => {
-        Swal.fire({ icon: 'error', title: 'Error', text: err?.error?.message || 'No se pudo eliminar el pasajero' });
+      if (!idParam) {
+        Swal.fire({ icon: 'warning', title: 'Sin ID', text: 'No se encontró el identificador del pasajero.' });
+        return;
       }
+
+      Swal.fire({ title: 'Eliminando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      this.girasServices.deletePassenger(row.passengersId).subscribe({
+        next: (resp) => {
+          if (resp?.status === 'success') {
+            this.ObtenerListaAlumnos();
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: resp.message || 'Pasajero eliminado correctamente',
+              timer: 1600,
+              showConfirmButton: false
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo eliminar',
+              text: resp?.message || 'La operación fue rechazada por el servidor'
+            });
+          }
+        },
+        error: (err) => {
+          const serverMsg = err?.error?.message;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: serverMsg || 'No se pudo eliminar el pasajero'
+          });
+        }
+      });
     });
-  });
-}
+  }
 }
