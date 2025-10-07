@@ -386,9 +386,9 @@ export class ToursServicesService {
     return this.http.post(url, JSON.stringify(tour), { headers });
   }
 
-  public addTripulation(objeto: TripulationsDTO, id: string): Observable<any> {
+  public addTripulation(objeto: TripulationsDTO, id: string,confirma:boolean): Observable<any> {
 
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}`;
+    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
