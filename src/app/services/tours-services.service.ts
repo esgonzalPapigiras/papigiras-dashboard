@@ -21,6 +21,19 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
+  createMedicalRecord(body: any) {
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: localStorage.getItem('token') || '',
+  });
+
+  return this.http.post(
+    'https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/medical-records', // <- modifica a tu endpoint real
+    body,
+    { headers }
+  );
+}
+
 
   public eliminarBus(id: number, idTour: number) {
     const headers = new HttpHeaders({

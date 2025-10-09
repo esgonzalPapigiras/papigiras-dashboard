@@ -14,7 +14,6 @@ import { LoginComponent } from './login/login.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatChipsModule } from '@angular/material/chips';
 
-
 @NgModule({
   imports: [
     FormsModule,

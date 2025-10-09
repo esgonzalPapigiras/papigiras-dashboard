@@ -1,0 +1,175 @@
+<!-- medical-record-dialog.component.html -->
+<h2 mat-dialog-title>Ficha Médica</h2>
+
+<mat-dialog-content [formGroup]="form" class="grid gap-3">
+    <!-- Identificación -->
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="nombres" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Apellidos</mat-label>
+            <input matInput formControlName="apellidos" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>RUT</mat-label>
+            <input matInput formControlName="rut" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Grupo Sanguíneo</mat-label>
+            <input matInput formControlName="grupoSanguineo" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Curso</mat-label>
+            <input matInput formControlName="curso" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Colegio</mat-label>
+            <input matInput formControlName="colegio" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Comuna</mat-label>
+            <input matInput formControlName="comuna" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fecha Nacimiento</mat-label>
+            <input matInput type="date" formControlName="fechaNacimiento" />
+        </mat-form-field>
+    </div>
+
+    <!-- Contacto emergencia -->
+    <h3>Contacto de Emergencia</h3>
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="contactoEmergenciaNombre" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Relación</mat-label>
+            <input matInput formControlName="contactoEmergenciaRelacion" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="contactoEmergenciaTelefono" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="contactoEmergenciaEmail" />
+        </mat-form-field>
+    </div>
+
+    <h3>Coberturas</h3>
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Cobertura de salud</mat-label>
+            <mat-select formControlName="cobertura">
+                <mat-option [value]="'FONASA'">Fonasa</mat-option>
+                <mat-option [value]="'ISAPRE'">Isapre</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 ml-3" *ngIf="form.get('cobertura')?.value === 'ISAPRE'">
+            <mat-label>Nombre Isapre</mat-label>
+            <input matInput formControlName="isapreNombre" />
+            <mat-error *ngIf="form.get('isapreNombre')?.hasError('required')">
+                Campo obligatorio al seleccionar Isapre
+            </mat-error>
+        </mat-form-field>
+    </div>
+
+    <!-- Salud -->
+    <h3>Salud</h3>
+    <mat-checkbox formControlName="tieneEnfermedades">¿Presenta enfermedades?</mat-checkbox>
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Detalle de enfermedades</mat-label>
+        <textarea matInput rows="2" formControlName="enfermedades"></textarea>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="tomaMedicamentos">¿Toma medicamentos?</mat-checkbox>
+    <div formArrayName="medicamentos">
+        <div class="row" *ngFor="let m of medicamentosFA.controls; let i = index" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Medicamento</mat-label>
+                <input matInput formControlName="nombre" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Dosis</mat-label>
+                <input matInput formControlName="dosis" />
+            </mat-form-field>
+
+            <button mat-stroked-button color="warn" (click)="removeMedicamento(i)" *ngIf="medicamentosFA.length > 1">
+                Quitar
+            </button>
+        </div>
+        <button mat-stroked-button (click)="addMedicamento()" *ngIf="form.get('tomaMedicamentos')?.value">Agregar
+            medicamento</button>
+    </div>
+
+    <mat-checkbox formControlName="evitarMedicamentos">¿Debe evitar algún medicamento?</mat-checkbox>
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Medicamentos a evitar</mat-label>
+        <textarea matInput rows="2" formControlName="medicamentosEvitar"></textarea>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="requiereCuidadosEspeciales">¿Requiere cuidados especiales?</mat-checkbox>
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Detalle cuidados especiales</mat-label>
+        <textarea matInput rows="2" formControlName="cuidadosEspeciales"></textarea>
+    </mat-form-field>
+
+    <div class="row">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fecha Autorización</mat-label>
+            <input matInput type="date" formControlName="fechaAutorizacion" />
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="save()">Guardar</button>
+</mat-dialog-actions>
+
+<style>
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .ml-3 {
+        margin-left: 12px;
+    }
+
+    .grid {
+        display: grid;
+    }
+
+    .gap-3 {
+        gap: 12px;
+    }
+</style>
