@@ -31,55 +31,14 @@
 
           </div>
           <div class="card-body">
-            <!--
+          
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
               <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
             </mat-form-field>
-            -->
+            
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
               class="mat-elevation-z8">
-
-              <!-- ===================== FILTER ROW ===================== -->
-              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true">
-                <th *ngFor="let column of displayedColumns">
-                  <ng-container [ngSwitch]="column">
-
-                    <ng-container *ngSwitchCase="'tourSalesUuid'">
-                      <input matInput placeholder="Filtrar ID"
-                        (input)="applyColumnFilter('tourSalesUuid', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'tourSalesInit'">
-                      <input matInput placeholder="Filtrar Salida"
-                        (input)="applyColumnFilter('tourSalesInit', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'tourSalesFinal'">
-                      <input matInput placeholder="Filtrar Regreso"
-                        (input)="applyColumnFilter('tourSalesFinal', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'collegeName'">
-                      <input matInput placeholder="Filtrar Colegio"
-                        (input)="applyColumnFilter('collegeName', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'addCourse'">
-                      <input matInput placeholder="Filtrar Curso"
-                        (input)="applyColumnFilter('addCourse', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'communesName'">
-                      <input matInput placeholder="Filtrar Comuna"
-                        (input)="applyColumnFilter('communeName', $event.target.value)">
-                    </ng-container>
-
-                    <ng-container *ngSwitchDefault></ng-container>
-
-                  </ng-container>
-                </th>
-              </tr>
 
               <!-- ===================== HEADER ROW ===================== -->
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

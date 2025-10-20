@@ -21,9 +21,9 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  url = 'http://localhost:8084';
+  //url = 'http://localhost:8084';
 
   createMedicalRecord(body: any) {
     const headers = new HttpHeaders({
