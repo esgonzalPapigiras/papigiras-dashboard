@@ -23,7 +23,6 @@ export class CoordinatorComponent implements OnInit {
   displayedColumns: string[] = [
     "coordinatorName",
     "coordinatorLastname",
-    "coordinatorOficina",
     "coordinatorCelular",
     "coordinatorCorreo",
     "acciones",
@@ -36,19 +35,18 @@ export class CoordinatorComponent implements OnInit {
   'coordinatorCarrera',           // cell(0)
   'coordinatorCelular',           // cell(1)
   'coordinatorCorreo',            // cell(2)
-  'coordinatorEdad',              // cell(3)
-  'coordinatorEmpresa',           // cell(4)
-  'coordinatorFechaNacimiento',   // cell(5)
-  'coordinatorInstaAt',           // cell(6)
-  'coordinatorInstaPersonal',     // cell(7)
-  'coordinatorLastname',          // cell(8)
-  'coordinatorName',              // cell(9)
-  'coordinatorOficina',           // cell(10)
-  'coordinatorProfesion',         // cell(11)
-  'coordinatorResidencia',        // cell(12)
-  'coordinatorRut',               // cell(13)
-  'coordinatorSex',               // cell(14)
-  'coordinatorUniversidad'        // cell(15)
+  'coordinatorEmpresa',           // cell(3)
+  'coordinatorFechaNacimiento',   // cell(4)
+  'coordinatorInstaAt',           // cell(5)
+  'coordinatorInstaPersonal',     // cell(6)
+  'coordinatorLastname',          // cell(7)
+  'coordinatorName',              // cell(8)
+  'coordinatorOficina',           // cell(9)
+  'coordinatorProfesion',         // cell(10)
+  'coordinatorResidencia',        // cell(11)
+  'coordinatorRut',               // cell(12)
+  'coordinatorSex',               // cell(13)
+  'coordinatorUniversidad'        // cell(14)
 ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -109,7 +107,6 @@ export class CoordinatorComponent implements OnInit {
   }
 
   onFileSelected(event: any) {
-
     const file = event.target.files[0];
     if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
       // Muestra un mensaje de carga con SweetAlert2
@@ -274,7 +271,7 @@ export class CoordinatorComponent implements OnInit {
           const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
             [
               'ID', 'RUT', 'Nombre', 'Apellido', 'Sexo', 'Residencia', 'Oficina',
-              'Fecha Nacimiento', 'Edad', 'Celular', 'Correo', 'Insta Personal',
+              'Fecha Nacimiento', 'Celular', 'Correo', 'Insta Personal',
               'Insta AT', 'Universidad', 'Carrera', 'Profesión', 'Empresa', 'Foto'
             ]
           ]);
@@ -290,7 +287,6 @@ export class CoordinatorComponent implements OnInit {
               row.coordinatorResidencia,
               row.coordinatorOficina,
               row.coordinatorFechaNacimiento,
-              row.coordinatorEdad,
               row.coordinatorCelular,
               row.coordinatorCorreo,
               row.coordinatorInstaPersonal,
@@ -371,8 +367,4 @@ export class CoordinatorComponent implements OnInit {
     };
     reader.readAsArrayBuffer(file); // Lee el archivo como ArrayBuffer
   }
-
-
-
-
 }

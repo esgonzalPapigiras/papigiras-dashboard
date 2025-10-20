@@ -72,14 +72,13 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   }
 
   refreshCounts(): void {
-    console.log('data ')
     this.girasServices.obtenerDetalleGira(this.data.id).subscribe({
       next: (detalle) => {
-        console.log(detalle)
+        //console.log(detalle)
         this.data.detalle = detalle;
         this.total = this.calcTotalParticipantes(detalle) || Number(detalle?.tourSalesStudentCount || 0);
-        console.log(this.data.detalle)
-        console.log(this.total)
+        //console.log(this.data.detalle)
+        //console.log(this.total)
       },
       error: (e) => console.error('Error al obtener detalle de gira', e),
     });
@@ -181,54 +180,57 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   }
 
   medicalRecord(row: any): void {
-  // Si YA tiene ficha -> descarga
-  if (row.medicalRecord) {
-    Swal.fire({
-      title: 'Buscando el archivo...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        this.girasServices
-          .downloadDocumentMedical(this.data.id, row.passengersId, row.passengersIdentification)
-          .subscribe({
-            next: (response) => {
-              const blob = new Blob([response]);
-              // agrega extensión si corresponde (ej: .pdf)
-              saveAs(blob, `${row.passengersIdentification}.pdf`);
-              Swal.close();
-            },
-            error: (err) => {
-              console.error('Error downloading the file: ', err);
-              Swal.close();
-              Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar la ficha.' });
-            },
-          });
+    console.log(row)
+    // Si YA tiene ficha -> descarga
+    if (row.medicalRecord) {
+      Swal.fire({
+        title: 'Buscando el archivo...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices
+            .downloadDocumentMedical(this.data.id, row.passengersId, row.passengersIdentification)
+            .subscribe({
+              next: (response) => {
+                const blob = new Blob([response]);
+                // agrega extensión si corresponde (ej: .pdf)
+                saveAs(blob, `${row.passengersIdentification}.pdf`);
+                Swal.close();
+              },
+              error: (err) => {
+                console.error('Error downloading the file: ', err);
+                Swal.close();
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar la ficha.' });
+              },
+            });
+        },
+      });
+      return;
+    }
+
+    // Si NO tiene ficha -> abrir modal para crear
+    //console.log(this.data)
+    const dialogRef = this.dialog.open(MedicalRecordDialogComponent, {
+      width: '760px',
+      disableClose: true,
+      data: {
+        idTour: this.data.id,                // viene de tu componente padre
+        idPassenger: row.passengersId,       // del registro
+        // Si quieres prefijar nombres/apellidos/curso/colegio desde row, puedes pasarlos aquí:
+        nombres: row.passengersNames,
+        apellidos: `${row.passengersFatherLastName ?? ''} ${row.passengersMotherLastName ?? ''}`.trim(),
+        RUT: row.passengersIdentification,
+        curso: row.passengersCourse,      
+        fechaNacimiento: row.passengersBirthDate,
       },
     });
-    return;
+
+    dialogRef.afterClosed().subscribe((createdOk: boolean) => {
+      if (createdOk) {
+        // marca visualmente que ya tiene ficha (opcional refrescar desde backend)
+        row.medicalRecord = true;
+        Swal.fire({ icon: 'success', title: 'Ficha creada', text: 'Se guardó la ficha médica.' });
+      }
+    });
   }
-
-  // Si NO tiene ficha -> abrir modal para crear
-  const dialogRef = this.dialog.open(MedicalRecordDialogComponent, {
-    width: '760px',
-    disableClose: true,
-    data: {
-      idTour: this.data.id,                // viene de tu componente padre
-      idPassenger: row.passengersId,       // del registro
-      // Si quieres prefijar nombres/apellidos/curso/colegio desde row, puedes pasarlos aquí:
-      // nombres: row.passengersNames,
-      // apellidos: `${row.passengersFatherLastName ?? ''} ${row.passengersMotherLastName ?? ''}`.trim(),
-      // curso: row.passengersCourse,
-      // colegio: row.someSchoolField
-    },
-  });
-
-  dialogRef.afterClosed().subscribe((createdOk: boolean) => {
-    if (createdOk) {
-      // marca visualmente que ya tiene ficha (opcional refrescar desde backend)
-      row.medicalRecord = true;
-      Swal.fire({ icon: 'success', title: 'Ficha creada', text: 'Se guardó la ficha médica.' });
-    }
-  });
-}
 }

@@ -101,8 +101,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     const currentYear = new Date().getFullYear();
-    this.obtenerBestCoordinators(currentYear);
-    this.obtenerRegistrosEstadisticos();
+    //this.obtenerBestCoordinators(currentYear);
+    //this.obtenerRegistrosEstadisticos();
 
     // Crear un array con los próximos 10 años y los 10 anteriores
     for (let i = -5; i <= 5; i++) {
@@ -114,17 +114,18 @@ export class DashboardComponent implements OnInit {
   }
 
   onYearChange(): void {
-    this.obtenerBestCoordinators(this.selectedYear);
+    //this.obtenerBestCoordinators(this.selectedYear);
   }
 
   @ViewChild(MatSort) sort: MatSort;
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    //this.dataSource.sort = this.sort;
+    //this.dataSource.paginator = this.paginator;
   }
 
   obtenerBestCoordinators(year: number) {
+    console.log("mejores coordinadores")
     Swal.fire({
       title: "Cargando...",
       allowOutsideClick: false,
@@ -192,7 +193,7 @@ export class DashboardComponent implements OnInit {
               dataDailySalesChart,
               optionsDailySalesChart
             );
-            this.startAnimationForLineChart(dailySalesChart);
+            //this.startAnimationForLineChart(dailySalesChart);
           },
           error: (err) => {
             console.error("Error al cargar los datos:", err);

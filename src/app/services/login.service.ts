@@ -7,27 +7,29 @@ import { Observable } from 'rxjs';
 })
 export class LoginService {
 
+  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
   constructor(private http: HttpClient) { }
 
   login(email: string, password: string): Observable<any> {
     // Obtener el token de almacenamiento local
     const token = localStorage.getItem('token');
-  
+
     if (!token) {
       return new Observable(observer => {
         observer.error('Token no disponible');
       });
     }
-  
+
     // Crear los parámetros de la URL (email y password)
     const url = `https://ms-subete-app-hcp6a.ondigitalocean.app/api/user/web/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-  
+
     // Configuración de los headers con el token
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}` // Incluye el token correctamente
     });
-  
+
     // Realizar la solicitud POST para login
     return this.http.post(url, {}, { headers });
   }

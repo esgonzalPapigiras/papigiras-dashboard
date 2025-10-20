@@ -20,9 +20,6 @@ import { saveAs } from 'file-saver';
 })
 export class ToursViewModalComponent implements OnInit {
 
-
-
-
   dataSourceGira = new MatTableDataSource<TourSalesDetail>();
   dataSourceTripulantes = new MatTableDataSource<TripulationsDTO>();
   dataSourceAlumnos = new MatTableDataSource<PassengerDTO>();
@@ -63,13 +60,6 @@ export class ToursViewModalComponent implements OnInit {
     "active",
     "acciones",
   ];
-
-
-
-
-
-
-
 
   @ViewChild('paginatorGira') paginatorGira: MatPaginator;
   @ViewChild('paginatorAlumn') paginatorAlumn: MatPaginator;
@@ -120,9 +110,6 @@ export class ToursViewModalComponent implements OnInit {
       this.obtenerListaTripulantes();
     }
   }
-
-
-
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -184,8 +171,6 @@ export class ToursViewModalComponent implements OnInit {
     });
   }
 
-
-
   medicalRecord(row: any): void {
     Swal.fire({
       title: "Buscando el archivo...",
@@ -206,7 +191,6 @@ export class ToursViewModalComponent implements OnInit {
       },
     });
   }
-
 
   obtenerListaBuses() {
     Swal.fire({

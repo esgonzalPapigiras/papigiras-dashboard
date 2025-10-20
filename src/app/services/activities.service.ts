@@ -10,58 +10,49 @@ import { Observable } from 'rxjs';
 })
 export class ActivitiesService {
 
-  
-      
-      constructor(private http: HttpClient) { }
-    
-    
-      public obtenerActividades(): Observable<ActivitiesDTOList[]> {
-      
-          const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-          return this.http.get<ActivitiesDTOList[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/activities/web/get', { headers })
-      
-      }
+  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
 
-      public listStatusTour(): Observable<statusTour[]> {
-      
-        const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-        return this.http.get<statusTour[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/activities/web/get', { headers })
-    
-    }
+  constructor(private http: HttpClient) { }
 
-  
-      public deleteActivities(id:number): Observable<any[]> {
-      
-          const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-          const params = new HttpParams().set('id', id.toString());
-          return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/activities/web/delete', { headers, params })
-      
-      }
-  
-  
-      public activitiesCreate(coordinator: Activities): Observable<any> {
-        
-      
-        const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/activities/web/create';
-      
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
-        });
-      
-        return this.http.post(url, JSON.stringify(coordinator), { headers });
-      }
-  
-      public activitiesUpdate(coordinator: Activities,id:String): Observable<any> {
-        
-      
-        const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/activities/web/update';
-        const params = new HttpParams().set('id', id.toString());
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
-        });
-      
-        return this.http.post(url, JSON.stringify(coordinator), { headers,params });
-      }
+
+  public obtenerActividades(): Observable<ActivitiesDTOList[]> {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    return this.http.get<ActivitiesDTOList[]>(this.url.concat('/api/activities/web/get'), { headers })
+
+  }
+
+  public listStatusTour(): Observable<statusTour[]> {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    return this.http.get<statusTour[]>(this.url.concat('/api/activities/web/get'), { headers })
+
+  }
+
+  public deleteActivities(id: number): Observable<any[]> {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.delete<any[]>(this.url.concat('/api/activities/web/delete'), { headers, params })
+
+  }
+
+
+  public activitiesCreate(coordinator: Activities): Observable<any> {
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(this.url.concat('/api/activities/web/create'), JSON.stringify(coordinator), { headers });
+  }
+
+  public activitiesUpdate(coordinator: Activities, id: String): Observable<any> {
+    const params = new HttpParams().set('id', id.toString());
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(this.url.concat('/api/activities/web/update'), JSON.stringify(coordinator), { headers, params });
+  }
 }

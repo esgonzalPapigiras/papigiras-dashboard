@@ -21,18 +21,22 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  createMedicalRecord(body: any) {
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    Authorization: localStorage.getItem('token') || '',
-  });
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
+  url = 'http://localhost:8084';
 
-  return this.http.post(
-    'https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/medical-records', // <- modifica a tu endpoint real
-    body,
-    { headers }
-  );
-}
+  createMedicalRecord(body: any) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || '',
+    });
+
+    return this.http.post(
+      this.url.concat('/app/services/medical-records'),
+      body,
+      { headers }
+    );
+  }
 
 
   public eliminarBus(id: number, idTour: number) {
@@ -45,32 +49,26 @@ export class ToursServicesService {
       .set('id', id.toString())
       .set('idTour', idTour.toString());
 
-    return this.http.delete<TripulationBusDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/bus', { headers, params });
+    return this.http.delete<TripulationBusDTO[]>(this.url.concat('/api/tour/sales/web/delete/bus'), { headers, params });
   }
 
 
   public actualizarBus(payload: TripulationBusDTO) {
-
-    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/bus';
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(payload), { headers });
+    return this.http.post(this.url.concat('/api/tour/sales/web/update/bus'), JSON.stringify(payload), { headers });
   }
 
   public updateTripulation(payload: TripulationsDTO) {
-
-    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/update/tripulation';
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(payload), { headers });
+    return this.http.post(this.url.concat('/api/tour/sales/web/update/tripulation'), JSON.stringify(payload), { headers });
   }
 
   public deleteTripulation(id: number, idTour: number) {
@@ -83,7 +81,7 @@ export class ToursServicesService {
       .set('id', id.toString())
       .set('idTour', idTour.toString());
 
-    return this.http.delete<TripulationsDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete/tripulation', { headers, params });
+    return this.http.delete<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/delete/tripulation'), { headers, params });
   }
 
   constructor(private http: HttpClient) { }
@@ -91,7 +89,7 @@ export class ToursServicesService {
   public obtenerGiras(): Observable<TourSalesDTO[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-    return this.http.get<TourSalesDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get', { headers })
+    return this.http.get<TourSalesDTO[]>(this.url.concat('/api/tour/sales/web/get'), { headers })
 
   }
 
@@ -104,7 +102,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<TourSalesDetail>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails', { headers, params });
+    return this.http.get<TourSalesDetail>(this.url.concat('/api/tour/sales/web/getDetails'), { headers, params });
   }
 
   public obtenerDetalleGiraWeb(id: number): Observable<TourSalesDetailWeb> {
@@ -117,7 +115,7 @@ export class ToursServicesService {
 
     return this.http
       .get<TourSalesDetailWeb>(
-        'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDetails',
+        this.url.concat('/api/tour/sales/web/getDetails'),
         { headers, params }
       )
       .pipe(
@@ -150,7 +148,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<TripulationBusDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/bus', { headers, params });
+    return this.http.get<TripulationBusDTO[]>(this.url.concat('/api/tour/sales/web/get/bus'), { headers, params });
   }
 
   public listaTripulantes(id: number): Observable<TripulationsDTO[]> {
@@ -163,7 +161,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<TripulationsDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/tripulation', { headers, params });
+    return this.http.get<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/get/tripulation'), { headers, params });
   }
 
   public listHotel(id: number): Observable<HotelDTOList[]> {
@@ -175,7 +173,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<HotelDTOList[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/hotels', { headers, params });
+    return this.http.get<HotelDTOList[]>(this.url.concat('/api/tour/sales/web/get/hotels'), { headers, params });
   }
 
   public listAvion(id: number): Observable<TripulationAvionDTO[]> {
@@ -188,7 +186,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<TripulationAvionDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/get/avion', { headers, params });
+    return this.http.get<TripulationAvionDTO[]>(this.url.concat('/api/tour/sales/web/get/avion'), { headers, params });
   }
 
   public listAlumn(id: number): Observable<PassengerDTO[]> {
@@ -201,7 +199,7 @@ export class ToursServicesService {
 
     const params = new HttpParams().set('id', id.toString());
 
-    return this.http.get<PassengerDTO[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/get/tour', { headers, params });
+    return this.http.get<PassengerDTO[]>(this.url.concat('/api/passenger/web/get/tour'), { headers, params });
   }
 
   public uploadFileMasiveTour(file: any) {
@@ -209,7 +207,7 @@ export class ToursServicesService {
     formData.append('file', file, file.name);
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
 
-    return this.http.post<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload/massive', formData, { headers });
+    return this.http.post<any>(this.url.concat('/api/tour/sales/web/upload/massive'), formData, { headers });
   }
 
   public uploadFile(file: any, id_tour_sale: number): Observable<ResponsePassengerUpload> {
@@ -218,7 +216,7 @@ export class ToursServicesService {
     formData.append('id_tour_sale', id_tour_sale.toString());
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
 
-    return this.http.post<ResponsePassengerUpload>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/upload', formData, { headers });
+    return this.http.post<ResponsePassengerUpload>(this.url.concat('/api/tour/sales/web/upload'), formData, { headers });
 
   }
 
@@ -250,16 +248,13 @@ export class ToursServicesService {
     const headers = token ? new HttpHeaders({ Authorization: token }) : undefined;
 
     return this.http.post(
-      'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/s3/upload',
+      this.url.concat('/api/tour/sales/web/s3/upload'),
       formData,
       { headers }
     );
   }
 
   getDocument(id: number): Observable<DocumentDTO[]> {
-
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/getDocument`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -267,12 +262,11 @@ export class ToursServicesService {
 
     const params = { idtour: id.toString() };
 
-    return this.http.get<DocumentDTO[]>(url, { headers, params });
+    return this.http.get<DocumentDTO[]>(this.url.concat('/api/tour/sales/web/getDocument'), { headers, params });
 
   }
 
   downloadDocument(name: string, supplier: any): Observable<any> {
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/download`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -282,11 +276,10 @@ export class ToursServicesService {
       .set('folderName', name)
       .set('fileName', supplier);
 
-    return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
+    return this.http.get(this.url.concat('/api/tour/sales/web/download'), { headers, params, responseType: 'arraybuffer' });
   }
 
   downloadDocumentMedical(name: string, idPassenger: string, supplier: any): Observable<any> {
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/app/services/get/pdf/view/medical-records`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -297,13 +290,10 @@ export class ToursServicesService {
       .set('idPassenger', idPassenger)
       .set('identificacion', supplier);
 
-    return this.http.get(url, { headers, params, responseType: 'arraybuffer' });
+    return this.http.get(this.url.concat('/app/services/get/pdf/view/medical-records'), { headers, params, responseType: 'arraybuffer' });
   }
 
   deleteDocument(name: string, supplier: any): Observable<any> {
-
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/deleteDocument`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -314,7 +304,7 @@ export class ToursServicesService {
       .set('folderName', name)
       .set('fileName', supplier);
 
-    return this.http.delete(url, { headers, params }).pipe(
+    return this.http.delete(this.url.concat('/api/tour/sales/web/deleteDocument'), { headers, params }).pipe(
       catchError(error => {
         console.error('Error deleting document:', error);
         throw new Error('Failed to delete document');
@@ -323,7 +313,6 @@ export class ToursServicesService {
   }
 
   listPDF(id: number): Observable<ArrayBuffer> {
-    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/generate-pdf';
     const params = new HttpParams().set('id', id.toString());
 
     const headers = new HttpHeaders({
@@ -331,7 +320,7 @@ export class ToursServicesService {
       'Authorization': localStorage.getItem('token')
     });
 
-    return this.http.get(url, {
+    return this.http.get(this.url.concat('/api/tour/sales/web/generate-pdf'), {
       headers,
       params,
       responseType: 'arraybuffer'  // Recibir la respuesta como arraybuffer para el PDF
@@ -343,83 +332,70 @@ export class ToursServicesService {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
-    return this.http.delete<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/delete', { headers, params })
+    return this.http.delete<any>(this.url.concat('/api/tour/sales/web/delete'), { headers, params })
 
   }
 
   public listCollege(): Observable<CollegeList[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-    return this.http.get<any>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/comunnes/web/get/college', { headers })
+    return this.http.get<any>(this.url.concat('/api/comunnes/web/get/college'), { headers })
 
   }
 
   public addAvion(objeto: TripulationAvionDTO, id: number): Observable<any> {
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/avion?id=${id}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(objeto), { headers });
+    return this.http.post(this.url.concat(`/api/tour/sales/web/create/avion?id=${id}`), JSON.stringify(objeto), { headers });
   }
 
   public addBus(objeto: TripulationBus, id: number): Observable<any> {
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/bus?id=${id}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(objeto), { headers });
+    return this.http.post(this.url.concat(`/api/tour/sales/web/create/bus?id=${id}`), JSON.stringify(objeto), { headers });
   }
 
   public addBusNew(objeto: TripulationBusDTO, id: number): Observable<any> {
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/bus?id=${id}`;
+    ;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(objeto), { headers });
+    return this.http.post(this.url.concat(`/api/tour/sales/web/create/bus?id=${id}`), JSON.stringify(objeto), { headers });
   }
 
   public tourCreate(tour: any): Observable<any> {
-
-
-    const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create';
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(tour), { headers });
+    return this.http.post(this.url.concat('/api/tour/sales/web/create'), JSON.stringify(tour), { headers });
   }
 
   public addTripulation(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(objeto), { headers });
+    return this.http.post(this.url.concat(`/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`), JSON.stringify(objeto), { headers });
   }
 
   public addTripulationNew(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
-
-    const url = `https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')  // Asegúrate de usar el formato adecuado para el token
     });
 
-    return this.http.post(url, JSON.stringify(objeto), { headers });
+    return this.http.post(this.url.concat(`/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`), JSON.stringify(objeto), { headers });
   }
 
   updatePassenger(dto: PassengerDTO, id: number): Observable<PassengerDTO> {
@@ -431,24 +407,18 @@ export class ToursServicesService {
     const params = new HttpParams().set('id', id.toString());
 
     // Tu backend usa POST /update con @RequestParam id y body = dto
-    return this.http.post<PassengerDTO>(`https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/update`, dto, { headers, params });
+    return this.http.post<PassengerDTO>(this.url.concat('/api/passenger/web/update'), dto, { headers, params });
   }
 
   deletePassenger(id: number) {
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    Authorization: localStorage.getItem('token') ?? '',
-  });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') ?? '',
+    });
 
-  const params = new HttpParams().set('id', id.toString());
+    const params = new HttpParams().set('id', id.toString());
 
-  return this.http.delete<DeleteResponse>(
-    'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/passenger/web/delete',
-    { headers, params }
-  );
-}
-
-
-
+    return this.http.delete<DeleteResponse>(this.url.concat('/api/passenger/web/delete'), { headers, params });
+  }
 
 }

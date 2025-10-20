@@ -180,39 +180,39 @@ export class NewTourModalComponent implements OnInit {
     }
 
     const val = this.form.value;
-    console.log(val)
+    //console.log(val)
 
     const payload = {
-      tourSalesId:0,
-      tourSalesUuid:0,
-      tourSalesInit:this.formatDateToDDMMYYYY(val.startDate),
-      tourSalesFinal: this.formatDateToDDMMYYYY(val.endDate),
-      tourGroups:val.temporada,
-      tourInitialPay:0,
-      tourSalesStudentcount:0,
-      tourSalesPrice:0,
-      tourSalesStatus:'Completada',
-      branchId:1,
-      clientId:1,
-      communeId:val.comunaId,
+      tourSalesId: 0,
+      tourSalesUuid: 0,
+      tourSalesInit: this.formatDateToYYYYMMDD(val.startDate),
+      tourSalesFinal: this.formatDateToYYYYMMDD(val.endDate),
+      tourGroups: val.temporada,
+      tourInitialPay: 0,
+      tourSalesStudentcount: 0,
+      tourSalesPrice: 0,
+      tourSalesStatus: 'Completada',
+      branchId: 1,
+      clientId: 1,
+      communeId: val.comunaId,
       tourId: val.programId,
-      tour:'',
-      seller :'',
-      tourSalesBusSelected :false,
-      tourSalesTripulationSelected:0,
-      tourSalesCoordinatorSelected :false,
-      addHotel:false,
-      addAirplane:false,
-      addSegurityPolicyDoc:false,
-      addAlumnListDoc:false,
-      addProgramDoc:false,
-      addDetailHotelDoc:false,
-      addMedicalDoc:false,
-      addTripulation:false,
-      addCourse:val.curso,
-      collegeName:this.selectedCollege?.name ?? null
+      tour: '',
+      seller: '',
+      tourSalesBusSelected: false,
+      tourSalesTripulationSelected: 0,
+      tourSalesCoordinatorSelected: false,
+      addHotel: false,
+      addAirplane: false,
+      addSegurityPolicyDoc: false,
+      addAlumnListDoc: false,
+      addProgramDoc: false,
+      addDetailHotelDoc: false,
+      addMedicalDoc: false,
+      addTripulation: false,
+      addCourse: val.curso,
+      collegeName: this.selectedCollege?.name ?? null
     };
-
+    console.log(payload)
     Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     // Llama a tu endpoint real
@@ -238,5 +238,15 @@ export class NewTourModalComponent implements OnInit {
     const month = String(d.getMonth() + 1).padStart(2, '0'); // meses base 0
     const year = d.getFullYear();
     return `${day}-${month}-${year}`;
+  }
+
+  private formatDateToYYYYMMDD(date: Date | string | null): string | null {
+    if (!date) return null;
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return null; // invalid date
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;  // ISO format
   }
 }

@@ -102,6 +102,7 @@ export class ActivitiesComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.activitiesService.obtenerActividades().subscribe((respon) => {
+            console.log(respon)
             this.dataSource = new MatTableDataSource(respon);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;

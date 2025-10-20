@@ -41,7 +41,7 @@ export class CoordinatorModalEditComponent implements OnInit {
           .obtenerCoordinadoresUpdate(this.data)
           .subscribe((respon) => {
             this.coordinator = respon;
-            console.log(this.coordinator);
+            //console.log(this.coordinator);
             Swal.close();
           });
       },
@@ -58,7 +58,7 @@ export class CoordinatorModalEditComponent implements OnInit {
           .obtenerOficinas()
           .subscribe((respon) => {
             this.branch = respon;
-            console.log(this.branch);
+            //console.log(this.branch);
             Swal.close();
           });
       },

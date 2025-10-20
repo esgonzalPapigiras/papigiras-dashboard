@@ -31,53 +31,98 @@
 
           </div>
           <div class="card-body">
+            <!--
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
               <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
             </mat-form-field>
+            -->
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
               class="mat-elevation-z8">
 
+              <!-- ===================== FILTER ROW ===================== -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true">
+                <th *ngFor="let column of displayedColumns">
+                  <ng-container [ngSwitch]="column">
 
-              <!-- Position Column -->
-              <ng-container matColumnDef="tourSalesUuid">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesUuid">
-                  Identificador Gira
+                    <ng-container *ngSwitchCase="'tourSalesUuid'">
+                      <input matInput placeholder="Filtrar ID"
+                        (input)="applyColumnFilter('tourSalesUuid', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'tourSalesInit'">
+                      <input matInput placeholder="Filtrar Salida"
+                        (input)="applyColumnFilter('tourSalesInit', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'tourSalesFinal'">
+                      <input matInput placeholder="Filtrar Regreso"
+                        (input)="applyColumnFilter('tourSalesFinal', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'collegeName'">
+                      <input matInput placeholder="Filtrar Colegio"
+                        (input)="applyColumnFilter('collegeName', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'addCourse'">
+                      <input matInput placeholder="Filtrar Curso"
+                        (input)="applyColumnFilter('addCourse', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'communesName'">
+                      <input matInput placeholder="Filtrar Comuna"
+                        (input)="applyColumnFilter('communeName', $event.target.value)">
+                    </ng-container>
+
+                    <ng-container *ngSwitchDefault></ng-container>
+
+                  </ng-container>
                 </th>
+              </tr>
+
+              <!-- ===================== HEADER ROW ===================== -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+              <!-- ===================== DATA ROWS ===================== -->
+              <!-- Tour ID  -->
+              <ng-container matColumnDef="tourSalesUuid">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Identificador Gira</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesUuid}} </td>
               </ng-container>
 
-              <!-- Name Column -->
+              <!-- Salida  -->
               <ng-container matColumnDef="tourSalesInit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesInit">
-                  Salida
-                </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Salida</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesInit}} </td>
               </ng-container>
 
-              <!-- Weight Column -->
+              <!-- Regreso   -->
               <ng-container matColumnDef="tourSalesFinal">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesFinal">
-                  Regreso
-                </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Regreso</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesFinal}} </td>
               </ng-container>
 
-              <!-- Symbol Column -->
+              <!-- Colegio  -->
               <ng-container matColumnDef="collegeName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by collegeName">
-                  Colegio
-                </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Colegio</th>
                 <td mat-cell *matCellDef="let element"> {{element.collegeName}} </td>
               </ng-container>
 
+              <!-- Curso -->
               <ng-container matColumnDef="addCourse">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by addCourse">
-                  Curso
-                </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Curso</th>
                 <td mat-cell *matCellDef="let element"> {{element.addCourse}} </td>
               </ng-container>
 
+              <!-- Comuna -->
+              <ng-container matColumnDef="communesName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Comuna</th>
+                <td mat-cell *matCellDef="let element"> {{element.detalle?.communesName || element.communeName || '—' }}
+                </td>
+              </ng-container>
+
+              <!-- Acciones -->
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                 <td mat-cell *matCellDef="let row" class="action-buttons">
@@ -98,9 +143,9 @@
                   <button mat-icon-button color="primary" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                     <mat-icon>directions_bus</mat-icon>
                   </button>
-                  
+
                   <button mat-icon-button color="primary" (click)="openViewDialogTripulation(row)"
-                    matTooltip="Agregar tripulación">
+                    matTooltip="Agregar Choferes">
                     <mat-icon>people</mat-icon>
                   </button>
                   <button mat-icon-button color="primary" (click)="openViewDialogCoordinator(row)"
@@ -108,7 +153,7 @@
                     <mat-icon>nordic_walking</mat-icon>
                   </button>
                   <button mat-icon-button color="primary" [color]="row.addProgramDoc ? 'accent' : 'primary'"
-                    [disabled]="row.addProgramDoc" (click)="openViewDialogProgram(row)" matTooltip="Lista Programa">
+                    [disabled]="row.addProgramDoc" (click)="openViewDialogProgram(row)" matTooltip="Otros Documentos">
                     <mat-icon>fact_check</mat-icon>
                   </button>
                   <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
@@ -127,7 +172,7 @@
                 </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
             <mat-paginator #paginator [pageSizeOptions]="[5,10,25]" [pageSize]="10"></mat-paginator>

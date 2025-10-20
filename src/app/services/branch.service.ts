@@ -8,56 +8,52 @@ import { Observable } from 'rxjs';
 })
 export class BranchService {
 
-  
-    constructor(private http: HttpClient) { }
-  
-  
-    public obtenerOficinas(): Observable<Branch[]> {
-    
-        const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-        return this.http.get<Branch[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/get', { headers })
-    
-    }
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
+  url = 'http://localhost:8084';
+  constructor(private http: HttpClient) { }
 
-    public deleteBranch(id:number): Observable<any[]> {
-    
-        const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-        const params = new HttpParams().set('id', id.toString());
-        return this.http.delete<any[]>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/delete', { headers, params })
-    
-    }
 
-    public obtenerBranchUpdate(id:number): Observable<Branch> {
-      
-        const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
-        const params = new HttpParams().set('id', id.toString());
-        return this.http.get<Branch>('https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/get/byid', { headers ,params})
-    
-    }
+  public obtenerOficinas(): Observable<Branch[]> {
 
-    public branchCreate(coordinator: Branch): Observable<any> {
-      
-    
-      const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/create';
-    
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
-      });
-    
-      return this.http.post(url, JSON.stringify(coordinator), { headers });
-    }
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    return this.http.get<Branch[]>(this.url.concat('/api/branches/web/get'), { headers })
 
-    public branchUpdate(coordinator: Branch,id:String): Observable<any> {
-      
-    
-      const url = 'https://ms-papigiras-app-ezkbu.ondigitalocean.app/api/branches/web/update';
-      const params = new HttpParams().set('id', id.toString());
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
-      });
-    
-      return this.http.post(url, JSON.stringify(coordinator), { headers,params });
-    }
+  }
+
+  public deleteBranch(id: number): Observable<any[]> {
+
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.delete<any[]>(this.url.concat('/api/branches/web/delete'), { headers, params })
+
+  }
+
+  public obtenerBranchUpdate(id: number): Observable<Branch> {
+
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.get<Branch>(this.url.concat('/api/branches/web/get/byid'), { headers, params })
+
+  }
+
+  public branchCreate(coordinator: Branch): Observable<any> {
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(this.url.concat('/api/branches/web/create'), JSON.stringify(coordinator), { headers });
+  }
+
+  public branchUpdate(coordinator: Branch, id: String): Observable<any> {
+    const params = new HttpParams().set('id', id.toString());
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
+    });
+
+    return this.http.post(this.url.concat('/api/branches/web/update'), JSON.stringify(coordinator), { headers, params });
+  }
 }

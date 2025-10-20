@@ -8,6 +8,7 @@ import { ToursViewModalComponent } from '../tours-view-modal/tours-view-modal.co
 import { TourSalesDTO } from 'app/models/tourSales';
 import Swal from 'sweetalert2';
 import { ToursServicesService } from 'app/services/tours-services.service';
+import { ComunnesService } from 'app/services/comunnes.service';
 import { TourDonwloadAlumnsModalComponent } from '../tour-donwload-alumns-modal/tour-donwload-alumns-modal.component';
 import { TourAddBusModalComponent } from '../tour-add-bus-modal/tour-add-bus-modal.component';
 import { TourAddDriverModalComponent } from '../tour-add-driver-modal/tour-add-driver-modal.component';
@@ -33,7 +34,7 @@ import { TourViewDriverModalComponent } from '../tour-view-driver-modal/tour-vie
   styleUrls: ['./tours.component.scss']
 })
 export class ToursComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['tourSalesUuid', 'tourSalesInit', 'tourSalesFinal', 'collegeName', 'addCourse', 'acciones'];
+  displayedColumns: string[] = ['tourSalesUuid', 'tourSalesInit', 'tourSalesFinal', 'collegeName', 'addCourse', 'communesName', 'acciones'];
   dataSource = new MatTableDataSource<TourSalesDTO>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -49,14 +50,36 @@ export class ToursComponent implements AfterViewInit, OnInit {
   private id: number;     // para upload de alumnos (por compatibilidad con tu servicio)
   private uuid: string;   // para uploads de documentos extra
 
+  filterValues: any = {
+    tourSalesUuid: '',
+    tourSalesInit: '',
+    tourSalesFinal: '',
+    collegeName: '',
+    addCourse: '',
+    communeName: ''
+  };
+
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     public dialog: MatDialog,
     private girasServices: ToursServicesService,
+    private communesService: ComunnesService
   ) { }
 
   ngOnInit() {
     this.obtenerGiras();
+    this.dataSource.filterPredicate = (data: TourSalesDTO, filter: string) => {
+      const searchTerms = JSON.parse(filter);
+      return (!searchTerms.tourSalesUuid || data.tourSalesUuid.toLowerCase().includes(searchTerms.tourSalesUuid)) &&
+        (!searchTerms.tourSalesInit || data.tourSalesInit.toLowerCase().includes(searchTerms.tourSalesInit)) &&
+        (!searchTerms.tourSalesFinal || data.tourSalesFinal.toLowerCase().includes(searchTerms.tourSalesFinal)) &&
+        (!searchTerms.collegeName || data.collegeName.toLowerCase().includes(searchTerms.collegeName)) &&
+        (!searchTerms.addCourse || data.addCourse.toLowerCase().includes(searchTerms.addCourse))
+      /*&&
+      (!searchTerms.communeName || (data.communeName?.toLowerCase().includes(searchTerms.communeName) ||
+        data.detalle?.communesName?.toLowerCase().includes(searchTerms.communeName)));
+        */
+    };
   }
 
   ngAfterViewInit() {
@@ -70,18 +93,32 @@ export class ToursComponent implements AfterViewInit, OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.girasServices.obtenerGiras().pipe(
-          tap((respon: TourSalesDTO[]) => {
-            this.dataSource = new MatTableDataSource(respon);
+
+        // Traemos giras y comunas simultáneamente
+        forkJoin({
+          giras: this.girasServices.obtenerGiras(),
+          communes: this.communesService.ObtenerCommunes()
+        }).pipe(
+          tap(({ giras, communes }) => {
+            // Creamos un map para acceder rápido al nombre de la comuna
+            const communesMap = new Map<number, string>();
+            communes.forEach(c => communesMap.set(c.communesId, String(c.communesName)));
+
+            // Asociamos el nombre de la comuna a cada gira
+            giras.forEach(row => {
+              (row as any).communeName = communesMap.get(row.communeId) || '-';
+            });
+
+            this.dataSource = new MatTableDataSource(giras);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
+            console.log(giras);
           }),
           // Enriquecemos cada fila con el detalle para calcular alumnosCount
-          switchMap(() => {
-            const rows = this.dataSource.data ?? [];
-            if (!rows.length) return of(null);
+          switchMap(({ giras }) => {
+            if (!giras.length) return of(null);
 
-            const tasks = rows.map(row =>
+            const tasks = giras.map(row =>
               this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
                 tap(detalle => {
                   (row as any).detalle = detalle;
@@ -181,43 +218,43 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   private loadGiras$() {
-  Swal.fire({
-    title: 'Cargando...',
-    allowOutsideClick: false,
-    didOpen: () => Swal.showLoading(),
-  });
+    Swal.fire({
+      title: 'Cargando...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
 
-  return this.girasServices.obtenerGiras().pipe(
-    tap((respon: TourSalesDTO[]) => {
-      this.dataSource = new MatTableDataSource(respon);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    }),
-    switchMap(() => {
-      const rows: TourSalesDTO[] = this.dataSource?.data ?? [];
-      if (!rows.length) return of(rows);
+    return this.girasServices.obtenerGiras().pipe(
+      tap((respon: TourSalesDTO[]) => {
+        this.dataSource = new MatTableDataSource(respon);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }),
+      switchMap(() => {
+        const rows: TourSalesDTO[] = this.dataSource?.data ?? [];
+        if (!rows.length) return of(rows);
 
-      const tasks = rows.map(row =>
-        this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
-          tap(detalle => {
-            (row as any).detalle = detalle;
-            (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
-            (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
-          }),
-          catchError(err => {
-            console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
-            (row as any).addAlumnListDoc = false;
-            (row as any).alumnosCount = 0;
-            return of(null);
-          })
-        )
-      );
+        const tasks = rows.map(row =>
+          this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
+            tap(detalle => {
+              (row as any).detalle = detalle;
+              (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
+              (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
+            }),
+            catchError(err => {
+              console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
+              (row as any).addAlumnListDoc = false;
+              (row as any).alumnosCount = 0;
+              return of(null);
+            })
+          )
+        );
 
-      return forkJoin(tasks).pipe(map(() => rows));
-    }),
-    finalize(() => Swal.close())
-  );
-}
+        return forkJoin(tasks).pipe(map(() => rows));
+      }),
+      finalize(() => Swal.close())
+    );
+  }
 
   downloadTemplatePassenger() {
     // Mensaje específico para la generación del Excel
@@ -280,8 +317,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
     XLSX.writeFile(wb, name);
   }
 
-
-
   onFileSelected(event: any, row: any) {
     const file = event.target.files?.[0];
     if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
@@ -321,8 +356,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
     }
   }
 
-
-
   private refreshAlumnosCount(row: any) {
     this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
       next: (detalle) => {
@@ -347,7 +380,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   openAlumnosModal(row: any) {
-    console.log(row)
+    //console.log(row)
     this.dialog.open(TourViewAlumnsModalComponent, {
       width: '1200px',
       height: '800px',
@@ -628,5 +661,14 @@ export class ToursComponent implements AfterViewInit, OnInit {
       width: '1300px',
       height: '600px',
     });
+  }
+
+  applyColumnFilter(field: string, value: string) {
+    this.filterValues[field] = value.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify(this.filterValues);
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

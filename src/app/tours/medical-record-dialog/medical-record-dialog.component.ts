@@ -19,17 +19,18 @@ export class MedicalRecordDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<MedicalRecordDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { idTour: number; idPassenger: number; nombres?: string; apellidos?: string; curso?: string; colegio?: string }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      fechaNacimiento: string; idTour: number; idPassenger: number; nombres?: string; apellidos?: string; curso?: string; RUT?: string;
+    }
   ) {
     this.form = this.fb.group({
       // Campos de texto
       nombres: [data?.nombres ?? '', [Validators.required, Validators.maxLength(120)]],
       apellidos: [data?.apellidos ?? '', [Validators.required, Validators.maxLength(120)]],
       curso: [data?.curso ?? '', [Validators.maxLength(60)]],
-      colegio: [data?.colegio ?? '', [Validators.maxLength(120)]],
-      comuna: ['', [Validators.maxLength(120)]],
-      rut: ['', [Validators.required, Validators.maxLength(20)]],
+      RUT: [data?.RUT ?? '', [Validators.required, Validators.maxLength(20)]],
       grupoSanguineo: ['', [Validators.maxLength(10)]],
+      fechaNacimiento: [data?.fechaNacimiento ?? '', [Validators.required, Validators.maxLength(20)]],
 
       // Contacto emergencia
       contactoEmergenciaNombre: ['', [Validators.required, Validators.maxLength(120)]],
@@ -49,17 +50,21 @@ export class MedicalRecordDialogComponent {
       medicamentos: this.fb.array([]), // [{ nombre, dosis }]
       evitarMedicamentos: [false],
       medicamentosEvitar: [''],
-
       requiereCuidadosEspeciales: [false],
       cuidadosEspeciales: [''],
 
       // Fechas
-      fechaNacimiento: ['', Validators.required],  // string (yyyy-MM-dd)
       fechaAutorizacion: ['', Validators.required],
 
       // IDs obligatorios
       idPassenger: [this.data.idPassenger, [Validators.required]],
       idTour: [this.data.idTour, [Validators.required]],
+    });
+
+    // 🚀 Disable the prefilled, non-editable fields
+    ['nombres', 'apellidos', 'RUT', 'curso', 'fechaNacimiento'].forEach(field => {
+      const ctrl = this.form.get(field);
+      if (ctrl) ctrl.disable({ emitEvent: false });
     });
 
     // Reglas de habilitación dinámica
