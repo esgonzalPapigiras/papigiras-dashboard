@@ -18,8 +18,8 @@ export class TourViewDriverModalComponent implements OnInit {
   displayedColumnsTrip: string[] = [
     'tourTripulationNameId',
     'tourTripulationIdentificationId',
-    'tourTripulationPhoneId',
-    'fechaNacimiento',
+    //'tourTripulationPhoneId',
+    //'fechaNacimiento',
     'acciones'
   ];
 
@@ -30,7 +30,7 @@ export class TourViewDriverModalComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any, // id que necesitas pasar al backend
     private toursService: ToursServicesService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.obtenerTripulacion();
@@ -46,7 +46,9 @@ export class TourViewDriverModalComponent implements OnInit {
         // Ajusta este método a tu servicio real para listar tripulación
         this.toursService.listaTripulantes(this.data).subscribe({
           next: (res: TripulationsDTO[]) => {
-            this.dataSourceTrip = new MatTableDataSource(res ?? []);
+            // Filtrar solo choferes (typeId === 1)
+            const choferes = (res ?? []).filter(t => t.tourTripulationTypeId === 1);
+            this.dataSourceTrip = new MatTableDataSource(choferes);
             this.dataSourceTrip.sort = this.sort;
             this.dataSourceTrip.paginator = this.paginator;
           },
@@ -67,29 +69,28 @@ export class TourViewDriverModalComponent implements OnInit {
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre">
         <input id="tp-ident" class="swal2-input" placeholder="Identificación">
-        <input id="tp-fono" class="swal2-input" placeholder="Teléfono">
-        <input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
       `,
+      //<input id="tp-fono" class="swal2-input" placeholder="Teléfono">
+      //<input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       focusConfirm: false,
       preConfirm: () => {
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
-        const ident  = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
-        const fono   = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        const fecha  = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
+        const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
+        //const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
+        //const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
 
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return {  nombre, ident, fono, fecha };
+        return { nombre, ident };
       }
     });
 
     if (!form) return;
-
     const dto: TripulationsDTO = {
       tourTripulationTypeId: 1,
       tourTripulationNameId: form.nombre,
@@ -102,11 +103,9 @@ export class TourViewDriverModalComponent implements OnInit {
     };
 
     Swal.showLoading();
-
     // Backend exige ?id=...&confirma=...
     const id = String(this.data);     // ajusta si tu id viene distinto
     const confirma = true;             // o el valor que uses
-
     this.toursService.addTripulationNew(dto, id, confirma).subscribe({
       next: (created: TripulationsDTO) => {
         const rows = this.dataSourceTrip.data.slice();
@@ -125,43 +124,36 @@ export class TourViewDriverModalComponent implements OnInit {
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre" value="${row.tourTripulationNameId ?? ''}">
         <input id="tp-ident" class="swal2-input" placeholder="Identificación" value="${row.tourTripulationIdentificationId ?? ''}">
-        <input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
-        <input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0,10)}">
       `,
+      //<input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
+      //<input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0, 10)}">
       showCancelButton: true,
       confirmButtonText: 'Actualizar',
       cancelButtonText: 'Cancelar',
       focusConfirm: false,
       preConfirm: () => {
-        
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
-        const ident  = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
-        const fono   = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        const fecha  = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
-        
-
+        const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
+        //const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
+        //const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return {nombre, ident, fono, fecha };
+        return { nombre, ident };
       }
     });
-
     if (!form) return;
-
     const payload: TripulationsDTO = {
       ...row,
       tourTripulationTypeId: form.typeId,
       tourTripulationNameId: form.nombre,
       tourTripulationIdentificationId: form.ident,
-      tourTripulationPhoneId: form.fono,
-      fechaNacimiento: form.fecha || undefined,
+      //tourTripulationPhoneId: form.fono,
+      //fechaNacimiento: form.fecha || undefined,
       tripulationBusId: isNaN(form.busId) ? undefined : form.busId
     };
-
     Swal.showLoading();
-
     // Ajusta el endpoint de update a tu backend real
     this.toursService.updateTripulation(payload).subscribe({
       next: () => {
@@ -186,9 +178,8 @@ export class TourViewDriverModalComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (!result.isConfirmed || !row.tourTripulationId) return;
-
       Swal.showLoading();
-      this.toursService.deleteTripulation(row.tourTripulationId,this.data).subscribe({
+      this.toursService.deleteTripulation(row.tourTripulationId, this.data).subscribe({
         next: () => {
           this.dataSourceTrip.data = this.dataSourceTrip.data.filter(r => r.tourTripulationId !== row.tourTripulationId);
           Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Tripulante eliminado' });

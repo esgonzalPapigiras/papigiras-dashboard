@@ -3,6 +3,7 @@
 <mat-form-field appearance="fill">
   <mat-label>Selecciona un coordinador</mat-label>
   <mat-select [(value)]="selectedCoordinators" multiple>
+
     <!-- Trigger de selección -->
     <mat-select-trigger>
       {{ selectedCoordinatorsText }}
@@ -16,9 +17,13 @@
     </div>
 
     <!-- Opciones filtradas -->
-    <mat-option *ngFor="let coordinator of filteredCoordinators()" [value]="coordinator">
+    <mat-option 
+      *ngFor="let coordinator of filteredCoordinators()" 
+      [value]="coordinator"
+      [disabled]="alreadySelectedCoordinatorsIds.includes(coordinator.coordinatorRut)">
       {{ coordinator.coordinatorName }} {{ coordinator.coordinatorLastname }}
     </mat-option>
+
   </mat-select>
 </mat-form-field>
 

@@ -16,10 +16,15 @@ export class TourAddCoordinatorModalComponent implements OnInit {
   coordinators: any[] = [];
   searchTerm: string = '';
   selectedCoordinators: any[] = [];
+  alreadySelectedCoordinatorsIds: string[] = []; // store coordinatorRut of pre-selected coordinators
 
-
-  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private coordinatorServices: CoordinatorService,
-    private tourService:ToursServicesService,public dialogRef: MatDialogRef<TourAddCoordinatorModalComponent>,@Inject(MAT_DIALOG_DATA) public data: any
+  constructor(
+    private _liveAnnouncer: LiveAnnouncer,
+    public dialog: MatDialog,
+    private coordinatorService: CoordinatorService,
+    private tourService: ToursServicesService,
+    public dialogRef: MatDialogRef<TourAddCoordinatorModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit() {
@@ -32,11 +37,40 @@ export class TourAddCoordinatorModalComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.coordinatorServices.obtenerCoordinadores().subscribe(respon => {
-          this.coordinators = respon;
+        this.coordinatorService.obtenerCoordinadores().subscribe(res => {
+          this.coordinators = res;
           Swal.close();
+          this.prefillSelectedCoordinators();
+        }, err => {
+          Swal.close();
+          console.error(err);
+          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los coordinadores' });
         });
-      },
+      }
+    });
+  }
+
+  prefillSelectedCoordinators() {
+    this.tourService.listaTripulantes(this.data).subscribe((tripulaciones: TripulationsDTO[]) => {
+      // solo coordinadores (typeId === 32)
+      const coordinadoresTour = (tripulaciones ?? []).filter(t => t.tourTripulationTypeId === 32);
+
+      this.selectedCoordinators = coordinadoresTour.map(t => {
+        const full = this.coordinators.find(c => c.coordinatorRut === t.tourTripulationIdentificationId);
+        if (full) return full;
+
+        // fallback if the coordinator is not in the master list
+        return {
+          coordinatorName: t.tourTripulationNameId.split(' ')[0] || '',
+          coordinatorLastname: t.tourTripulationNameId.split(' ').slice(1).join(' ') || '',
+          coordinatorRut: t.tourTripulationIdentificationId,
+          coordinatorCelular: t.tourTripulationPhoneId,
+          coordinatorFechaNacimiento: t.fechaNacimiento
+        };
+      });
+
+      // guardar los RUTs de coordinadores ya seleccionados para deshabilitar en el select
+      this.alreadySelectedCoordinatorsIds = coordinadoresTour.map(t => t.tourTripulationIdentificationId);
     });
   }
 
@@ -47,7 +81,6 @@ export class TourAddCoordinatorModalComponent implements OnInit {
   }
 
   filteredCoordinators() {
-    //console.log(this.searchTerm);
     return this.coordinators.filter(coordinator =>
       coordinator.coordinatorName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       coordinator.coordinatorLastname.toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -55,47 +88,43 @@ export class TourAddCoordinatorModalComponent implements OnInit {
   }
 
   sendCoordinators() {
-    if (this.selectedCoordinators.length > 0) {
-      Swal.fire({
-        title: 'Coordinadores seleccionados',
-        text: 'Has seleccionado: ' + this.selectedCoordinators.map(c => c.coordinatorName + ' ' + c.coordinatorLastname).join(', '),
-        icon: 'success',
-        confirmButtonText: 'Cerrar'
-      });
-    } else {
+    if (this.selectedCoordinators.length === 0) {
       Swal.fire({
         title: 'Error',
         text: 'No has seleccionado ningún coordinador.',
         icon: 'error',
         confirmButtonText: 'Cerrar'
       });
+      return;
     }
-    this.selectedCoordinators.forEach((coordinators: any) => {
-              const coordinator = new TripulationsDTO(
-                0,
-                32,
-                coordinators.coordinatorName+ " "+coordinators.coordinatorLastname,
-                "Coordinador",
-                coordinators.coordinatorRut,
-                coordinators.coordinatorCelular,
-                0,
-                this.data,
-                coordinators.fechaNacimiento
-              );
-              
-              this.tourService.addTripulation(coordinator,this.data,true).subscribe({
-                next: () => {
-                  this.dialogRef.close(true);
-                },
-                error: (err) => {
-                  console.error('Error al guardar el buses:', err);
-                  this.dialogRef.close(false);
-                }
-              });
-              
-            });
 
+    this.selectedCoordinators.forEach(c => {
+      const coordinator = new TripulationsDTO(
+        0,
+        32,
+        c.coordinatorName + " " + c.coordinatorLastname,
+        "Coordinador",
+        c.coordinatorRut,
+        c.coordinatorCelular,
+        0,
+        this.data,
+        c.coordinatorFechaNacimiento
+      );
 
+      this.tourService.addTripulation(coordinator, this.data, true).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          console.error('Error al guardar el coordinador:', err);
+          this.dialogRef.close(false);
+        }
+      });
+    });
+
+    Swal.fire({
+      title: 'Coordinadores seleccionados',
+      text: 'Has seleccionado: ' + this.selectedCoordinators.map(c => c.coordinatorName + ' ' + c.coordinatorLastname).join(', '),
+      icon: 'success',
+      confirmButtonText: 'Cerrar'
+    });
   }
-
 }

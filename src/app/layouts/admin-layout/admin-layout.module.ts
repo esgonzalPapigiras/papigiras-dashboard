@@ -70,6 +70,8 @@ import { TourViewCoordinatorModalComponent } from 'app/tours/tour-view-coordinat
 import { TourViewDriverModalComponent } from 'app/tours/tour-view-driver-modal/tour-view-driver-modal.component';
 import { PassengerEditDialogComponent } from 'app/tours/passenger-edit-dialog/passenger-edit-dialog.component';
 import { MedicalRecordDialogComponent } from 'app/tours/medical-record-dialog/medical-record-dialog.component';
+import { PassengerComponent } from 'app/passengers/passengers.component';
+import { SchoolComponent } from 'app/school/school.component';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -156,10 +158,9 @@ const MY_DATE_FORMATS = {
     TourViewCoordinatorModalComponent,
     TourViewDriverModalComponent,
     PassengerEditDialogComponent,
-    MedicalRecordDialogComponent
-    
-    
-
+    MedicalRecordDialogComponent,
+    SchoolComponent,
+    PassengerComponent
   ]
 })
 

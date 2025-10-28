@@ -1,0 +1,95 @@
+<div class="main-content" style="width: 100%; padding: 20px">
+    <div class="container-fluid" style="width: 100%; padding: 20px">
+        <div class="row">
+            <div class="col-md-12" style="width: 100%; padding: 20px">
+                <div class="button-container"
+                    style="display: flex;gap: 15px;justify-content: start;margin-bottom: 10px;">
+                    <button mat-raised-button color="primary" (click)="addCoordinator()">
+                        Agregar Pasajero
+                    </button>
+                    <button mat-raised-button color="accent" (click)="triggerFileInput()">
+                        Agregar Pasajeros
+                    </button>
+
+                    <!-- Input file oculto -->
+                    <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls"
+                        style="display: none" />
+                    <button mat-raised-button color="warn" (click)="downloadCoordinators()">
+                        Descargar Pasajeros
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title">Mantenedor Pasajeros</h4>
+                    </div>
+                    <div class="card-body">
+                        <table mat-table [dataSource]="dataSourceAlumnos" class="mat-elevation-z8">
+                            <ng-container matColumnDef="passengersIdentification">
+                                <th mat-header-cell *matHeaderCellDef class="table-cell">Rut</th>
+                                <td mat-cell *matCellDef="let element" class="table-cell" style="padding-right:16px;">
+                                    {{element.passengersIdentification}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersNames">
+                                <th mat-header-cell *matHeaderCellDef class="table-cell">Nombre</th>
+                                <td mat-cell *matCellDef="let element" class="table-cell">
+                                    {{element.passengersNames}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersFatherLastName">
+                                <th mat-header-cell *matHeaderCellDef>Apellidos</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.passengersFatherLastName }} {{ element.passengersMotherLastName }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersBirthDate">
+                                <th mat-header-cell *matHeaderCellDef class="table-cell">Nacimiento</th>
+                                <td mat-cell *matCellDef="let element" class="table-cell" style="padding-right:16px;">
+                                    {{element.passengersBirthDate}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersSex">
+                                <th mat-header-cell *matHeaderCellDef>Sexo</th>
+                                <td mat-cell *matCellDef="let element" style="padding-right:16px;">
+                                    {{ element.passengersSex }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersDiet">
+                                <th mat-header-cell *matHeaderCellDef>Dieta</th>
+                                <td mat-cell *matCellDef="let element" style="padding-right:16px;">
+                                    {{ element.passengersDiet }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersEmail">
+                                <th mat-header-cell *matHeaderCellDef>Email</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.passengersEmail }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="passengersPhone">
+                                <th mat-header-cell *matHeaderCellDef>Celular</th>
+                                <td mat-cell *matCellDef="let element" style="padding-right:16px;">
+                                    {{ element.passengersPhone }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                                <td mat-cell *matCellDef="let element" class="action-buttons">
+                                    <button mat-icon-button [color]="element.medicalRecord ? 'primary' : 'grey'"
+                                        matTooltip="Ficha Medica">
+                                        <mat-icon>medical_information</mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="editarPasajero(element)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="eliminarPasajero(element)" style="color:red;">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsAlumnos"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsAlumnos"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

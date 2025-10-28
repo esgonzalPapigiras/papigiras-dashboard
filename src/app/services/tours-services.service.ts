@@ -21,9 +21,11 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  //url = 'http://localhost:8084';
+  url = 'http://localhost:8084';
+
+  constructor(private http: HttpClient) { }
 
   createMedicalRecord(body: any) {
     const headers = new HttpHeaders({
@@ -34,11 +36,9 @@ export class ToursServicesService {
     return this.http.post(
       this.url.concat('/app/services/medical-records'),
       body,
-      { headers }
+      { headers, responseType: 'text' } // <- clave
     );
   }
-
-
   public eliminarBus(id: number, idTour: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -51,8 +51,6 @@ export class ToursServicesService {
 
     return this.http.delete<TripulationBusDTO[]>(this.url.concat('/api/tour/sales/web/delete/bus'), { headers, params });
   }
-
-
   public actualizarBus(payload: TripulationBusDTO) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -61,7 +59,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat('/api/tour/sales/web/update/bus'), JSON.stringify(payload), { headers });
   }
-
   public updateTripulation(payload: TripulationsDTO) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -70,7 +67,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat('/api/tour/sales/web/update/tripulation'), JSON.stringify(payload), { headers });
   }
-
   public deleteTripulation(id: number, idTour: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -83,16 +79,12 @@ export class ToursServicesService {
 
     return this.http.delete<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/delete/tripulation'), { headers, params });
   }
-
-  constructor(private http: HttpClient) { }
-
   public obtenerGiras(): Observable<TourSalesDTO[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<TourSalesDTO[]>(this.url.concat('/api/tour/sales/web/get'), { headers })
 
   }
-
   public obtenerDetalleGira(id: number): Observable<TourSalesDetail> {
 
     const headers = new HttpHeaders({
@@ -104,7 +96,6 @@ export class ToursServicesService {
 
     return this.http.get<TourSalesDetail>(this.url.concat('/api/tour/sales/web/getDetails'), { headers, params });
   }
-
   public obtenerDetalleGiraWeb(id: number): Observable<TourSalesDetailWeb> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -137,7 +128,6 @@ export class ToursServicesService {
         })
       );
   }
-
   public listaBusGira(id: number): Observable<TripulationBusDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
@@ -150,7 +140,6 @@ export class ToursServicesService {
 
     return this.http.get<TripulationBusDTO[]>(this.url.concat('/api/tour/sales/web/get/bus'), { headers, params });
   }
-
   public listaTripulantes(id: number): Observable<TripulationsDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
@@ -163,7 +152,6 @@ export class ToursServicesService {
 
     return this.http.get<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/get/tripulation'), { headers, params });
   }
-
   public listHotel(id: number): Observable<HotelDTOList[]> {
 
     const headers = new HttpHeaders({
@@ -175,7 +163,6 @@ export class ToursServicesService {
 
     return this.http.get<HotelDTOList[]>(this.url.concat('/api/tour/sales/web/get/hotels'), { headers, params });
   }
-
   public listAvion(id: number): Observable<TripulationAvionDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
@@ -188,7 +175,6 @@ export class ToursServicesService {
 
     return this.http.get<TripulationAvionDTO[]>(this.url.concat('/api/tour/sales/web/get/avion'), { headers, params });
   }
-
   public listAlumn(id: number): Observable<PassengerDTO[]> {
     // Reemplaza con tu lógica para obtener el token dinámicamente
 
@@ -201,15 +187,16 @@ export class ToursServicesService {
 
     return this.http.get<PassengerDTO[]>(this.url.concat('/api/passenger/web/get/tour'), { headers, params });
   }
-
   public uploadFileMasiveTour(file: any) {
     const formData = new FormData();
     formData.append('file', file, file.name);
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
-
-    return this.http.post<any>(this.url.concat('/api/tour/sales/web/upload/massive'), formData, { headers });
+    return this.http.post(
+      this.url.concat('/api/tour/sales/web/upload/massive'),
+      formData,
+      { headers, responseType: 'text' } // ✅ important
+    );
   }
-
   public uploadFile(file: any, id_tour_sale: number): Observable<ResponsePassengerUpload> {
     const formData = new FormData();
     formData.append('file', file, file.name);
@@ -219,7 +206,6 @@ export class ToursServicesService {
     return this.http.post<ResponsePassengerUpload>(this.url.concat('/api/tour/sales/web/upload'), formData, { headers });
 
   }
-
   uploadDocumentsExtra(
     result: Uint8Array,
     name: string,
@@ -253,7 +239,6 @@ export class ToursServicesService {
       { headers }
     );
   }
-
   getDocument(id: number): Observable<DocumentDTO[]> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -265,7 +250,6 @@ export class ToursServicesService {
     return this.http.get<DocumentDTO[]>(this.url.concat('/api/tour/sales/web/getDocument'), { headers, params });
 
   }
-
   downloadDocument(name: string, supplier: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -278,7 +262,6 @@ export class ToursServicesService {
 
     return this.http.get(this.url.concat('/api/tour/sales/web/download'), { headers, params, responseType: 'arraybuffer' });
   }
-
   downloadDocumentMedical(name: string, idPassenger: string, supplier: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -292,7 +275,6 @@ export class ToursServicesService {
 
     return this.http.get(this.url.concat('/app/services/get/pdf/view/medical-records'), { headers, params, responseType: 'arraybuffer' });
   }
-
   deleteDocument(name: string, supplier: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -311,7 +293,6 @@ export class ToursServicesService {
       })
     );
   }
-
   listPDF(id: number): Observable<ArrayBuffer> {
     const params = new HttpParams().set('id', id.toString());
 
@@ -327,7 +308,6 @@ export class ToursServicesService {
     });
 
   }
-
   public deleteGira(id: number): Observable<any[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
@@ -335,14 +315,12 @@ export class ToursServicesService {
     return this.http.delete<any>(this.url.concat('/api/tour/sales/web/delete'), { headers, params })
 
   }
-
   public listCollege(): Observable<CollegeList[]> {
 
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<any>(this.url.concat('/api/comunnes/web/get/college'), { headers })
 
   }
-
   public addAvion(objeto: TripulationAvionDTO, id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -351,7 +329,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat(`/api/tour/sales/web/create/avion?id=${id}`), JSON.stringify(objeto), { headers });
   }
-
   public addBus(objeto: TripulationBus, id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -360,7 +337,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat(`/api/tour/sales/web/create/bus?id=${id}`), JSON.stringify(objeto), { headers });
   }
-
   public addBusNew(objeto: TripulationBusDTO, id: number): Observable<any> {
     ;
     const headers = new HttpHeaders({
@@ -370,7 +346,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat(`/api/tour/sales/web/create/bus?id=${id}`), JSON.stringify(objeto), { headers });
   }
-
   public tourCreate(tour: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -379,7 +354,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat('/api/tour/sales/web/create'), JSON.stringify(tour), { headers });
   }
-
   public addTripulation(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -388,7 +362,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat(`/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`), JSON.stringify(objeto), { headers });
   }
-
   public addTripulationNew(objeto: TripulationsDTO, id: string, confirma: boolean): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -397,7 +370,6 @@ export class ToursServicesService {
 
     return this.http.post(this.url.concat(`/api/tour/sales/web/create/tripulation?id=${id}&confirma=${confirma}`), JSON.stringify(objeto), { headers });
   }
-
   updatePassenger(dto: PassengerDTO, id: number): Observable<PassengerDTO> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -409,7 +381,6 @@ export class ToursServicesService {
     // Tu backend usa POST /update con @RequestParam id y body = dto
     return this.http.post<PassengerDTO>(this.url.concat('/api/passenger/web/update'), dto, { headers, params });
   }
-
   deletePassenger(id: number) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -420,5 +391,4 @@ export class ToursServicesService {
 
     return this.http.delete<DeleteResponse>(this.url.concat('/api/passenger/web/delete'), { headers, params });
   }
-
 }

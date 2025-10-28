@@ -13,6 +13,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { LoginComponent } from './login/login.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatChipsModule } from '@angular/material/chips';
+import { SchoolComponent } from './school/school.component';
+import { PassengerComponent } from './passengers/passengers.component';
 
 @NgModule({
   imports: [
@@ -32,7 +34,7 @@ import { MatChipsModule } from '@angular/material/chips';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-    LoginComponent
+    LoginComponent,
     
   ],
   providers: [],

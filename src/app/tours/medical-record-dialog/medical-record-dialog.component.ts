@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ToursServicesService } from 'app/services/tours-services.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,6 +20,7 @@ export class MedicalRecordDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<MedicalRecordDialogComponent>,
+    private girasService: ToursServicesService,
     @Inject(MAT_DIALOG_DATA) public data: {
       fechaNacimiento: string; idTour: number; idPassenger: number; nombres?: string; apellidos?: string; curso?: string; RUT?: string;
     }
@@ -38,10 +40,8 @@ export class MedicalRecordDialogComponent {
       contactoEmergenciaTelefono: ['', [Validators.required, Validators.maxLength(20)]],
       contactoEmergenciaEmail: ['', [Validators.email, Validators.maxLength(120)]],
 
-      // Coberturas
-      tieneFonasa: [false],
-      tieneIsapre: [false],
-      isapre: [''],
+      cobertura: [''], // 'FONASA' | 'ISAPRE'
+      isapreNombre: [''],
 
       // Enfermedades / medicamentos
       tieneEnfermedades: [false],
@@ -68,9 +68,13 @@ export class MedicalRecordDialogComponent {
     });
 
     // Reglas de habilitación dinámica
-    this.form.get('tieneIsapre')!.valueChanges.subscribe(v => {
-      const isapreCtrl = this.form.get('isapre')!;
-      v ? isapreCtrl.setValidators([Validators.required, Validators.maxLength(120)]) : isapreCtrl.clearValidators();
+    this.form.get('cobertura')!.valueChanges.subscribe(value => {
+      const isapreCtrl = this.form.get('isapreNombre')!;
+      if (value === 'ISAPRE') {
+        isapreCtrl.setValidators([Validators.required, Validators.maxLength(120)]);
+      } else {
+        isapreCtrl.clearValidators();
+      }
       isapreCtrl.updateValueAndValidity();
     });
 
@@ -98,6 +102,7 @@ export class MedicalRecordDialogComponent {
     });
   }
 
+
   addMedicamento(): void {
     this.medicamentosFA.push(
       this.fb.group({
@@ -116,36 +121,30 @@ export class MedicalRecordDialogComponent {
       this.form.markAllAsTouched();
       return;
     }
-
-    // Armar payload exactamente como tu DTO en backend
+    const raw = this.form.getRawValue();
     const payload = {
-      ...this.form.value,
-      // Asegura formatos string para fechas (yyyy-MM-dd)
-      fechaNacimiento: this.toDateString(this.form.value.fechaNacimiento),
-      fechaAutorizacion: this.toDateString(this.form.value.fechaAutorizacion),
-      // medicamentos: List<Map<String,String>>
-      medicamentos: (this.form.value.medicamentos || []).map((m: any) => ({ nombre: m.nombre, dosis: m.dosis })),
+      ...raw,
+      fechaNacimiento: this.toDateString(raw.fechaNacimiento),
+      fechaAutorizacion: this.toDateString(raw.fechaAutorizacion),
+      medicamentos: (raw.medicamentos || []).map((m: any) => ({ nombre: m.nombre, dosis: m.dosis })),
+      tieneFonasa: raw.cobertura === 'FONASA',
+      tieneIsapre: raw.cobertura === 'ISAPRE',
+      isapre: raw.cobertura === 'ISAPRE' ? raw.isapreNombre : '',
     };
-
-    Swal.fire({
-      title: 'Guardando ficha...',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+    console.log(payload)
+    Swal.fire({ title: 'Guardando ficha...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    this.girasService.createMedicalRecord(payload).subscribe({
+      next: () => {
+        Swal.close();
+        Swal.fire({ icon: 'success', title: 'Ficha guardada', text: 'La ficha médica fue registrada correctamente.' });
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        Swal.close();
+        console.error('Error al guardar ficha:', err);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar la ficha médica.' });
+      },
     });
-
-    // Llama al servicio real aquí (inyéctalo si prefieres) o emite al padre
-    // — Ejemplo simple: usa window para no alargar —
-    (window as any).ngMedicalService
-      ? (window as any).ngMedicalService(payload)
-      : null;
-
-    // Si lo manejas desde el padre, emite:
-    // this.girasService.createMedicalRecord(payload).subscribe(...)
-
-    // Para dejar el ejemplo autocontenible:
-    // cierra devolviendo true
-    Swal.close();
-    this.dialogRef.close(true);
   }
 
   cancel(): void {
