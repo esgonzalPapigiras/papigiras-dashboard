@@ -12,7 +12,7 @@ export class ActivitiesService {
 
   url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-
+  //url = 'http://localhost:8084';
   constructor(private http: HttpClient) { }
 
 

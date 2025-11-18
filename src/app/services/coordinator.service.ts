@@ -4,7 +4,6 @@ import { Coordinator } from 'app/models/coordinator';
 import { CoordinatorPosition } from 'app/models/coordinatorPosition';
 import { ResponseUploadCoordinator } from 'app/models/responseUploadCoordinator';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +11,9 @@ import { map } from 'rxjs/operators';
 export class CoordinatorService {
 
   token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzk3NTYyNTMsImV4cCI6MTc0MDYyMDI1M30.KzjMglLVW6Sy9IDI4xNoYf8SZU1NAlVCQRQhVZsAaig_c4N0or8JRYkKLv53i20e2I9EAE0GHlA_2bwAd8IDag';
-  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  url = 'http://localhost:8084';
+  //url = 'http://localhost:8084';
 
   constructor(private http: HttpClient) { }
 
@@ -88,4 +87,5 @@ export class CoordinatorService {
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<CoordinatorPosition[]>(this.url.concat('/app/services/last/positions'), { headers })
   }
+
 }

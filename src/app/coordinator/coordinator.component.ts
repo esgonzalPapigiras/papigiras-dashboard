@@ -75,7 +75,6 @@ export class CoordinatorComponent implements OnInit {
   }
 
   applyDelete(event: any) {
-
     Swal.fire({
       title: "Estas Seguro?",
       text: "No puedes revertir esto!!!",
@@ -192,7 +191,6 @@ export class CoordinatorComponent implements OnInit {
     });
   }
 
-
   obtenerCoordinadores() {
     Swal.fire({
       title: "Cargando...",
@@ -219,8 +217,6 @@ export class CoordinatorComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
     });
   }
-
-
 
   addCoordinator() {
     const dialogRef = this.dialog.open(CoordinatorModalCreateComponent, {
@@ -260,8 +256,6 @@ export class CoordinatorComponent implements OnInit {
     const blob = new Blob([wbout], { type: 'application/octet-stream' });
     saveAs(blob, 'template_coordinator.xlsx');
   }
-
-  
 
   downloadCoordinators(): void {
     this.coordinatorServices.obtenerCoordinadores().subscribe(

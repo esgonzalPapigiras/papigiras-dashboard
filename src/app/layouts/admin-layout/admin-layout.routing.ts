@@ -18,6 +18,7 @@ import { SuppliersComponent } from 'app/suppliers/suppliers.component';
 import { MapsCoordinatorComponent } from 'app/maps-coordinator/maps-coordinator.component';
 import { SchoolComponent } from 'app/school/school.component';
 import { PassengerComponent } from 'app/passengers/passengers.component';
+import { BusesComponent } from 'app/buses/buses.component';
 
 
 export const AdminLayoutRoutes: Routes = [
@@ -30,7 +31,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'activities', component: ActivitiesComponent },
     { path: 'programs', component: ProgramsComponent },
     { path: 'suppliers', component: SuppliersComponent },
-    { path: 'maps', component: MapsComponent },
     { path: 'school', component: SchoolComponent },
     { path: 'passenger', component: PassengerComponent },
+    { path: 'bus', component: BusesComponent },
 ];

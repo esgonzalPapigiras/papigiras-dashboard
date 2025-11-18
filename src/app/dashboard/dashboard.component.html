@@ -55,19 +55,14 @@
           <div class="card-body">
             <h4 class="card-title">Giras Vendidas</h4>
             <p class="card-category">
-              <span
-                [ngClass]="{
+              <span [ngClass]="{
                   'text-success': percentageDiff >= 0,
                   'text-danger': percentageDiff < 0
-                }"
-              >
-                <i
-                  class="fa"
-                  [ngClass]="{
+                }">
+                <i class="fa" [ngClass]="{
                     'fa-long-arrow-up': percentageDiff >= 0,
                     'fa-long-arrow-down': percentageDiff < 0
-                  }"
-                ></i>
+                  }"></i>
                 {{ percentageDiff | number : "1.0-0" }}%
               </span>
               porcentaje de venta comparado año anterior.
@@ -97,28 +92,18 @@
           </div>
           <div class="card-body">
             <div class="year-selector">
-                <label for="year">Selecciona el año para ver al mejor coordinador</label>
-                <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()" name="year" id="year">
-                  <mat-option *ngFor="let year of years" [value]="year">
-                    {{ year }}
-                  </mat-option>
-                </mat-select>
-              </div>
-            <table
-              mat-table
-              [dataSource]="dataSource"
-              matSort
-              class="mat-elevation-z8"
-            >
+              <label for="year">Selecciona el año para ver al mejor coordinador</label>
+              <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()" name="year" id="year">
+                <mat-option *ngFor="let year of years" [value]="year">
+                  {{ year }}
+                </mat-option>
+              </mat-select>
+            </div>
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
               <!-- Position Column -->
               <ng-container matColumnDef="cantidadHitos">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by cantidadHitos"
-                >
-                Cantidad Hitos
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by cantidadHitos">
+                  Cantidad Hitos
                 </th>
                 <td mat-cell *matCellDef="let element">
                   {{ element.cantidadHitos }}
@@ -127,12 +112,7 @@
 
               <!-- Name Column -->
               <ng-container matColumnDef="cantidadFotos">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by cantidadFotos"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by cantidadFotos">
                   Cantidad Fotos
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -142,12 +122,7 @@
 
               <!-- Weight Column -->
               <ng-container matColumnDef="tourSalesUuid">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by tourSalesUuid"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesUuid">
                   Id Tour
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -157,12 +132,7 @@
 
               <!-- Symbol Column -->
               <ng-container matColumnDef="tourSalesInit">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by tourSalesInit"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesInit">
                   Fecha Inicio
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -171,12 +141,7 @@
               </ng-container>
 
               <ng-container matColumnDef="tourSalesFinal">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by tourSalesFinal"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesFinal">
                   Fecha Termino
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -184,12 +149,7 @@
                 </td>
               </ng-container>
               <ng-container matColumnDef="nameClient">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by nameClient"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by nameClient">
                   Colegio
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -197,12 +157,7 @@
                 </td>
               </ng-container>
               <ng-container matColumnDef="courseClient">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by courseClient"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by courseClient">
                   Curso
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -210,12 +165,8 @@
                 </td>
               </ng-container>
               <ng-container matColumnDef="tourTripulationNameId">
-                <th
-                  mat-header-cell
-                  *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by tourTripulationNameId"
-                >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  sortActionDescription="Sort by tourTripulationNameId">
                   Coordinador
                 </th>
                 <td mat-cell *matCellDef="let element">
@@ -226,10 +177,69 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </table>
-            <mat-paginator
-              [pageSizeOptions]="[5, 10, 25, 100]"
-              aria-label="Select page of users"
-            ></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" style="width: 100%; padding: 20px;">
+    <div class="row">
+      <div class="col-md-12" style="width: 100%; padding: 0;">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Reporte Coordinadores</h4>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <mat-form-field appearance="outline">
+                <mat-label>Filtrar</mat-label>
+                <input matInput (keyup)="applyCoordinatorFilter($event)" placeholder="Filtrar por cualquier campo" />
+              </mat-form-field>
+            </div>
+            <table mat-table [dataSource]="coordinatorReportSource" class="mat-elevation-z8" matSort #coordinatorReportSort="matSort">
+              <!-- RUT Column -->
+              <ng-container matColumnDef="coordinatorRut">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
+                <td mat-cell *matCellDef="let row">{{row.coordinatorRut}}</td>
+              </ng-container>
+              <!-- Nombre Column -->
+              <ng-container matColumnDef="coordinatorName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                <td mat-cell *matCellDef="let row">{{row.coordinatorName}}</td>
+              </ng-container>
+              <!-- Apellido Column -->
+              <ng-container matColumnDef="coordinatorLastname">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido</th>
+                <td mat-cell *matCellDef="let row">{{row.coordinatorLastname}}</td>
+              </ng-container>
+              <!-- Gira Column -->
+              <ng-container matColumnDef="tourSalesUuid">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Gira</th>
+                <td mat-cell *matCellDef="let row">{{row.tourSalesUuid}}</td>
+              </ng-container>
+              <!-- Salida Column -->
+              <ng-container matColumnDef="tourSalesInit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Salida</th>
+                <td mat-cell *matCellDef="let row">{{row.tourSalesInit}}</td>
+              </ng-container>
+              <!-- Regreso Column -->
+              <ng-container matColumnDef="tourSalesFinal">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Regreso</th>
+                <td mat-cell *matCellDef="let row">{{row.tourSalesFinal}}</td>
+              </ng-container>
+              <!-- Ubicación Column -->
+              <ng-container matColumnDef="hasSharedLocation">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.hasSharedLocation ? 'Sí' : 'No' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsCoordinatorReport"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsCoordinatorReport;"></tr>
+            </table>
+            <mat-paginator #coordinatorReportPaginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]">
+            </mat-paginator>
           </div>
         </div>
       </div>

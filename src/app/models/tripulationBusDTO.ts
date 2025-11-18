@@ -6,4 +6,5 @@ export interface TripulationBusDTO {
     tourTripulationBusYear: string;
     tourTripulationBusEnterprise: string;
     idTour:number;
+    bus_id:number;
   }

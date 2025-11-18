@@ -18,8 +18,8 @@ export class TourViewDriverModalComponent implements OnInit {
   displayedColumnsTrip: string[] = [
     'tourTripulationNameId',
     'tourTripulationIdentificationId',
-    //'tourTripulationPhoneId',
-    //'fechaNacimiento',
+    'tourTripulationPhoneId',
+    'fechaNacimiento',
     'acciones'
   ];
 
@@ -69,9 +69,10 @@ export class TourViewDriverModalComponent implements OnInit {
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre">
         <input id="tp-ident" class="swal2-input" placeholder="Identificación">
+        <input id="tp-fono" class="swal2-input" placeholder="Teléfono">
+        <input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
       `,
-      //<input id="tp-fono" class="swal2-input" placeholder="Teléfono">
-      //<input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
+
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
@@ -79,14 +80,14 @@ export class TourViewDriverModalComponent implements OnInit {
       preConfirm: () => {
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
         const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
-        //const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        //const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
+        const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
+        const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
 
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return { nombre, ident };
+        return { nombre, ident, fono, fecha };
       }
     });
 
@@ -124,9 +125,9 @@ export class TourViewDriverModalComponent implements OnInit {
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre" value="${row.tourTripulationNameId ?? ''}">
         <input id="tp-ident" class="swal2-input" placeholder="Identificación" value="${row.tourTripulationIdentificationId ?? ''}">
+        <input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
+        <input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0, 10)}">
       `,
-      //<input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
-      //<input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0, 10)}">
       showCancelButton: true,
       confirmButtonText: 'Actualizar',
       cancelButtonText: 'Cancelar',
@@ -134,13 +135,13 @@ export class TourViewDriverModalComponent implements OnInit {
       preConfirm: () => {
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
         const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
-        //const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        //const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
+        const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
+        const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return { nombre, ident };
+        return { nombre, ident, fono, fecha };
       }
     });
     if (!form) return;
@@ -149,8 +150,8 @@ export class TourViewDriverModalComponent implements OnInit {
       tourTripulationTypeId: form.typeId,
       tourTripulationNameId: form.nombre,
       tourTripulationIdentificationId: form.ident,
-      //tourTripulationPhoneId: form.fono,
-      //fechaNacimiento: form.fecha || undefined,
+      tourTripulationPhoneId: form.fono,
+      fechaNacimiento: form.fecha || undefined,
       tripulationBusId: isNaN(form.busId) ? undefined : form.busId
     };
     Swal.showLoading();

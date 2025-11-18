@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Editar Adulto</h2>
+
+<mat-dialog-content [formGroup]="form">
+    <div class="grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="passengersNames">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Apellido Paterno</mat-label>
+            <input matInput formControlName="passengersFatherLastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Apellido Materno</mat-label>
+            <input matInput formControlName="passengersMotherLastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Identificación</mat-label>
+            <input matInput formControlName="passengersIdentification">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="passengersPhone">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="passengersEmail">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-2">
+            <mat-label>Comentario</mat-label>
+            <textarea matInput formControlName="passengersComment" rows="2"></textarea>
+        </mat-form-field>
+
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()" [disabled]="loading">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="loading">Guardar</button>
+</mat-dialog-actions>

@@ -8,9 +8,9 @@ import { PassengerDTO } from 'app/models/passengerDTO';
 })
 export class AlumnsService {
 
-  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  url = 'http://localhost:8084';
+  //url = 'http://localhost:8084';
 
   constructor(private http: HttpClient) { }
 

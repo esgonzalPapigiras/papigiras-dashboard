@@ -99,7 +99,7 @@
 
                   <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
                     (change)="onFileSelected($event, row)" />
-                  <button mat-icon-button [color]="row.tourSalesBusSelected ? 'accent' : 'primary'" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
+                  <button mat-icon-button [ngClass]="row.tourSalesBusSelected ? 'green-button' : 'grey-button'" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                     <mat-icon>directions_bus</mat-icon>
                   </button>
 
@@ -107,7 +107,7 @@
                     matTooltip="Agregar Choferes">
                     <mat-icon>people</mat-icon>
                   </button>
-                  <button mat-icon-button [color]="row.tourSalesCoordinatorSelected ? 'accent' : 'primary'" (click)="openViewDialogCoordinator(row)"
+                  <button mat-icon-button [ngClass]="row.tourSalesCoordinatorSelected ? 'green-button' : 'grey-button'" (click)="openViewDialogCoordinator(row)"
                     matTooltip="Agregar coordinador">
                     <mat-icon>nordic_walking</mat-icon>
                   </button>

@@ -25,4 +25,6 @@ export interface PassengerDTO {
   passengersActive: boolean;
   passengersVoucher: boolean;
   medicalRecord: boolean;
+  collegeName?: string;
+  communeName?: string;
 }

@@ -2,60 +2,54 @@
   <div class="container-fluid" style="width: 100%; padding: 20px">
     <div class="row">
       <div class="col-md-12" style="width: 100%; padding: 20px">
-
         <!-- Acciones (si necesitas otras, déjalas aquí) -->
-        <div class="button-container"
-             style="display:flex; gap:15px; justify-content:start; margin-bottom:10px;">
+        <div class="button-container" style="display:flex; gap:15px; justify-content:start; margin-bottom:10px;">
           <!-- Ejemplo: botón extra -->
           <!-- <button mat-raised-button color="primary" (click)="algunaAccion()">Acción</button> -->
         </div>
-
         <div class="card">
           <div class="card-header card-header-danger">
-            <h4 class="card-title">Alumnos</h4>
+            <h4 class="card-title">Pasajeros</h4>
           </div>
-
           <div class="card-body">
+            <!-- Resumen arriba -->
+            <section class="resumen-wrapper mat-elevation-z1"
+              style="margin:12px 0 4px; padding:8px 12px; border-radius:8px; background:#fafafa;">
+              <div class="resumen-title" style="font-weight:600; margin-bottom:6px;">Resumen participantes</div>
+              <ul class="resumen-ul" style="list-style:none; margin:0; padding:0;">
+                <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
+                  <span>Hombres</span><span style="flex:1;"></span>
+                  <strong>{{ data?.detalle?.cantidadHombres || 0 }}</strong>
+                </li>
+                <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
+                  <span>Mujeres</span><span style="flex:1;"></span>
+                  <strong>{{ data?.detalle?.cantidadMujeres || 0 }}</strong>
+                </li>
+                <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
+                  <span>Acomp. Femenino</span><span style="flex:1;"></span>
+                  <strong>{{ data?.detalle?.acompananteFemenino || 0 }}</strong>
+                </li>
+                <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
+                  <span>Acomp. Masculino</span><span style="flex:1;"></span>
+                  <strong>{{ data?.detalle?.acompananteMasculino || 0 }}</strong>
+                </li>
+                <li class="total" style="display:flex; align-items:center; padding:6px 0; border-top:2px solid #ddd;">
+                  <span>Total</span><span style="flex:1;"></span>
+                  <strong>{{ total || (data?.detalle?.tourSalesStudentCount || 0) }}</strong>
+                </li>
+              </ul>
 
+              <div class="acciones-resumen" style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+                <button mat-stroked-button color="primary" (click)="ObtenerListaAlumnos()">Refrescar lista</button>
+                <button mat-stroked-button (click)="refreshCounts()">Refrescar conteos</button>
+              </div>
+            </section>
             <!-- Grupo de tabs (solo 1 tab en este caso) -->
             <mat-tab-group>
               <mat-tab label="Alumnos">
-
-                <!-- Resumen arriba -->
-                <section class="resumen-wrapper mat-elevation-z1" style="margin:12px 0 4px; padding:8px 12px; border-radius:8px; background:#fafafa;">
-                  <div class="resumen-title" style="font-weight:600; margin-bottom:6px;">Resumen participantes</div>
-
-                  <ul class="resumen-ul" style="list-style:none; margin:0; padding:0;">
-                    <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
-                      <span>Hombres</span><span style="flex:1;"></span>
-                      <strong>{{ data?.detalle?.cantidadHombres || 0 }}</strong>
-                    </li>
-                    <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
-                      <span>Mujeres</span><span style="flex:1;"></span>
-                      <strong>{{ data?.detalle?.cantidadMujeres || 0 }}</strong>
-                    </li>
-                    <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
-                      <span>Acomp. Femenino</span><span style="flex:1;"></span>
-                      <strong>{{ data?.detalle?.acompananteFemenino || 0 }}</strong>
-                    </li>
-                    <li style="display:flex; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
-                      <span>Acomp. Masculino</span><span style="flex:1;"></span>
-                      <strong>{{ data?.detalle?.acompananteMasculino || 0 }}</strong>
-                    </li>
-                    <li class="total" style="display:flex; align-items:center; padding:6px 0; border-top:2px solid #ddd;">
-                      <span>Total</span><span style="flex:1;"></span>
-                      <strong>{{ total || (data?.detalle?.tourSalesStudentCount || 0) }}</strong>
-                    </li>
-                  </ul>
-
-                  <div class="acciones-resumen" style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
-                    <button mat-stroked-button color="primary" (click)="ObtenerListaAlumnos()">Refrescar lista</button>
-                    <button mat-stroked-button (click)="refreshCounts()">Refrescar conteos</button>
-                  </div>
-                </section>
-
                 <!-- Tabla -->
-                <table mat-table [dataSource]="dataSourceAlumnos" matSort class="mat-elevation-z8" style="width:100%; margin-top:10px;">
+                <table mat-table [dataSource]="dataSourceAlumnos" matSort class="mat-elevation-z8"
+                  style="width:100%; margin-top:10px;">
 
                   <!-- Identificación -->
                   <ng-container matColumnDef="passengersIdentification">
@@ -118,7 +112,7 @@
                     <th mat-header-cell *matHeaderCellDef>Acciones</th>
                     <td mat-cell *matCellDef="let a" style="display:flex; gap:6px; align-items:center;">
                       <button mat-icon-button [color]="a.medicalRecord ? 'accent' : 'primary'"
-                              (click)="medicalRecord(a)" matTooltip="Ficha Médica">
+                        (click)="medicalRecord(a)" matTooltip="Ficha Médica">
                         <mat-icon>medical_information</mat-icon>
                       </button>
                       <!--
@@ -140,8 +134,49 @@
                 </table>
 
                 <mat-paginator #paginatorAlumn [pageSizeOptions]="[5, 10, 25, 100]"
-                               aria-label="Paginación alumnos"></mat-paginator>
+                  aria-label="Paginación alumnos"></mat-paginator>
 
+              </mat-tab>
+              <mat-tab label="Acompañantes">
+                <table mat-table [dataSource]="dataSourceAcompanantes" matSort class="mat-elevation-z8"
+                  style="width:100%; margin-top:10px;">
+                  <ng-container matColumnDef="passengersIdentification">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Identificación</th>
+                    <td mat-cell *matCellDef="let a">{{ a.passengersIdentification }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="passengersNames">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+                    <td mat-cell *matCellDef="let a">{{ a.passengersNames }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="passengersFatherLastName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellidos</th>
+                    <td mat-cell *matCellDef="let a">{{ a.passengersFatherLastName }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="passengersPhone">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono</th>
+                    <td mat-cell *matCellDef="let a">{{ a.passengersPhone }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="passengersEmail">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                    <td mat-cell *matCellDef="let a">{{ a.passengersEmail }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let a">
+                      <button mat-icon-button color="primary" (click)="openAdultDialog(a)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="eliminarAcompanante(a)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumnsAcompanantes"></tr>
+                  <tr mat-row *matRowDef="let a; columns: displayedColumnsAcompanantes;"></tr>
+                </table>
+                <mat-paginator #paginatorAcompanantes [pageSizeOptions]="[5, 10, 25, 100]"
+                  aria-label="Paginación acompañantes"></mat-paginator>
               </mat-tab>
             </mat-tab-group>
 

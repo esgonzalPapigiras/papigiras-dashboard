@@ -16,36 +16,30 @@ import Swal from 'sweetalert2';
 export class PassengerComponent implements OnInit {
 
   dataSourceAlumnos = new MatTableDataSource<PassengerDTO>();
-  @ViewChild('paginatorAlumn') paginatorAlumn: MatPaginator;
-  @ViewChild('sortAlumn') sortAlumn: MatSort;
+  @ViewChild(MatPaginator) paginatorAlumn: MatPaginator;
+  @ViewChild(MatSort) sortAlumn: MatSort;
   displayedColumnsAlumnos: string[] = [
+    "passengersUuid",
     "passengersIdentification",
     "passengersFatherLastName",
     "passengersNames",
     "passengersBirthDate",
     "passengersSex",
     //"passengersSize",
-    "passengersDiet",
+    //"passengersDiet",
     "passengersEmail",
     "passengersPhone",
     "acciones",
-    //"namePassengersAttorney",
-    //"emailPassengersAttorney",
-    //"phonePassengersAttorney",
-    //"active",
   ];
   giras: any[] = [];
 
   constructor(
-    private girasServices: ToursServicesService,
     private alumnsService: AlumnsService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit(): void {
-    this.obtenerTodosPasajeros(); 
-    //this.obtenerGiras();
-    //this.ObtenerListaAlumnos();
+    this.obtenerTodosPasajeros();
   }
 
   ngAfterViewInit() {
@@ -61,13 +55,16 @@ export class PassengerComponent implements OnInit {
         Swal.showLoading();
         this.alumnsService.obtenerPasajeros().subscribe((respon) => {
           console.log(respon);
-          this.dataSourceAlumnos = new MatTableDataSource(respon);
-          this.dataSourceAlumnos.paginator = this.paginatorAlumn;
-          this.dataSourceAlumnos.sort = this.sortAlumn;
+          this.dataSourceAlumnos.data = respon;
           Swal.close();
         });
       },
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceAlumnos.filter = filterValue.trim().toLowerCase();
   }
 
   editarPasajero(alumno: any) {

@@ -6,6 +6,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import * as Chartist from "chartist";
 import Swal from "sweetalert2";
 import { BestCoordinators } from "app/models/bestCoordinator";
+import { CoordinatorReportDTO } from "app/models/CoordinatorReportDTO";
 
 @Component({
   selector: "app-dashboard",
@@ -23,21 +24,17 @@ export class DashboardComponent implements OnInit {
   public dataLoaded = false;
   years: number[] = []; // Array para los años
   selectedYear: number;
-  displayedColumns: string[] = [
-    "cantidadHitos",
-    "cantidadFotos",
-    "tourSalesUuid",
-    "tourSalesInit",
-    "tourSalesFinal",
-    "nameClient",
-    "courseClient",
-    "tourTripulationNameId",
-  ];
+  displayedColumns: string[] = ["cantidadHitos", "cantidadFotos", "tourSalesUuid", "tourSalesInit", "tourSalesFinal", "nameClient", "courseClient", "tourTripulationNameId",];
   dataSource = new MatTableDataSource<BestCoordinators>();
-
+  displayedColumnsCoordinatorReport: string[] = ["coordinatorRut", "coordinatorName", "coordinatorLastname", "tourSalesUuid", "tourSalesInit", "tourSalesFinal", "hasSharedLocation"];
+  coordinatorReportSource = new MatTableDataSource<CoordinatorReportDTO>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('coordinatorReportPaginator') coordinatorReportPaginator: MatPaginator;
+  @ViewChild('coordinatorReportSort') coordinatorReportSort: MatSort;
 
-  constructor(private girasService: StadisticsService) {}
+
+  constructor(private girasService: StadisticsService) { }
   startAnimationForLineChart(chart) {
     let seq: any, delays: any, durations: any;
     seq = 0;
@@ -103,25 +100,31 @@ export class DashboardComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     //this.obtenerBestCoordinators(currentYear);
     //this.obtenerRegistrosEstadisticos();
-
     // Crear un array con los próximos 10 años y los 10 anteriores
     for (let i = -5; i <= 5; i++) {
       this.years.push(currentYear + i);
     }
-
     // Establecer el año actual como valor por defecto
     this.selectedYear = currentYear;
+    this.obtenerCoordinatorReport();
+  }
+  ngAfterViewInit() {
+    //this.dataSource.sort = this.sort;
+    //this.dataSource.paginator = this.paginator;
+    this.coordinatorReportSource.paginator = this.coordinatorReportPaginator;
+    this.coordinatorReportSource.sort = this.coordinatorReportSort;
   }
 
   onYearChange(): void {
     //this.obtenerBestCoordinators(this.selectedYear);
   }
 
-  @ViewChild(MatSort) sort: MatSort;
-
-  ngAfterViewInit() {
-    //this.dataSource.sort = this.sort;
-    //this.dataSource.paginator = this.paginator;
+  applyCoordinatorFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.coordinatorReportSource.filter = filterValue.trim().toLowerCase();
+    if (this.coordinatorReportSource.paginator) {
+      this.coordinatorReportSource.paginator.firstPage();
+    }
   }
 
   obtenerBestCoordinators(year: number) {
@@ -318,6 +321,26 @@ export class DashboardComponent implements OnInit {
           },
         });
       },
+    });
+  }
+
+  obtenerCoordinatorReport() {
+    Swal.fire({
+      title: "Cargando...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.girasService.getCoordinatorReport().subscribe({
+          next: (data) => {
+            this.coordinatorReportSource.data = data;
+            Swal.close();
+          },
+          error: (error) => {
+            console.error("Error al obtener el reporte de coordinadores", error);
+            Swal.close();
+          }
+        });
+      }
     });
   }
 }

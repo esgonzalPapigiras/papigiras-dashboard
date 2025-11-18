@@ -72,6 +72,8 @@ import { PassengerEditDialogComponent } from 'app/tours/passenger-edit-dialog/pa
 import { MedicalRecordDialogComponent } from 'app/tours/medical-record-dialog/medical-record-dialog.component';
 import { PassengerComponent } from 'app/passengers/passengers.component';
 import { SchoolComponent } from 'app/school/school.component';
+import { BusesComponent } from 'app/buses/buses.component';
+import { PassengerAdultEditDialogComponent } from 'app/tours/passenger-adult-edit-dialog/passenger-adult-edit-dialog.component';
 
 const MY_DATE_FORMATS = {
   display: {
@@ -160,7 +162,9 @@ const MY_DATE_FORMATS = {
     PassengerEditDialogComponent,
     MedicalRecordDialogComponent,
     SchoolComponent,
-    PassengerComponent
+    PassengerComponent,
+    BusesComponent,
+    PassengerAdultEditDialogComponent,
   ]
 })
 
