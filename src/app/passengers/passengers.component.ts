@@ -136,8 +136,51 @@ export class PassengerComponent implements OnInit {
       }
     });
   }
-  addCoordinator() { }
-  triggerFileInput() { }
-  onFileSelected(event: Event) { }
-  downloadCoordinators() { }
+  triggerFileInput() {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fileInput?.click();
+  }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+      this.alumnsService.uploadFile(file).subscribe({
+        next: (response) => {
+          Swal.close();
+          if (response.code === '0') {
+            Swal.fire('Éxito', 'Buses cargados correctamente', 'success');
+            this.obtenerTodosPasajeros();
+          } else {
+            Swal.fire('Error', response.response, 'error');
+          }
+        },
+        error: (err) => {
+          Swal.close();
+          Swal.fire('Error', 'Hubo un problema al cargar el archivo', err);
+        }
+      });
+      event.target.value = ''; // reset input
+    } else {
+      Swal.fire('Error', 'Debes cargar un archivo Excel para continuar', 'error');
+    }
+  }
+  addPassenger() { }
+  downloadPassengers() { }
+
+  downloadTemplatePassenger() {
+    const url = 'assets/templates/Pasajeros_CargaMasiva.xlsx';
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'Template_Pasajeros_CargaMasiva.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+  }
 }

@@ -2,41 +2,33 @@
   <div class="container-fluid" style="width: 100%; padding: 20px;">
     <div class="row">
       <div class="col-md-12" style="width: 100%; padding: 20px;">
-        <div class="button-container" style="
-              display: flex;
-              gap: 15px;
-              justify-content: start;
-              margin-bottom: 10px;
-            ">
+        <div class="button-container" style="display: flex; gap: 15px; justify-content: start; margin-bottom: 10px;">
           <button mat-raised-button color="primary" (click)="addTour()">
             Agregar Gira
           </button>
           <button mat-raised-button color="primary" type="button" (click)="fileInput.value=''; fileInput.click()">
             Carga Masiva de Giras
           </button>
-
           <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
             (change)="onFileSelectedMassiveTour($event)" />
           <button mat-raised-button color="warning" (click)="downloadTemplateTour()">
             Descargar plantilla Gira
           </button>
-          <button mat-raised-button color="green" (click)="downloadTemplatePassenger()">
+          <button mat-raised-button color="warning" (click)="downloadTemplatePassenger()">
             Descargar Giras
           </button>
-
         </div>
         <div class="card">
           <div class="card-header card-header-danger">
             <h4 class="card-title">Mantenedor Giras</h4>
-
           </div>
           <div class="card-body">
-          
+
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
               <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
             </mat-form-field>
-            
+
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
               class="mat-elevation-z8">
 
@@ -99,7 +91,8 @@
 
                   <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
                     (change)="onFileSelected($event, row)" />
-                  <button mat-icon-button [ngClass]="row.tourSalesBusSelected ? 'green-button' : 'grey-button'" (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
+                  <button mat-icon-button [ngClass]="row.tourSalesBusSelected ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                     <mat-icon>directions_bus</mat-icon>
                   </button>
 
@@ -107,8 +100,8 @@
                     matTooltip="Agregar Choferes">
                     <mat-icon>people</mat-icon>
                   </button>
-                  <button mat-icon-button [ngClass]="row.tourSalesCoordinatorSelected ? 'green-button' : 'grey-button'" (click)="openViewDialogCoordinator(row)"
-                    matTooltip="Agregar coordinador">
+                  <button mat-icon-button [ngClass]="row.tourSalesCoordinatorSelected ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogCoordinator(row)" matTooltip="Agregar coordinador">
                     <mat-icon>nordic_walking</mat-icon>
                   </button>
                   <button mat-icon-button [color]="row.addProgramDoc ? 'accent' : 'primary'"

@@ -124,15 +124,16 @@ export class BusesComponent implements OnInit {
   }
 
   downloadTemplate() {
-    const headers = [
-      { ID: '', Patente: '', Año: '', Empresa: '', Capacidad: '', Marca: '', Modelo: '' }
-    ];
-    const worksheet = XLSX.utils.json_to_sheet(headers);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Buses Template');
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, 'buses_template.xlsx');
+    const url = 'assets/templates/Buses_CargaMasiva.xlsx';
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'Template_Buses_CargaMasiva.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
   }
 
   triggerFileInput() {

@@ -11,16 +11,14 @@
           <button mat-raised-button color="primary" (click)="addCoordinator()">
             Agregar Coordinador
           </button>
-          <button mat-raised-button color="green" (click)="downloadTemplate()">
-            Descargar plantilla Ejemplo
+          <button mat-raised-button color="primary" (click)="triggerFileInput()">
+            Carga Masiva de Coordinadores
           </button>
-          <button mat-raised-button color="accent" (click)="triggerFileInput()">
-            Agregar Coordinadores
-          </button>
-
-          <!-- Input file oculto -->
           <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls" style="display: none" />
-          <button mat-raised-button color="warn" (click)="downloadCoordinators()">
+          <button mat-raised-button color="warning" (click)="downloadTemplate()">
+            Descargar plantilla Coordinadores
+          </button>
+          <button mat-raised-button color="warning" (click)="downloadCoordinators()">
             Descargar Coordinadores
           </button>
         </div>

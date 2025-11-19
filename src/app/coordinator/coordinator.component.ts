@@ -32,22 +32,22 @@ export class CoordinatorComponent implements OnInit {
   id: string;
 
   private headers: (keyof Coordinator)[] = [
-  'coordinatorCarrera',           // cell(0)
-  'coordinatorCelular',           // cell(1)
-  'coordinatorCorreo',            // cell(2)
-  'coordinatorEmpresa',           // cell(3)
-  'coordinatorFechaNacimiento',   // cell(4)
-  'coordinatorInstaAt',           // cell(5)
-  'coordinatorInstaPersonal',     // cell(6)
-  'coordinatorLastname',          // cell(7)
-  'coordinatorName',              // cell(8)
-  'coordinatorOficina',           // cell(9)
-  'coordinatorProfesion',         // cell(10)
-  'coordinatorResidencia',        // cell(11)
-  'coordinatorRut',               // cell(12)
-  'coordinatorSex',               // cell(13)
-  'coordinatorUniversidad'        // cell(14)
-];
+    'coordinatorCarrera',           // cell(0)
+    'coordinatorCelular',           // cell(1)
+    'coordinatorCorreo',            // cell(2)
+    'coordinatorEmpresa',           // cell(3)
+    'coordinatorFechaNacimiento',   // cell(4)
+    'coordinatorInstaAt',           // cell(5)
+    'coordinatorInstaPersonal',     // cell(6)
+    'coordinatorLastname',          // cell(7)
+    'coordinatorName',              // cell(8)
+    'coordinatorOficina',           // cell(9)
+    'coordinatorProfesion',         // cell(10)
+    'coordinatorResidencia',        // cell(11)
+    'coordinatorRut',               // cell(12)
+    'coordinatorSex',               // cell(13)
+    'coordinatorUniversidad'        // cell(14)
+  ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild("fileInput") fileInput: any;
@@ -222,7 +222,7 @@ export class CoordinatorComponent implements OnInit {
     const dialogRef = this.dialog.open(CoordinatorModalCreateComponent, {
       width: '1300px',
       height: '600px',
-      
+
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -234,27 +234,16 @@ export class CoordinatorComponent implements OnInit {
   }
 
   downloadTemplate(): void {
-    // 1) Generar la primera fila con los nombres de columna
-    const headerRow = this.headers.map(h => h);
-
-    // 2) Crear la hoja de cálculo a partir de un array de arrays
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([headerRow]);
-
-    // 3) Crear el libro y asignar la hoja
-    const wb: XLSX.WorkBook = {
-      Sheets: { 'Coordinators': ws },
-      SheetNames: ['Coordinators']
-    };
-
-    // 4) Generar el binario de Excel
-    const wbout: ArrayBuffer = XLSX.write(wb, {
-      bookType: 'xlsx',
-      type: 'array'
-    });
-
-    // 5) Crear un Blob y disparar la descarga
-    const blob = new Blob([wbout], { type: 'application/octet-stream' });
-    saveAs(blob, 'template_coordinator.xlsx');
+    const url = 'assets/templates/Coordinadores_CargaMasiva.xlsx';
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'Template_Coordinadores_CargaMasiva.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
   }
 
   downloadCoordinators(): void {
@@ -357,7 +346,7 @@ export class CoordinatorComponent implements OnInit {
           });
         }
       });
-      
+
     };
     reader.readAsArrayBuffer(file); // Lee el archivo como ArrayBuffer
   }

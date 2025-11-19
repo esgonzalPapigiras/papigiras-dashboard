@@ -10,11 +10,7 @@ import Swal from 'sweetalert2';
 import { ToursServicesService } from 'app/services/tours-services.service';
 import { ComunnesService } from 'app/services/comunnes.service';
 import { TourDonwloadAlumnsModalComponent } from '../tour-donwload-alumns-modal/tour-donwload-alumns-modal.component';
-import { TourAddBusModalComponent } from '../tour-add-bus-modal/tour-add-bus-modal.component';
-import { TourAddDriverModalComponent } from '../tour-add-driver-modal/tour-add-driver-modal.component';
 import { TourAddCoordinatorModalComponent } from '../tour-add-coordinator-modal/tour-add-coordinator-modal.component';
-import { TourAddHotelModalComponent } from '../tour-add-hotel-modal/tour-add-hotel-modal.component';
-import { TourAddDocumentModalComponent } from '../tour-add-document-modal/tour-add-document-modal.component';
 import { TourDownloadDocumentModalComponent } from '../tour-download-document-modal/tour-download-document-modal.component';
 import { TourAddAirplaneModalComponent } from '../tour-add-airplane-modal/tour-add-airplane-modal.component';
 import { saveAs } from 'file-saver';
@@ -24,7 +20,6 @@ import * as XLSX from 'xlsx';
 // RXJS
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
-import { TourViewCoordinatorModalComponent } from '../tour-view-coordinator-modal/tour-view-coordinator-modal.component';
 import { TourViewBusModalComponent } from '../tour-view-bus-modal/tour-view-bus-modal.component';
 import { TourViewDriverModalComponent } from '../tour-view-driver-modal/tour-view-driver-modal.component';
 
@@ -169,52 +164,16 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   downloadTemplateTour() {
-
-    const headers = [
-      'fecha salida',
-      'fecha llegada',
-      'identificador gira',
-      'programa',
-      'temporada',
-      'colegio',
-      'comuna',
-      'curso',
-      'bus',
-      'rut conductor 1',
-      'nombre conductor 1',
-      'rut conductor 2',
-      'nombre conductor 2',
-      'hotel',
-      'coordinador'
-    ];
-    const hints = [
-      '(dd-MM-yyyy)',
-      '(dd-MM-yyyy)',
-      '',
-      '',
-      '2025',
-      '1234',
-      '1101',
-      '4B',
-      '',
-      '12.345.678-9',
-      'NOMBRE APELLIDO',
-      '12.345.678-9',
-      'NOMBRE APELLIDO',
-      '',
-      ''
-    ];
-    const note = ['Estos campos son los mínimos necesarios para ejecutar la carga. Complete según corresponda.'];
-    while (note.length < headers.length) note.push('');
-    const wsData = [headers, hints, note];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    ws['!cols'] = headers.map(h => ({ wch: Math.max(18, h.length + 2) }));
-    const lastColLetter = XLSX.utils.encode_col(headers.length - 1);
-    ws['!autofilter'] = { ref: `A1:${lastColLetter}1` };
-    ws['!ref'] = `A1:${lastColLetter}${wsData.length}`;
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'Template Carga Masiva Giras.xlsx');
+    const url = 'assets/templates/Giras_CargaMasiva.xlsx';
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'Template_Giras_CargaMasiva.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
   }
 
   private loadGiras$() {
@@ -647,7 +606,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
     });
   }
 
-  /** Announce the change in sort state for assistive technology. */
   announceSortChange(sortState: Sort) {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);

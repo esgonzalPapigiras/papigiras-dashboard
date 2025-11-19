@@ -7,16 +7,14 @@
                     <button mat-raised-button color="primary" (click)="addBus()">
                         Agregar Bus
                     </button>
-                    <button mat-raised-button color="green" (click)="downloadTemplate()">
-                        Descargar plantilla Ejemplo
+                    <button mat-raised-button color="primary" (click)="triggerFileInput()">
+                        Carga Masiva de Buses
                     </button>
-                    <button mat-raised-button color="accent" (click)="triggerFileInput()">
-                        Agregar Buses
+                    <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls" style="display: none" />
+                    <button mat-raised-button color="warning" (click)="downloadTemplate()">
+                        Descargar plantilla Buses
                     </button>
-                    <!-- Input file oculto -->
-                    <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls"
-                        style="display: none" />
-                    <button mat-raised-button color="warn" (click)="downloadBuses()">
+                    <button mat-raised-button color="warning" (click)="downloadBuses()">
                         Descargar Buses
                     </button>
                 </div>

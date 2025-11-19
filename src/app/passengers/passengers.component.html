@@ -4,17 +4,19 @@
             <div class="col-md-12" style="width: 100%; padding: 20px">
                 <div class="button-container"
                     style="display: flex;gap: 15px;justify-content: start;margin-bottom: 10px;">
-                    <button mat-raised-button color="primary" (click)="addCoordinator()">
+                    <button mat-raised-button color="primary" (click)="addPassenger()">
                         Agregar Pasajero
                     </button>
-                    <button mat-raised-button color="accent" (click)="triggerFileInput()">
-                        Agregar Pasajeros
+                    <button mat-raised-button color="primary" (click)="triggerFileInput()">
+                        Carga Masiva de Pasajeros
                     </button>
-
                     <!-- Input file oculto -->
                     <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls"
                         style="display: none" />
-                    <button mat-raised-button color="warn" (click)="downloadCoordinators()">
+                    <button mat-raised-button color="warning" (click)="downloadTemplatePassenger()">
+                        Descargar plantilla Pasajeros
+                    </button>
+                    <button mat-raised-button color="warning" (click)="downloadPassengers()">
                         Descargar Pasajeros
                     </button>
                 </div>
@@ -32,7 +34,9 @@
                             <ng-container matColumnDef="passengersUuid">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-cell">Código de Gira
                                 </th>
-                                <td mat-cell *matCellDef="let element" class="table-cell" style="padding-right:16px;" matTooltip="Colegio: {{element.collegeName}}| Comuna: {{element.communeName}}| Curso: {{element.passengersCourse}}" matTooltipPosition="above">
+                                <td mat-cell *matCellDef="let element" class="table-cell" style="padding-right:16px;"
+                                    matTooltip="Colegio: {{element.collegeName}}| Comuna: {{element.communeName}}| Curso: {{element.passengersCourse}}"
+                                    matTooltipPosition="above">
                                     {{element.passengersUuid}}</td>
                             </ng-container>
                             <ng-container matColumnDef="passengersIdentification">
