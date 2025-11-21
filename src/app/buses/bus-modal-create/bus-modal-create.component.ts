@@ -28,6 +28,7 @@ export class BusModalCreateComponent implements OnInit {
   ngOnInit(): void {}
 
   onSave(): void {
+    this.bus.capacidad = 0;
     Swal.fire({
       title: "Guardando...",
       allowOutsideClick: false,

@@ -29,7 +29,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     'namePassengersAttorney',
     'emailPassengersAttorney',
     'phonePassengersAttorney',
-    'active',
     'acciones',
   ];
   displayedColumnsAcompanantes = [
@@ -54,9 +53,7 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data,
     private girasServices: ToursServicesService
   ) { }
-
   ngOnInit(): void { }
-
   ngAfterViewInit(): void {
     this.dataSourceAlumnos.paginator = this.paginatorAlumn;
     this.dataSourceAlumnos.sort = this.sortAlumn;
@@ -66,7 +63,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     this.ObtenerListaAcompanantes();
     this.refreshCounts();
   }
-
   ObtenerListaAlumnos(): void {
     Swal.fire({ title: 'Cargando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
@@ -86,7 +82,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       finalize(() => Swal.close())
     ).subscribe();
   }
-
   ObtenerListaAcompanantes() {
     this.girasServices.listAcompanantes(this.data.id).pipe(
       tap(res => {
@@ -100,8 +95,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       })
     ).subscribe();
   }
-
-
   refreshCounts(): void {
     this.girasServices.obtenerDetalleGira(this.data.id).subscribe({
       next: (detalle) => {
@@ -114,7 +107,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       error: (e) => console.error('Error al obtener detalle de gira', e),
     });
   }
-
   private calcTotalParticipantes(d: any): number {
     const h = Number(d?.cantidadHombres ?? 0);
     const m = Number(d?.cantidadMujeres ?? 0);
@@ -123,8 +115,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     const sum = h + m + af + am;
     return Number.isFinite(sum) && sum > 0 ? sum : 0;
   }
-
-  // ==== Stubs para evitar errores del template ====
   voucherRecord(_row: PassengerDTO): void {
     // TODO: implementar si lo necesitas
   }
@@ -158,7 +148,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
   eliminarPasajero(row: PassengerDTO) {
     console.log(row)
     const nombre = row.passengersNames || row.namePassengersAttorney || '';
@@ -218,7 +207,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
   eliminarAcompanante(row: PassengerDTO) {
     const nombre = row.passengersNames || '';
     const identificacion = row.passengersIdentification || '';
@@ -281,7 +269,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
   medicalRecord(row: any): void {
     console.log(row)
     // Si YA tiene ficha -> descarga

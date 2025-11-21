@@ -27,4 +27,6 @@ export interface PassengerDTO {
   medicalRecord: boolean;
   collegeName?: string;
   communeName?: string;
+  idTour?: string;
+  codigoGira?: string;
 }

@@ -42,12 +42,12 @@ export class TourViewDriverModalComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-
         // Ajusta este método a tu servicio real para listar tripulación
         this.toursService.listaTripulantes(this.data).subscribe({
           next: (res: TripulationsDTO[]) => {
             // Filtrar solo choferes (typeId === 1)
             const choferes = (res ?? []).filter(t => t.tourTripulationTypeId === 1);
+            console.log(choferes)
             this.dataSourceTrip = new MatTableDataSource(choferes);
             this.dataSourceTrip.sort = this.sort;
             this.dataSourceTrip.paginator = this.paginator;
@@ -68,7 +68,7 @@ export class TourViewDriverModalComponent implements OnInit {
       title: 'Agregar Tripulante',
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre">
-        <input id="tp-ident" class="swal2-input" placeholder="Identificación">
+        <input id="tp-ident" class="swal2-input" placeholder="Rut">
         <input id="tp-fono" class="swal2-input" placeholder="Teléfono">
         <input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
       `,
@@ -81,13 +81,18 @@ export class TourViewDriverModalComponent implements OnInit {
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
         const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
         const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
+        const fechaInput = document.getElementById('tp-fecha') as HTMLInputElement;
+        const fecha = fechaInput.value;
 
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return { nombre, ident, fono, fecha };
+        if (!fechaInput.checkValidity()) {
+          Swal.showValidationMessage('La fecha no es válida. Usa formato YYYY-MM-DD.');
+          return false;
+        }
+        return { nombre, ident, fono, fecha: fecha || null };
       }
     });
 
@@ -124,7 +129,7 @@ export class TourViewDriverModalComponent implements OnInit {
       title: 'Editar Tripulante',
       html: `
         <input id="tp-nombre" class="swal2-input" placeholder="Nombre" value="${row.tourTripulationNameId ?? ''}">
-        <input id="tp-ident" class="swal2-input" placeholder="Identificación" value="${row.tourTripulationIdentificationId ?? ''}">
+        <input id="tp-ident" class="swal2-input" placeholder="Rut" value="${row.tourTripulationIdentificationId ?? ''}">
         <input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
         <input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0, 10)}">
       `,
@@ -136,12 +141,18 @@ export class TourViewDriverModalComponent implements OnInit {
         const nombre = (document.getElementById('tp-nombre') as HTMLInputElement).value?.trim();
         const ident = (document.getElementById('tp-ident') as HTMLInputElement).value?.trim();
         const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
-        const fecha = (document.getElementById('tp-fecha') as HTMLInputElement).value?.trim();
+        const fechaInput = document.getElementById('tp-fecha') as HTMLInputElement;
+        const fecha = fechaInput.value;
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
           return false;
         }
-        return { nombre, ident, fono, fecha };
+        // Safari check: if invalid typed date, block
+        if (!fechaInput.checkValidity()) {
+          Swal.showValidationMessage('La fecha no es válida. Usa formato YYYY-MM-DD.');
+          return false;
+        }
+        return { nombre, ident, fono, fecha: fecha || null };
       }
     });
     if (!form) return;

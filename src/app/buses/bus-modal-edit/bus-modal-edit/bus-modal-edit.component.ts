@@ -38,6 +38,7 @@ export class BusModalEditComponent implements OnInit {
   }
 
   onSave() {
+    this.bus.capacidad = 0;
     Swal.fire({
       title: "Guardando...",
       allowOutsideClick: false,

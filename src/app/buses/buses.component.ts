@@ -42,12 +42,10 @@ export class BusesComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerBuses();
   }
-
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
-
   obtenerBuses(): void {
     this.busService.obtenerBuses().subscribe({
       next: (data) => {
@@ -59,12 +57,10 @@ export class BusesComponent implements OnInit {
       }
     });
   }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
   announceSortChange(sortState: Sort) {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
@@ -72,7 +68,6 @@ export class BusesComponent implements OnInit {
       this._liveAnnouncer.announce("Sorting cleared");
     }
   }
-
   editarBus(row: any) {
     //console.log(row)
     const dialogRef = this.dialog.open(BusModalEditComponent, {
@@ -86,7 +81,6 @@ export class BusesComponent implements OnInit {
       }
     });
   }
-
   applyDelete(event: any) {
     Swal.fire({
       title: "¿Estas seguro?",
@@ -109,7 +103,6 @@ export class BusesComponent implements OnInit {
       }
     });
   }
-
   addBus() {
     const dialogRef = this.dialog.open(BusModalCreateComponent, {
       width: '1200px',
@@ -122,7 +115,6 @@ export class BusesComponent implements OnInit {
       }
     });
   }
-
   downloadTemplate() {
     const url = 'assets/templates/Buses_CargaMasiva.xlsx';
     fetch(url)
@@ -135,12 +127,10 @@ export class BusesComponent implements OnInit {
         window.URL.revokeObjectURL(link.href);
       });
   }
-
   triggerFileInput() {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     fileInput?.click(); // Abre el cuadro de diálogo de selección de archivo
   }
-
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
@@ -181,7 +171,6 @@ export class BusesComponent implements OnInit {
       Patente: bus.patente,
       Año: bus.anoBus,
       Empresa: bus.empresa,
-      Capacidad: bus.capacidad,
       Marca: bus.marca,
       Modelo: bus.modelo
     })));
