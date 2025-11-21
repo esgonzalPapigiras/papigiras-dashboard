@@ -167,12 +167,11 @@ export class BusesComponent implements OnInit {
       return;
     }
     const worksheet = XLSX.utils.json_to_sheet(buses.map(bus => ({
-      ID: bus.id,
       Patente: bus.patente,
       Año: bus.anoBus,
       Empresa: bus.empresa,
-      Marca: bus.marca,
-      Modelo: bus.modelo
+      Modelo: bus.modelo,
+      Marca: bus.marca
     })));
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Buses');

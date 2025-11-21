@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { saveAs } from 'file-saver';
 import { MedicalRecordDialogComponent } from 'app/tours/medical-record-dialog/medical-record-dialog.component';
 import { PassengerEditDialogComponent } from 'app/tours/passenger-edit-dialog/passenger-edit-dialog.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-passengers',
@@ -46,12 +47,10 @@ export class PassengerComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerTodosPasajeros();
   }
-
   ngAfterViewInit() {
     this.dataSourceAlumnos.paginator = this.paginatorAlumn;
     this.dataSourceAlumnos.sort = this.sortAlumn;
   }
-
   obtenerTodosPasajeros() {
     Swal.fire({
       title: "Cargando todos los pasajeros...",
@@ -59,19 +58,17 @@ export class PassengerComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.alumnsService.obtenerPasajeros().subscribe((respon) => {
-          console.log(respon);
+          //console.log(respon);
           this.dataSourceAlumnos.data = respon;
           Swal.close();
         });
       },
     });
   }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceAlumnos.filter = filterValue.trim().toLowerCase();
   }
-
   medicalRecord(row: any): void {
     console.log(row)
     // Si YA tiene ficha -> descarga
@@ -126,7 +123,6 @@ export class PassengerComponent implements OnInit {
       }
     });
   }
-
   editarPasajero(alumno: any): void {
     const ref = this.dialog.open(PassengerEditDialogComponent, {
       width: '720px',
@@ -197,6 +193,7 @@ export class PassengerComponent implements OnInit {
       });
     });
   }
+  addPassenger() { }
   triggerFileInput() {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     fileInput?.click();
@@ -229,9 +226,6 @@ export class PassengerComponent implements OnInit {
       Swal.fire('Error', 'Debes cargar un archivo Excel para continuar', 'error');
     }
   }
-  addPassenger() { }
-  downloadPassengers() { }
-
   downloadTemplatePassenger() {
     const url = 'assets/templates/Pasajeros_CargaMasiva.xlsx';
     fetch(url)
@@ -243,5 +237,44 @@ export class PassengerComponent implements OnInit {
         link.click();
         window.URL.revokeObjectURL(link.href);
       });
+  }
+  downloadPassengers() {
+    const pasajeros = this.dataSourceAlumnos.data;
+    if (!pasajeros || pasajeros.length === 0) {
+      Swal.fire("No hay pasajeros cargados", "", "warning");
+      return;
+    }
+    Swal.fire({
+      title: "Generando Excel...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const data = pasajeros.map((p: any) => ({
+          "Codigo Gira": p.codigoGira,
+          "RUT": p.passengersIdentification,
+          "Apellidos": `${p.passengersFatherLastName} ${p.passengersMotherLastName}`,
+          "Nombres": p.passengersNames,
+          "F. Nacimiento": p.passengersBirthDate,
+          "Sexo": p.passengersSex,
+          "Talla Polera": p.passengersSize,
+          "Dieta": p.passengersDiet,
+          "Celular": p.passengersPhone,
+          "Email": p.passengersEmail,
+          "Nombre Apoderado": p.namePassengersAttorney,
+          "Teléfono Apoderado": p.phonePassengersAttorney,
+          "Email Apoderado": p.emailPassengersAttorney,
+        }));
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Pasajeros");
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array"
+        });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "pasajeros.xlsx");
+        Swal.close();
+      }
+    });
   }
 }

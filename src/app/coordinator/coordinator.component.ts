@@ -247,54 +247,45 @@ export class CoordinatorComponent implements OnInit {
   }
 
   downloadCoordinators(): void {
-    this.coordinatorServices.obtenerCoordinadores().subscribe(
-      (coordinatorDetails: any[]) => {
-        try {
-          // Crear una hoja de Excel
-          const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
-            [
-              'ID', 'RUT', 'Nombre', 'Apellido', 'Sexo', 'Residencia', 'Oficina',
-              'Fecha Nacimiento', 'Celular', 'Correo', 'Insta Personal',
-              'Insta AT', 'Universidad', 'Carrera', 'Profesión', 'Empresa', 'Foto'
-            ]
-          ]);
-
-          // Agregar datos de los coordinadores a la hoja de Excel
-          coordinatorDetails.forEach(row => {
-            const rowData = [
-              row.coordinatorId,
-              row.coordinatorRut,
-              row.coordinatorName,
-              row.coordinatorLastname,
-              row.coordinatorSex,
-              row.coordinatorResidencia,
-              row.coordinatorOficina,
-              row.coordinatorFechaNacimiento,
-              row.coordinatorCelular,
-              row.coordinatorCorreo,
-              row.coordinatorInstaPersonal,
-              row.coordinatorInstaAt,
-              row.coordinatorUniversidad,
-              row.coordinatorCarrera,
-              row.coordinatorProfesion,
-              row.coordinatorEmpresa,
-              row.coordinatorPicture ? 'Sí' : 'No'
-            ];
-            XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 }); // Appends the row to the sheet
-          });
-
-          // Crear un archivo Excel y descargarlo
-          const wb: XLSX.WorkBook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, 'Coordinadores');
-          XLSX.writeFile(wb, 'coordinadores.xlsx');
-        } catch (e) {
-          console.error('Error al generar el Excel:', e);
-        }
-      },
-      (error) => {
-        console.error('Error al obtener los coordinadores:', error);
+    const coordinadores = this.dataSource.data;
+    if (!coordinadores || coordinadores.length === 0) {
+      Swal.fire("No hay coordinadores cargados", "", "warning");
+      return;
+    }
+    Swal.fire({
+      title: "Generando Excel...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const data = coordinadores.map((c: any) => ({
+          "coordinatorRut": c.coordinatorRut,
+          "coordinatorName": c.coordinatorName,
+          "coordinatorLastname": c.coordinatorLastname,
+          "coordinatorFechaNacimiento": c.coordinatorFechaNacimiento,
+          "coordinatorCelular": c.coordinatorCelular,
+          "coordinatorCorreo": c.coordinatorCorreo,
+          "coordinatorSex": c.coordinatorSex,
+          "coordinatorResidencia": c.coordinatorResidencia,
+          "coordinatorOficina": c.coordinatorOficina,
+          "coordinatorCarrera": c.coordinatorCarrera,
+          "coordinatorEmpresa": c.coordinatorEmpresa,
+          "coordinatorInstaAt": c.coordinatorInstaAt,
+          "coordinatorInstaPersonal": c.coordinatorInstaPersonal,
+          "coordinatorProfesion": c.coordinatorProfesion,
+          "coordinatorUniversidad": c.coordinatorUniversidad,
+        }));
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Coordinadores");
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array"
+        });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "coordinadores.xlsx");
+        Swal.close();
       }
-    );
+    });
   }
 
   EnviarImagen(row: any) {

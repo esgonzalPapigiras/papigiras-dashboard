@@ -48,7 +48,7 @@
             <mat-tab-group>
               <mat-tab label="Alumnos">
                 <!-- Tabla -->
-                <table mat-table [dataSource]="dataSourceAlumnos" matSort class="mat-elevation-z8"
+                <table mat-table [dataSource]="dataSourceAlumnos" matSort #sortAlumn="matSort" class="mat-elevation-z8"
                   style="width:100%; margin-top:10px;">
 
                   <!-- Identificación -->
@@ -127,7 +127,7 @@
 
               </mat-tab>
               <mat-tab label="Acompañantes">
-                <table mat-table [dataSource]="dataSourceAcompanantes" matSort class="mat-elevation-z8"
+                <table mat-table [dataSource]="dataSourceAcompanantes" matSort #sortAcompanantes="matSort" class="mat-elevation-z8"
                   style="width:100%; margin-top:10px;">
                   <ng-container matColumnDef="passengersIdentification">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Identificación</th>

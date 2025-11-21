@@ -41,10 +41,11 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   ];
   dataSourceAcompanantes = new MatTableDataSource<PassengerDTO>();
 
-  @ViewChild(MatPaginator) paginatorAlumn!: MatPaginator;
-  @ViewChild(MatSort) sortAlumn!: MatSort;
-  @ViewChild(MatPaginator) paginatorAcompanantes!: MatPaginator;
-  @ViewChild(MatSort) sortAcompanantes!: MatSort;
+  @ViewChild('paginatorAlumn') paginatorAlumn!: MatPaginator;
+  @ViewChild('paginatorAcompanantes') paginatorAcompanantes!: MatPaginator;
+
+  @ViewChild('sortAlumn') sortAlumn!: MatSort;
+  @ViewChild('sortAcompanantes') sortAcompanantes!: MatSort;
 
   total = 0;
 
@@ -57,6 +58,7 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSourceAlumnos.paginator = this.paginatorAlumn;
     this.dataSourceAlumnos.sort = this.sortAlumn;
+
     this.dataSourceAcompanantes.paginator = this.paginatorAcompanantes;
     this.dataSourceAcompanantes.sort = this.sortAcompanantes;
     this.ObtenerListaAlumnos();
