@@ -21,9 +21,9 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  //url = 'http://localhost:8084';
+  url = 'http://localhost:8084';
 
   constructor(private http: HttpClient) { }
 
@@ -211,32 +211,20 @@ export class ToursServicesService {
 
   }
   uploadDocumentsExtra(
-    result: Uint8Array,
+    file: File,
     name: string,
     uuid: string,
     folder: string,
     tipoDoc: string
   ): Observable<any> {
     const formData = new FormData();
-
-    // 1) Copia a un Uint8Array nuevo => su buffer es un ArrayBuffer "puro"
-    const safeU8 = new Uint8Array(result.byteLength);
-    safeU8.set(result);
-
-    // 2) Puedes pasar el Uint8Array directamente (ArrayBufferView) o su buffer
-    const blob = new Blob([safeU8], { type: 'application/octet-stream' });
-    // Alternativa equivalente:
-    // const blob = new Blob([safeU8.buffer], { type: 'application/octet-stream' });
-
-    formData.append('file', blob, name);
+    formData.append('file', file, name);
     formData.append('Uuid', uuid);
     formData.append('folder', folder);
     formData.append('tipoDoc', tipoDoc);
 
-    // No seteas Content-Type (FormData lo define con boundary)
     const token = localStorage.getItem('token') ?? '';
     const headers = token ? new HttpHeaders({ Authorization: token }) : undefined;
-
     return this.http.post(
       this.url.concat('/api/tour/sales/web/s3/upload'),
       formData,

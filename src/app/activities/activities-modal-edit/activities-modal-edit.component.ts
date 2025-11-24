@@ -13,11 +13,9 @@ import Swal from 'sweetalert2';
 })
 export class ActivitiesModalEditComponent implements OnInit {
 
-
   actividad: Activities;
   newActividad: Activities = new Activities();
   suppliers: Suppliers[];
-
 
   constructor(
     public dialogRef: MatDialogRef<ActivitiesModalEditComponent>,
@@ -28,7 +26,9 @@ export class ActivitiesModalEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.obtenercomunaUpdate();
+    if (this.data) {
+      this.actividad = this.data;
+    }
     this.obtenerSuppliers();
   }
 
@@ -38,31 +38,13 @@ export class ActivitiesModalEditComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.supplierService
-          .obtenerSuppliers()
-          .subscribe((respon) => {
-            this.suppliers = respon;
-            Swal.close();
-          });
-      },
-    });
-  }
-
-
-
-
-  obtenercomunaUpdate() {
-
-    Swal.fire({
-      title: "Cargando...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        if (this.data) {
-          this.actividad = this.data;
-        }
-
-        Swal.close();
+        this.supplierService.obtenerSuppliers().subscribe((respon) => {
+          this.suppliers = respon;
+          if (this.suppliers && this.suppliers.length > 0) {
+            this.actividad.id_supplier = this.suppliers[0].suppliers_id;
+          }
+          Swal.close();
+        });
       },
     });
   }
@@ -74,17 +56,12 @@ export class ActivitiesModalEditComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-
-        console.log(this.data.itinerary_id)
-        console.log(this.actividad);
-
         this.newActividad.id_supplier = this.actividad.id_supplier
         this.newActividad.itinerary_active = false
         this.newActividad.itinerary_description = this.actividad.itinerary_description
         this.newActividad.itinerary_id = this.actividad.itinerary_id
         this.newActividad.itinerary_includes = this.actividad.itinerary_includes
         this.newActividad.itinerary_name = this.actividad.itinerary_name
-
         this.activitiesService.activitiesUpdate(this.newActividad, this.data.itinerary_id).subscribe(
           (response) => {
             Swal.close();
@@ -111,10 +88,7 @@ export class ActivitiesModalEditComponent implements OnInit {
     });
   }
 
-
-
   onCancel(): void {
     this.dialogRef.close(false);
   }
-
 }

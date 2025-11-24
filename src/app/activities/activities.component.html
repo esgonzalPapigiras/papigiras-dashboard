@@ -1,123 +1,76 @@
-
 <div class="main-content" style="width: 100%; padding: 20px">
-    <div class="container-fluid" style="width: 100%; padding: 20px">
-      <div class="row">
-        <div class="col-md-12" style="width: 100%; padding: 20px">
-          <div
-            class="button-container"
-            style="
-              display: flex;
-              gap: 15px;
-              justify-content: start;
-              margin-bottom: 10px;
-            "
-          >
-            <button mat-raised-button color="primary" (click)="addBranch()">
-              Agregar Actividades
-            </button>
-            
+  <div class="container-fluid" style="width: 100%; padding: 20px">
+    <div class="row">
+      <div class="col-md-12" style="width: 100%; padding: 20px">
+        <div class="button-container" style="display: flex;gap: 15px;justify-content: start;margin-bottom: 10px;">
+          <button mat-raised-button color="primary" (click)="addBranch()">
+            Agregar Actividades
+          </button>
+          <button mat-raised-button color="primary" (click)="triggerFileInput()">
+            Carga Masiva de Actividades
+          </button>
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls" style="display: none" />
+          <button mat-raised-button color="warning" (click)="downloadTemplate()">
+            Descargar plantilla Actividades
+          </button>
+          <button mat-raised-button color="warning" (click)="downloadActivities()">
+            Descargar Actividades
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Mantenedor Actividades</h4>
           </div>
-          <div class="card">
-            <div class="card-header card-header-danger">
-              <h4 class="card-title">Mantenedor Actividades</h4>
-            </div>
-            <div class="card-body">
-              <mat-form-field appearance="standard">
-                <mat-label>Filtro</mat-label>
-                <input
-                  matInput
-                  (keyup)="applyFilter($event)"
-                  placeholder="Busqueda ...."
-                  #input
-                />
-              </mat-form-field>
-              <table
-                mat-table
-                [dataSource]="dataSource"
-                matSort
-                (matSortChange)="announceSortChange($event)"
-                class="mat-elevation-z8"
-              >
-                <!-- Position Column -->
-                <ng-container matColumnDef="itinerary_name">
-                  <th
-                    mat-header-cell
-                    *matHeaderCellDef
-                    mat-sort-header
-                    sortActionDescription="Sort by itinerary_name"
-                  >
-                    Nombre Actividad
-                  </th>
-                  <td mat-cell *matCellDef="let element">
-                    {{ element.itinerary_name }}
-                  </td>
-                </ng-container>
+          <div class="card-body">
+            <mat-form-field appearance="standard">
+              <mat-label>Filtro</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input />
+            </mat-form-field>
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+              class="mat-elevation-z8">
+              <!-- Position Column -->
+              <ng-container matColumnDef="itinerary_name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by itinerary_name">
+                  Nombre Actividad
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.itinerary_name }}
+                </td>
+              </ng-container>
 
-                <ng-container matColumnDef="name_suppliers">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      mat-sort-header
-                      sortActionDescription="Sort by name_suppliers"
-                    >
-                      Nombre Proveedor
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      {{ element.name_suppliers }}
-                    </td>
-                  </ng-container>
+              <ng-container matColumnDef="itinerary_description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                  sortActionDescription="Sort by itinerary_description">
+                  Descripcion Actividad
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.itinerary_description }}
+                </td>
+              </ng-container>
 
-                  <ng-container matColumnDef="itinerary_description">
-                    <th
-                      mat-header-cell
-                      *matHeaderCellDef
-                      mat-sort-header
-                      sortActionDescription="Sort by itinerary_description"
-                    >
-                      Descripcion Actividad
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      {{ element.itinerary_description }}
-                    </td>
-                  </ng-container>
-  
-                
-  
-                <ng-container matColumnDef="acciones">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                    Acciones
-                  </th>
-                  <td mat-cell *matCellDef="let row" class="action-buttons">
-                    <button
-                      mat-icon-button
-                      color="primary"
-                      (click)="editarBranch(row)"
-                      matTooltip="Editar"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      color="error"
-                      (click)="applyDelete(row)"
-                      matTooltip="Eliminar"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-  
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-              </table>
-              <mat-paginator
-                [pageSizeOptions]="[5, 10, 25, 100]"
-                aria-label="Select page of users"
-              ></mat-paginator>
-            </div>
+
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Acciones
+                </th>
+                <td mat-cell *matCellDef="let row" class="action-buttons">
+                  <button mat-icon-button color="primary" (click)="editarBranch(row)" matTooltip="Editar">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="error" (click)="applyDelete(row)" matTooltip="Eliminar">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+</div>

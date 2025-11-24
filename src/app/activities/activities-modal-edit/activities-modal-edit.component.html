@@ -9,26 +9,30 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="actividad">Nombre Actividad</label>
-                <input type="text" class="form-control" id="actividad" [(ngModel)]="actividad.itinerary_name" name="actividad"
-                    required />
+                <input type="text" class="form-control" id="actividad" [(ngModel)]="actividad.itinerary_name"
+                    name="actividad" required />
             </div>
             <div class="form-group col-md-6">
                 <label for="descripcion">Descripcion Actividad</label>
-                <input type="text" class="form-control" id="descripcion" [(ngModel)]="actividad.itinerary_description" name="descripcion"
-                    required />
+                <input type="text" class="form-control" id="descripcion" [(ngModel)]="actividad.itinerary_description"
+                    name="descripcion" required />
             </div>
+            <!--
             <div class="form-group col-md-6">
                 <label for="incluye">Que incluye</label>
-                <input type="text" class="form-control" id="incluye" [(ngModel)]="actividad.itinerary_includes" name="incluye"
-                    required />
+                <input type="text" class="form-control" id="incluye" [(ngModel)]="actividad.itinerary_includes"
+                    name="incluye" required />
             </div>
             <div class="form-group col-md-6">
                 <label for="coordinatorOficina">Proveedor</label>
-                <select class="form-control" id="suppliers" [(ngModel)]="actividad.id_supplier" name="suppliers" required>
-                    <!-- Usamos 'branch' para obtener las oficinas -->
-                    <option *ngFor="let supplier of suppliers" [ngValue]="supplier.suppliers_id">{{ supplier.nameSuppliers }}</option>
+                <select class="form-control" id="suppliers" [(ngModel)]="actividad.id_supplier" name="suppliers"
+                    required>
+                      
+                    <option *ngFor="let supplier of suppliers" [ngValue]="supplier.suppliers_id">{{
+                        supplier.nameSuppliers }}</option>
                 </select>
             </div>
+            -->
         </div>
     </form>
 </div>

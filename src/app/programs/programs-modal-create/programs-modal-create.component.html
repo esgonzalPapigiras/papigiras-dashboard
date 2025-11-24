@@ -8,18 +8,18 @@
     <form #programForm="ngForm">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="nombrePrograma">Nombre Programa</label>
+                <label for="nombrePrograma">Identificador</label>
                 <input type="text" class="form-control" id="nombrePrograma" [(ngModel)]="newProgram.nombrePrograma" name="nombrePrograma"
                     required />
             </div>
             <div class="form-group col-md-6">
-                <label for="cantidadDias">Cantidad Dias</label>
-                <input type="text" class="form-control" id="cantidadDias" [(ngModel)]="newProgram.cantidadDias" name="cantidadDias"
+                <label for="cantidadDias">Nombre Programa</label>
+                <input type="text" class="form-control" id="longName" [(ngModel)]="newProgram.longName" name="longName"
                     required />
             </div>
             <div class="form-group col-md-6">
-                <label for="cantidadNoches">Cantidad Noches</label>
-                <input type="text" class="form-control" id="cantidadNoches" [(ngModel)]="newProgram.cantidadNoches" name="cantidadNoches"
+                <label for="cantidadNoches">Descripcion</label>
+                <input type="text" class="form-control" id="descripcion" [(ngModel)]="newProgram.descripcion" name="descripcion"
                     required />
             </div>
         </div>

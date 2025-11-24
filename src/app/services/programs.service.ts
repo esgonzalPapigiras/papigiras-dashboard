@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClientAddActivities } from 'app/models/clientAddActivities';
 import { Program } from 'app/models/program';
+import { ResponseUploadCoordinator } from 'app/models/responseUploadCoordinator';
 import { TourActivities } from 'app/models/tourActivities';
 import { TourPackage } from 'app/models/tourPackage';
 import { Observable } from 'rxjs';
@@ -12,9 +13,9 @@ import { Observable } from 'rxjs';
 export class ProgramsService {
 
   token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzk3NTYyNTMsImV4cCI6MTc0MDYyMDI1M30.KzjMglLVW6Sy9IDI4xNoYf8SZU1NAlVCQRQhVZsAaig_c4N0or8JRYkKLv53i20e2I9EAE0GHlA_2bwAd8IDag';
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  //url = 'http://localhost:8084';
+  url = 'http://localhost:8084';
   constructor(private http: HttpClient) { }
 
   public obtenerProgram(): Observable<Program[]> {
@@ -78,5 +79,11 @@ export class ProgramsService {
 
   }
 
+  public uploadFile(file: any): Observable<ResponseUploadCoordinator> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
+    return this.http.post<ResponseUploadCoordinator>(this.url.concat('/api/tours/web/upload'), formData, { headers });
+  }
 
 }

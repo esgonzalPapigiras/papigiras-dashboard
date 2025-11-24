@@ -98,8 +98,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     const currentYear = new Date().getFullYear();
-    //this.obtenerBestCoordinators(currentYear);
-    //this.obtenerRegistrosEstadisticos();
+    this.obtenerBestCoordinators(currentYear);
+    this.obtenerRegistrosEstadisticos();
     // Crear un array con los próximos 10 años y los 10 anteriores
     for (let i = -5; i <= 5; i++) {
       this.years.push(currentYear + i);
@@ -109,14 +109,14 @@ export class DashboardComponent implements OnInit {
     this.obtenerCoordinatorReport();
   }
   ngAfterViewInit() {
-    //this.dataSource.sort = this.sort;
-    //this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
     this.coordinatorReportSource.paginator = this.coordinatorReportPaginator;
     this.coordinatorReportSource.sort = this.coordinatorReportSort;
   }
 
   onYearChange(): void {
-    //this.obtenerBestCoordinators(this.selectedYear);
+    this.obtenerBestCoordinators(this.selectedYear);
   }
 
   applyCoordinatorFilter(event: Event) {

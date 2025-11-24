@@ -13,14 +13,11 @@ import Swal from 'sweetalert2';
 })
 export class ActivitiesModalCreateComponent implements OnInit {
 
-
-
   suppliers: Suppliers[];
-
   newActivities = {
     actividad: '',
-    descripcion:'',
-    incluye:'',
+    descripcion: '',
+    incluye: '',
     suppliers: null as Suppliers | null,
   }
 
@@ -34,10 +31,7 @@ export class ActivitiesModalCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerProveedor();
-    
   }
-
-
 
   obtenerProveedor() {
     Swal.fire({
@@ -49,6 +43,9 @@ export class ActivitiesModalCreateComponent implements OnInit {
           .obtenerSuppliers()
           .subscribe((respon) => {
             this.suppliers = respon;
+            if (this.suppliers && this.suppliers.length > 0) {
+              this.newActivities.suppliers = this.suppliers[0];   // auto-select default
+            }
             Swal.close();
           });
       },
@@ -57,36 +54,27 @@ export class ActivitiesModalCreateComponent implements OnInit {
 
   onSave(): void {
     if (this.newActivities != null) {
-
       const newActivitie: Activities = {
-        itinerary_id: 0, // o null, según cómo manejes la creación en el backend
+        itinerary_id: 0,
         itinerary_active: true,
         itinerary_description: this.newActivities.descripcion,
-        itinerary_includes: this.newActivities.incluye,
+        itinerary_includes: "",
         itinerary_name: this.newActivities.actividad,
         id_supplier: this.newActivities.suppliers.suppliers_id
       };
       this.activitiesService.activitiesCreate(newActivitie).subscribe({
         next: () => {
-          // Llamamos al método que refresca la lista de oficinas
-          // Cerramos el modal indicando éxito (true)
           this.dialogRef.close(true);
         },
         error: (err) => {
           console.error('Error al guardar la oficina:', err);
-          // Puedes optar por cerrar el modal con false o mostrar un mensaje de error sin cerrarlo
           this.dialogRef.close(false);
         }
       });
     }
   }
 
-
-
   onCancel(): void {
     this.dialogRef.close(false);
   }
-
-
-
 }

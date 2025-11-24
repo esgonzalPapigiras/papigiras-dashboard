@@ -8,9 +8,19 @@
     <form #programForm="ngForm">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="tours_name">Nombre Programa</label>
-                <input type="text" class="form-control" id="tours_name" [(ngModel)]="program.toursName" name="tours_name"
+                <label for="tours_name">Identificador</label>
+                <input type="text" class="form-control" id="tours_name" [(ngModel)]="program.toursName"
+                    name="tours_name" required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="cantidadDias">Nombre Programa</label>
+                <input type="text" class="form-control" id="longName" [(ngModel)]="program.longName" name="longName"
                     required />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="cantidadNoches">Descripcion</label>
+                <input type="text" class="form-control" id="descripcion" [(ngModel)]="program.descripcion"
+                    name="descripcion" required />
             </div>
         </div>
     </form>

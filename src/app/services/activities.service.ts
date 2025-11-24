@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Activities } from 'app/models/activities';
 import { ActivitiesDTOList } from 'app/models/activitiesList';
+import { ResponseUploadCoordinator } from 'app/models/responseUploadCoordinator';
 import { statusTour } from 'app/models/statusTour';
 import { Observable } from 'rxjs';
 
@@ -10,9 +11,9 @@ import { Observable } from 'rxjs';
 })
 export class ActivitiesService {
 
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
   //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
-  //url = 'http://localhost:8084';
+  url = 'http://localhost:8084';
   constructor(private http: HttpClient) { }
 
 
@@ -32,17 +33,13 @@ export class ActivitiesService {
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<any[]>(this.url.concat('/api/activities/web/delete'), { headers, params })
-
   }
 
-
   public activitiesCreate(coordinator: Activities): Observable<any> {
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`  // Asegúrate de usar el formato adecuado para el token
     });
-
     return this.http.post(this.url.concat('/api/activities/web/create'), JSON.stringify(coordinator), { headers });
   }
 
@@ -55,4 +52,12 @@ export class ActivitiesService {
 
     return this.http.post(this.url.concat('/api/activities/web/update'), JSON.stringify(coordinator), { headers, params });
   }
+
+  public uploadFile(file: any): Observable<ResponseUploadCoordinator> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
+    return this.http.post<ResponseUploadCoordinator>(this.url.concat('/api/activities/web/upload'), formData, { headers });
+  }
+
 }

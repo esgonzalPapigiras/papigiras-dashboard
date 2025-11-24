@@ -96,7 +96,7 @@
                     <mat-icon>directions_bus</mat-icon>
                   </button>
 
-                  <button mat-icon-button color="primary" (click)="openViewDialogTripulation(row)"
+                  <button mat-icon-button color="primary" [ngClass]="row.tourSalesTripulationSelected >= 1 ? 'green-button' : 'grey-button'" (click)="openViewDialogTripulation(row)"
                     matTooltip="Agregar Choferes">
                     <mat-icon>people</mat-icon>
                   </button>

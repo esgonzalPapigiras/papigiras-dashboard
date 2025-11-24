@@ -114,7 +114,6 @@ export class CoordinatorComponent implements OnInit {
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
-
           this.coordinatorServices.uploadFile(file).subscribe(response => {
             console.log('response.status');
             if (response.code === "0") {
@@ -123,8 +122,6 @@ export class CoordinatorComponent implements OnInit {
             } else {
               this.showSuccessDialogError();
             }
-
-
           }, error => {
             console.log(error);
             // Maneja cualquier error durante la carga
@@ -136,8 +133,6 @@ export class CoordinatorComponent implements OnInit {
           });
         },
       });
-
-      // Restablecer el input de tipo file
       event.target.value = '';
     } else {
       Swal.fire({

@@ -11,79 +11,70 @@ import Swal from 'sweetalert2';
 })
 export class ProgramsModalEditComponent implements OnInit {
 
-    program: Program;
-    
-  
-  
-    constructor(
-      public dialogRef: MatDialogRef<ProgramsModalEditComponent>,
-      public dialog: MatDialog,
-      private programService: ProgramsService,
-      @Inject(MAT_DIALOG_DATA) public data: any,
-    ) { }
-  
-    ngOnInit(): void {
-      this.obtenercomunaUpdate();
+  program: Program;
+
+  constructor(
+    public dialogRef: MatDialogRef<ProgramsModalEditComponent>,
+    public dialog: MatDialog,
+    private programService: ProgramsService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) { }
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.program = this.data;
     }
-  
-    
-  
-  
-  
-  
-    obtenercomunaUpdate() {
-  
-      Swal.fire({
-        title: "Cargando...",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          if (this.data) {
-            this.program = this.data;
+  }
+
+  obtenercomunaUpdate() {
+    Swal.fire({
+      title: "Cargando...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        if (this.data) {
+          this.program = this.data;
+        }
+        Swal.close();
+      },
+    });
+  }
+
+  onSave() {
+    Swal.fire({
+      title: "Guardando...",
+      text: "Por favor espera mientras se guarda la información.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.programService.programUpdate(this.program, this.data.tours_id).subscribe(
+          (response) => {
+            Swal.close();
+            Swal.fire(
+              "Éxito",
+              "Los datos del programa han sido guardados",
+              "success"
+            ).then(() => {
+              // Cierra el modal y retorna "true"
+              this.dialogRef.close(true);
+            });
+          },
+          (error) => {
+            console.log(error);
+            Swal.close();
+            Swal.fire(
+              "Error",
+              "Hubo un problema al guardar los datos",
+              "error"
+            );
           }
-  
-          Swal.close();
-        },
-      });
-    }
-  
-    onSave() {
-      Swal.fire({
-        title: "Guardando...",
-        text: "Por favor espera mientras se guarda la información.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          this.programService.programUpdate(this.program, this.data.tours_id).subscribe(
-            (response) => {
-              Swal.close();
-              Swal.fire(
-                "Éxito",
-                "Los datos del programa han sido guardados",
-                "success"
-              ).then(() => {
-                // Cierra el modal y retorna "true"
-                this.dialogRef.close(true);
-              });
-            },
-            (error) => {
-              console.log(error);
-              Swal.close();
-              Swal.fire(
-                "Error",
-                "Hubo un problema al guardar los datos",
-                "error"
-              );
-            }
-          );
-        },
-      });
-    }
-  
-  
-  
-    onCancel(): void {
-      this.dialogRef.close(false);
-    }
+        );
+      },
+    });
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(false);
+  }
 
 }
