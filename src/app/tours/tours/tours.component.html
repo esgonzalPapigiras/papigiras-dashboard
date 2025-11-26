@@ -14,7 +14,7 @@
           <button mat-raised-button color="warning" (click)="downloadTemplateTour()">
             Descargar plantilla Gira
           </button>
-          <button mat-raised-button color="warning" (click)="downloadTemplatePassenger()">
+          <button mat-raised-button color="warning" (click)="downloadGiras()">
             Descargar Giras
           </button>
         </div>
@@ -77,35 +77,34 @@
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                 <td mat-cell *matCellDef="let row" class="action-buttons">
-                  <button mat-icon-button [color]="row.addAlumnListDoc ? 'accent' : 'primary'" [disabled]="isUploading"
-                    (click)="row.addAlumnListDoc ? openAlumnosModal(row) : fileInput.click()"
-                    [matTooltip]="row.addAlumnListDoc ? 'Ver alumnos cargados' : 'Cargar Planilla Alumnos y Acompañantes'">
-
-                    <ng-container *ngIf="row.addAlumnListDoc; else addIcon">
+                  <button mat-icon-button [color]="row.addAlumnListDocComputed ? 'accent' : 'primary'"
+                    [disabled]="isUploading"
+                    (click)="row.addAlumnListDocComputed ? openAlumnosModal(row) : fileInput.click()"
+                    [matTooltip]="row.addAlumnListDocComputed ? 'Ver alumnos cargados' : 'Cargar Planilla Alumnos y Acompañantes'">
+                    <ng-container *ngIf="row.addAlumnListDocComputed; else addIcon">
                       <span class="alumnos-count">{{ row.alumnosCount ?? 0 }}</span>
                     </ng-container>
                     <ng-template #addIcon>
                       <mat-icon>person_add</mat-icon>
                     </ng-template>
                   </button>
-
                   <input #fileInput type="file" accept=".xlsx,.xls" style="display:none"
                     (change)="onFileSelected($event, row)" />
                   <button mat-icon-button [ngClass]="row.tourSalesBusSelected ? 'green-button' : 'grey-button'"
                     (click)="openViewDialogBus(row)" matTooltip="Agregar autobús">
                     <mat-icon>directions_bus</mat-icon>
                   </button>
-
-                  <button mat-icon-button color="primary" [ngClass]="row.tourSalesTripulationSelected >= 1 ? 'green-button' : 'grey-button'" (click)="openViewDialogTripulation(row)"
-                    matTooltip="Agregar Choferes">
+                  <button mat-icon-button color="primary"
+                    [ngClass]="row.tourSalesTripulationSelected >= 3 ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogTripulation(row)" matTooltip="Agregar Choferes">
                     <mat-icon>people</mat-icon>
                   </button>
-                  <button mat-icon-button [ngClass]="row.tourSalesCoordinatorSelected ? 'green-button' : 'grey-button'"
-                    (click)="openViewDialogCoordinator(row)" matTooltip="Agregar coordinador">
+                  <button mat-icon-button [ngClass]="getCoordinatorColor(row)" (click)="openViewDialogCoordinator(row)"
+                    matTooltip="Agregar coordinador">
                     <mat-icon>nordic_walking</mat-icon>
                   </button>
-                  <button mat-icon-button [color]="row.addProgramDoc ? 'accent' : 'primary'"
-                    [disabled]="row.addProgramDoc" (click)="openViewDialogProgram(row)" matTooltip="Otros Documentos">
+                  <button mat-icon-button color="primary" [ngClass]="row.addProgramDoc ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogProgram(row)" matTooltip="Otros Documentos">
                     <mat-icon>fact_check</mat-icon>
                   </button>
                   <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
@@ -123,7 +122,6 @@
                   </button>
                 </td>
               </ng-container>
-
               <!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
@@ -131,7 +129,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

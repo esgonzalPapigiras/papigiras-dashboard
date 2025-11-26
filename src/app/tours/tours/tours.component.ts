@@ -81,38 +81,33 @@ export class ToursComponent implements AfterViewInit, OnInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
-
+  /*
   obtenerGiras() {
     Swal.fire({
       title: 'Cargando...',
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-
-        // Traemos giras y comunas simultáneamente
         forkJoin({
           giras: this.girasServices.obtenerGiras(),
           communes: this.communesService.ObtenerCommunes()
         }).pipe(
           tap(({ giras, communes }) => {
-            // Creamos un map para acceder rápido al nombre de la comuna
+            console.log('giras VIRGEN:', JSON.parse(JSON.stringify(giras)));
+            console.log('giras:', giras);
+            console.log('communes:', communes);
             const communesMap = new Map<number, string>();
             communes.forEach(c => communesMap.set(c.communesId, String(c.communesName)));
-
-            // Asociamos el nombre de la comuna a cada gira
             giras.forEach(row => {
               (row as any).communeName = communesMap.get(row.communeId) || '-';
             });
-
             this.dataSource = new MatTableDataSource(giras);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             console.log(giras);
           }),
-          // Enriquecemos cada fila con el detalle para calcular alumnosCount
           switchMap(({ giras }) => {
             if (!giras.length) return of(null);
-
             const tasks = giras.map(row =>
               this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
                 tap(detalle => {
@@ -128,12 +123,32 @@ export class ToursComponent implements AfterViewInit, OnInit {
                 })
               )
             );
-
             return forkJoin(tasks);
           }),
           finalize(() => Swal.close())
         ).subscribe();
       },
+    });
+  }
+  */
+  obtenerGiras() {
+    Swal.fire({
+      title: 'Cargando...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+
+        this.girasServices.obtenerGirasFull().pipe(
+          tap(giras => {
+            console.log('FULL GIRAS:', giras);
+
+            this.dataSource = new MatTableDataSource(giras);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          }),
+          finalize(() => Swal.close())
+        ).subscribe();
+      }
     });
   }
 
@@ -192,7 +207,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
       switchMap(() => {
         const rows: TourSalesDTO[] = this.dataSource?.data ?? [];
         if (!rows.length) return of(rows);
-
         const tasks = rows.map(row =>
           this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
             tap(detalle => {
@@ -215,19 +229,14 @@ export class ToursComponent implements AfterViewInit, OnInit {
     );
   }
 
-  downloadTemplatePassenger() {
-    // Mensaje específico para la generación del Excel
+  downloadGiras() {
     Swal.fire({
       title: 'Generando plantilla...',
       allowOutsideClick: false,
       didOpen: () => Swal.showLoading(),
     });
-
     this.loadGiras$().pipe(
       tap(rows => {
-        // Si quieres filtrar solo con alumnos, descomenta la línea de abajo:
-        // rows = rows.filter(r => r.addAlumnListDoc);
-
         const fileName = `giras_template_${new Date().toISOString().slice(0, 10)}.xlsx`;
         this.buildExcel(rows, fileName);
       }),
@@ -629,4 +638,19 @@ export class ToursComponent implements AfterViewInit, OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  getCoordinatorColor(row: any): string {
+  const name = row.coordinatorName;
+  const id = row.coordinatorIdentification;
+  // CASE 1: Grey - no coordinator
+  if (!row.tourSalesCoordinatorSelected || !name || !id) {
+    return 'grey-button';
+  }
+  // CASE 2: Yellow - placeholder coordinator
+  if (name === 'Por Asignar' || id === '11.111.111-1') {
+    return 'yellow-button';
+  }
+  // CASE 3: Green - real coordinator
+  return 'green-button';
+}
 }

@@ -4,6 +4,7 @@ import { TripulationAvionDTO } from 'app/models/avionList';
 import { CollegeList } from 'app/models/collegeList';
 import { DeleteResponse } from 'app/models/DeleteResponse';
 import { DocumentDTO } from 'app/models/document';
+import { FullTourSalesDTO } from 'app/models/FullTourSalesDTO';
 import { HotelDTOList } from 'app/models/hotelList';
 import { PassengerDTO } from 'app/models/passengerList';
 import { ResponseUploadService } from 'app/models/responseUploadService';
@@ -22,7 +23,6 @@ import { catchError, map, Observable } from 'rxjs';
 export class ToursServicesService {
 
   url = 'https://stingray-app-9tqd9.ondigitalocean.app';
-  //url = "https://ms-papigiras-app-ezkbu.ondigitalocean.app"
   //url = 'http://localhost:8084';
 
   constructor(private http: HttpClient) { }
@@ -80,30 +80,27 @@ export class ToursServicesService {
     return this.http.delete<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/delete/tripulation'), { headers, params });
   }
   public obtenerGiras(): Observable<TourSalesDTO[]> {
-
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
     return this.http.get<TourSalesDTO[]>(this.url.concat('/api/tour/sales/web/get'), { headers })
-
   }
   public obtenerDetalleGira(id: number): Observable<TourSalesDetail> {
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: localStorage.getItem('token'),
     });
-
     const params = new HttpParams().set('id', id.toString());
-
     return this.http.get<TourSalesDetail>(this.url.concat('/api/tour/sales/web/getDetails'), { headers, params });
+  }
+  public obtenerGirasFull(): Observable<FullTourSalesDTO[]> {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    return this.http.get<FullTourSalesDTO[]>(this.url.concat('/api/tour/sales/web/getFull'), { headers });
   }
   public obtenerDetalleGiraWeb(id: number): Observable<TourSalesDetailWeb> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: localStorage.getItem('token') || '',
     });
-
     const params = new HttpParams().set('id', id.toString());
-
     return this.http
       .get<TourSalesDetailWeb>(
         this.url.concat('/api/tour/sales/web/getDetails'),
