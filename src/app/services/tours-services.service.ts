@@ -219,7 +219,6 @@ export class ToursServicesService {
     formData.append('Uuid', uuid);
     formData.append('folder', folder);
     formData.append('tipoDoc', tipoDoc);
-
     const token = localStorage.getItem('token') ?? '';
     const headers = token ? new HttpHeaders({ Authorization: token }) : undefined;
     return this.http.post(
@@ -244,11 +243,9 @@ export class ToursServicesService {
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
     });
-
     const params = new HttpParams()
       .set('folderName', name)
       .set('fileName', supplier);
-
     return this.http.get(this.url.concat('/api/tour/sales/web/download'), { headers, params, responseType: 'arraybuffer' });
   }
   downloadDocumentMedical(name: string, idPassenger: string, supplier: any): Observable<any> {
@@ -264,17 +261,15 @@ export class ToursServicesService {
 
     return this.http.get(this.url.concat('/app/services/get/pdf/view/medical-records'), { headers, params, responseType: 'arraybuffer' });
   }
-  deleteDocument(name: string, supplier: any): Observable<any> {
+  deleteDocument(id: string, uuid:string, fileName: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
     });
-
-    console.log();
     const params = new HttpParams()
-      .set('folderName', name)
-      .set('fileName', supplier);
-
+      .set('id', id)
+      .set('folderName', uuid)
+      .set('fileName', fileName);
     return this.http.delete(this.url.concat('/api/tour/sales/web/deleteDocument'), { headers, params }).pipe(
       catchError(error => {
         console.error('Error deleting document:', error);

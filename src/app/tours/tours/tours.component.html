@@ -103,14 +103,16 @@
                     matTooltip="Agregar coordinador">
                     <mat-icon>nordic_walking</mat-icon>
                   </button>
+                  <!--
                   <button mat-icon-button color="primary" [ngClass]="row.addProgramDoc ? 'green-button' : 'grey-button'"
                     (click)="openViewDialogProgram(row)" matTooltip="Otros Documentos">
                     <mat-icon>fact_check</mat-icon>
                   </button>
                   <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
                     style="display:none" />
+                  -->
                   <button mat-icon-button color="primary" (click)="openViewDialogDownloadDocuments(row)"
-                    matTooltip="Descargar Documentos Extras">
+                    matTooltip="Ver Documentos">
                     <mat-icon>upload_file</mat-icon>
                   </button>
                   <button mat-icon-button color="primary" (click)="openViewDownloadDocuments(row)"

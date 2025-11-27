@@ -20,6 +20,7 @@ import { BusModalEditComponent } from './buses/bus-modal-edit/bus-modal-edit/bus
 import { BusModalCreateComponent } from './buses/bus-modal-create/bus-modal-create.component';
 import { PassengerAdultEditDialogComponent } from './tours/passenger-adult-edit-dialog/passenger-adult-edit-dialog.component';
 
+
 @NgModule({
   imports: [
     FormsModule,
@@ -41,6 +42,7 @@ import { PassengerAdultEditDialogComponent } from './tours/passenger-adult-edit-
     LoginComponent,
     BusModalEditComponent,
     BusModalCreateComponent,
+    
     
   ],
   providers: [],

@@ -1,10 +1,21 @@
 table {
-    width: 100%;
-  }
-  
-  .mat-form-field {
-    font-size: 14px;
-    width: 100%;
-  }
-  
-  
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td.action-cell,
+th.action-cell {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}

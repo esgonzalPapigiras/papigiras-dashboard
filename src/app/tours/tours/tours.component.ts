@@ -9,7 +9,6 @@ import { TourSalesDTO } from 'app/models/tourSales';
 import Swal from 'sweetalert2';
 import { ToursServicesService } from 'app/services/tours-services.service';
 import { ComunnesService } from 'app/services/comunnes.service';
-import { TourDonwloadAlumnsModalComponent } from '../tour-donwload-alumns-modal/tour-donwload-alumns-modal.component';
 import { TourAddCoordinatorModalComponent } from '../tour-add-coordinator-modal/tour-add-coordinator-modal.component';
 import { TourDownloadDocumentModalComponent } from '../tour-download-document-modal/tour-download-document-modal.component';
 import { TourAddAirplaneModalComponent } from '../tour-add-airplane-modal/tour-add-airplane-modal.component';
@@ -19,7 +18,7 @@ import { TourViewAlumnsModalComponent } from '../tour-view-alumns-modal/tour-vie
 import * as XLSX from 'xlsx';
 // RXJS
 import { forkJoin, of } from 'rxjs';
-import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { TourViewBusModalComponent } from '../tour-view-bus-modal/tour-view-bus-modal.component';
 import { TourViewDriverModalComponent } from '../tour-view-driver-modal/tour-view-driver-modal.component';
 
@@ -42,9 +41,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
 
   // Estados auxiliares
   isUploading = false;
-  private id: number;     // para upload de alumnos (por compatibilidad con tu servicio)
-  private uuid: string;   // para uploads de documentos extra
-
+  private id: number;
   filterValues: any = {
     tourSalesUuid: '',
     tourSalesInit: '',
@@ -81,73 +78,119 @@ export class ToursComponent implements AfterViewInit, OnInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
-  /*
-  obtenerGiras() {
-    Swal.fire({
-      title: 'Cargando...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        forkJoin({
-          giras: this.girasServices.obtenerGiras(),
-          communes: this.communesService.ObtenerCommunes()
-        }).pipe(
-          tap(({ giras, communes }) => {
-            console.log('giras VIRGEN:', JSON.parse(JSON.stringify(giras)));
-            console.log('giras:', giras);
-            console.log('communes:', communes);
-            const communesMap = new Map<number, string>();
-            communes.forEach(c => communesMap.set(c.communesId, String(c.communesName)));
-            giras.forEach(row => {
-              (row as any).communeName = communesMap.get(row.communeId) || '-';
-            });
-            this.dataSource = new MatTableDataSource(giras);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            console.log(giras);
-          }),
-          switchMap(({ giras }) => {
-            if (!giras.length) return of(null);
-            const tasks = giras.map(row =>
-              this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
-                tap(detalle => {
-                  (row as any).detalle = detalle;
-                  (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
-                  (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
-                }),
-                catchError(err => {
-                  console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
-                  (row as any).addAlumnListDoc = false;
-                  (row as any).alumnosCount = 0;
-                  return of(null);
-                })
-              )
-            );
-            return forkJoin(tasks);
-          }),
-          finalize(() => Swal.close())
-        ).subscribe();
-      },
-    });
-  }
-  */
-  obtenerGiras() {
-    Swal.fire({
-      title: 'Cargando...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
 
+  obtenerGiras() {
+    Swal.fire({
+      title: 'Cargando...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
         this.girasServices.obtenerGirasFull().pipe(
           tap(giras => {
             console.log('FULL GIRAS:', giras);
-
             this.dataSource = new MatTableDataSource(giras);
+            this.dataSource.sortingDataAccessor = (item, property) => {
+              switch (property) {
+                case 'tourSalesInit':
+                case 'tourSalesFinal':
+                  return this.parseDate(item[property]);
+                default:
+                  return item[property];
+              }
+            };
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
           }),
           finalize(() => Swal.close())
         ).subscribe();
+      }
+    });
+  }
+
+  addTour() {
+    this.dialog.open(NewTourModalComponent, {
+      width: '1300px',
+      height: '600px',
+    });
+  }
+
+  onFileSelectedMassiveTour(event: any) {
+    const file = event.target.files?.[0];
+    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+      this.isUploading = true;
+      Swal.fire({
+        title: 'Cargando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          this.girasServices.uploadFileMasiveTour(file).pipe(
+            tap((response: any) => {
+            }),
+            catchError(error => {
+              console.log(error);
+              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
+              return of(null);
+            }),
+            finalize(() => {
+              this.isUploading = false;
+              event.target.value = '';
+              Swal.close();
+            })
+          ).subscribe();
+        },
+      });
+    } else {
+      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo Excel para continuar' });
+    }
+  }
+
+  downloadTemplateTour() {
+    const url = 'assets/templates/Giras_CargaMasiva.xlsx';
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'Template_Giras_CargaMasiva.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+  }
+
+  downloadGiras() {
+    const giras = this.dataSource.data;
+    if (!giras || giras.length === 0) {
+      Swal.fire("No hay giras cargados", "", "warning");
+      return;
+    }
+    Swal.fire({
+      title: "Generando Excel...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const data = giras.map((g: any) => {
+          const decoded = this.decodeTourUuid(g.tourSalesUuid);
+          return {
+            "Fecha salida": g.tourSalesInit,
+            "Fecha llegada": g.tourSalesFinal,
+            "Identificador gira": g.tourSalesUuid,
+            "Programa": g.tour,
+            "Temporada": decoded.tourGroups,
+            "Colegio": decoded.colegio,
+            "Comuna": decoded.comuna,
+            "Curso": g.addCourse,
+          };
+        });
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Giras");
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array"
+        });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "giras.xlsx");
+        Swal.close();
       }
     });
   }
@@ -178,111 +221,24 @@ export class ToursComponent implements AfterViewInit, OnInit {
     this.id = row.tourSalesId;
   }
 
-  downloadTemplateTour() {
-    const url = 'assets/templates/Giras_CargaMasiva.xlsx';
-    fetch(url)
-      .then(res => res.blob())
-      .then(blob => {
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = 'Template_Giras_CargaMasiva.xlsx';
-        link.click();
-        window.URL.revokeObjectURL(link.href);
-      });
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
   }
 
-  private loadGiras$() {
-    Swal.fire({
-      title: 'Cargando...',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-
-    return this.girasServices.obtenerGiras().pipe(
-      tap((respon: TourSalesDTO[]) => {
-        this.dataSource = new MatTableDataSource(respon);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      }),
-      switchMap(() => {
-        const rows: TourSalesDTO[] = this.dataSource?.data ?? [];
-        if (!rows.length) return of(rows);
-        const tasks = rows.map(row =>
-          this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
-            tap(detalle => {
-              (row as any).detalle = detalle;
-              (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
-              (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
-            }),
-            catchError(err => {
-              console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
-              (row as any).addAlumnListDoc = false;
-              (row as any).alumnosCount = 0;
-              return of(null);
-            })
-          )
-        );
-
-        return forkJoin(tasks).pipe(map(() => rows));
-      }),
-      finalize(() => Swal.close())
-    );
-  }
-
-  downloadGiras() {
-    Swal.fire({
-      title: 'Generando plantilla...',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-    this.loadGiras$().pipe(
-      tap(rows => {
-        const fileName = `giras_template_${new Date().toISOString().slice(0, 10)}.xlsx`;
-        this.buildExcel(rows, fileName);
-      }),
-      finalize(() => Swal.close())
-    ).subscribe({
-      next: () => {
-        Swal.fire({ icon: 'success', title: 'Plantilla generada', timer: 1200, showConfirmButton: false });
+  openAlumnosModal(row: any) {
+    //console.log(row)
+    this.dialog.open(TourViewAlumnsModalComponent, {
+      width: '1200px',
+      height: '800px',
+      data: {
+        id: row.tourSalesId
       },
-      error: (err) => {
-        console.error(err);
-        Swal.fire({ icon: 'error', title: 'Error al generar plantilla', text: 'Intenta nuevamente.' });
-      }
+      autoFocus: false,
     });
-  }
-
-  private getExcelRows(rows: TourSalesDTO[]) {
-    return rows.map(r => ([
-      r.addCourse ?? '',
-      r.collegeName ?? '',
-      r.tour ?? '',
-      r.tourSalesUuid ?? '',
-      r.tourSalesInit ?? '',
-      r.tourSalesFinal ?? ''
-    ]));
-  }
-
-  private buildExcel(rows: TourSalesDTO[], fileName: string) {
-    const headers = ['Curso', 'Colegio', 'Tour', 'UUID', 'Fecha Inicio', 'Fecha Término'];
-    const aoa = [headers, ...this.getExcelRows(rows)];
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-
-    ws['!cols'] = [
-      { wch: 10 }, // Curso
-      { wch: 30 }, // Colegio
-      { wch: 24 }, // Tour
-      { wch: 22 }, // UUID
-      { wch: 14 }, // Fecha Inicio
-      { wch: 14 }, // Fecha Término
-    ];
-    ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { c: 0, r: 0 }, e: { c: 5, r: rows.length } }) };
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Giras');
-
-    const name = fileName || `giras_${new Date().toISOString().slice(0, 10)}.xlsx`;
-    XLSX.writeFile(wb, name);
   }
 
   onFileSelected(event: any, row: any) {
@@ -324,168 +280,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
     }
   }
 
-  private refreshAlumnosCount(row: any) {
-    this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
-      next: (detalle) => {
-        row.detalle = detalle;
-        row.alumnosCount = this.calcTotalParticipantes(detalle);
-        row.addAlumnListDoc = (row.alumnosCount ?? 0) > 0;
-      },
-      error: (e) => console.error('Error al obtener detalle de gira', e),
-    });
-  }
-
-  private calcTotalParticipantes(d: any): number {
-    const hombres = Number(d?.cantidadHombres ?? 0);
-    const mujeres = Number(d?.cantidadMujeres ?? 0);
-    const acompF = Number(d?.acompananteFemenino ?? 0);
-    const acompM = Number(d?.acompananteMasculino ?? 0);
-    const sum = hombres + mujeres + acompF + acompM;
-    if (Number.isFinite(sum) && sum > 0) return sum;
-
-    const fallback = Number(d?.tourSalesStudentCount ?? 0);
-    return Number.isFinite(fallback) ? fallback : 0;
-  }
-
-  openAlumnosModal(row: any) {
-    //console.log(row)
-    this.dialog.open(TourViewAlumnsModalComponent, {
-      width: '1200px',
-      height: '800px',
-      data: {
-        id: row.tourSalesId
-      },
-      autoFocus: false,
-    });
-  }
-
-  onFileSelectedMassiveTour(event: any) {
-    const file = event.target.files?.[0];
-    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
-      this.isUploading = true;
-      Swal.fire({
-        title: 'Cargando...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          this.girasServices.uploadFileMasiveTour(file).pipe(
-            tap((response: any) => {
-
-            }),
-            catchError(error => {
-              console.log(error);
-              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
-              return of(null);
-            }),
-            finalize(() => {
-              this.isUploading = false;
-              event.target.value = '';
-              Swal.close();
-            })
-          ).subscribe();
-        },
-      });
-    } else {
-      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo Excel para continuar' });
-    }
-  }
-
-  onFileSelectedContract(event: any, row: any) {
-    const file = event.target.files?.[0];
-    if (file) {
-      Swal.fire({
-        title: 'Cargando...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          this.girasServices.uploadDocumentsExtra(file, file.name, this.uuid, 'documentosextras', 'contract').pipe(
-            tap((response) => {
-              if (response) {
-                this.showSuccessDialog();
-                this.obtenerGiras();
-              }
-            }),
-            catchError(error => {
-              console.log(error);
-              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
-              return of(null);
-            }),
-            finalize(() => {
-              event.target.value = '';
-              Swal.close();
-            })
-          ).subscribe();
-        },
-      });
-    } else {
-      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo para continuar' });
-    }
-  }
-
-  onFileSelectedPolicies(event: any, row: any) {
-    const file = event.target.files?.[0];
-    if (file) {
-      Swal.fire({
-        title: 'Cargando...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          this.girasServices.uploadDocumentsExtra(file, file.name, this.uuid, 'documentosextras', 'poliza').pipe(
-            tap((response) => {
-              if (response) {
-                this.showSuccessDialog();
-                this.obtenerGiras();
-              }
-            }),
-            catchError(error => {
-              console.log(error);
-              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
-              return of(null);
-            }),
-            finalize(() => {
-              event.target.value = '';
-              Swal.close();
-            })
-          ).subscribe();
-        },
-      });
-    } else {
-      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo  para continuar' });
-    }
-  }
-
-  onFileSelectedProgram(event: any, row: any) {
-    const file = event.target.files?.[0];
-    if (file) {
-      Swal.fire({
-        title: 'Cargando...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-          this.girasServices.uploadDocumentsExtra(file, file.name, this.uuid, 'documentosextras', 'gira').pipe(
-            tap((response) => {
-              if (response) {
-                this.showSuccessDialog();
-                this.obtenerGiras();
-              }
-            }),
-            catchError(error => {
-              console.log(error);
-              Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
-              return of(null);
-            }),
-            finalize(() => {
-              event.target.value = '';
-              Swal.close();
-            })
-          ).subscribe();
-        },
-      });
-    } else {
-      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Debes cargar un archivo para continuar' });
-    }
-  }
-
   openViewDialogBus(row: any): void {
     this.dialog.open(TourViewBusModalComponent, {
       width: '1300px',
@@ -508,21 +302,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
       height: '600px',
       data: row.tourSalesId
     });
-  }
-
-  openViewDialogContract(row: any): void {
-    this.fileInputContract.nativeElement.click();
-    this.uuid = row.tourSalesUuid;
-  }
-
-  openViewDialogProgram(row: any): void {
-    this.fileInputProgram.nativeElement.click();
-    this.uuid = row.tourSalesUuid;
-  }
-
-  openViewDialogPolizaSeguro(row: any): void {
-    this.fileInputPoliciHealth.nativeElement.click();
-    this.uuid = row.tourSalesUuid;
   }
 
   openViewDialogDownloadDocuments(row: any): void {
@@ -556,14 +335,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
     });
   }
 
-  openViewDialogDownloadManifest(row: any): void {
-    this.dialog.open(TourDonwloadAlumnsModalComponent, {
-      width: '1300px',
-      height: '600px',
-      data: row.tourSalesId
-    });
-  }
-
   applyDelete(event: any) {
     Swal.fire({
       title: 'Estas Seguro?',
@@ -587,6 +358,29 @@ export class ToursComponent implements AfterViewInit, OnInit {
         );
       }
     });
+  }
+
+  private refreshAlumnosCount(row: any) {
+    this.girasServices.obtenerDetalleGira(row.tourSalesId).subscribe({
+      next: (detalle) => {
+        row.detalle = detalle;
+        row.alumnosCount = this.calcTotalParticipantes(detalle);
+        row.addAlumnListDoc = (row.alumnosCount ?? 0) > 0;
+      },
+      error: (e) => console.error('Error al obtener detalle de gira', e),
+    });
+  }
+
+  private calcTotalParticipantes(d: any): number {
+    const hombres = Number(d?.cantidadHombres ?? 0);
+    const mujeres = Number(d?.cantidadMujeres ?? 0);
+    const acompF = Number(d?.acompananteFemenino ?? 0);
+    const acompM = Number(d?.acompananteMasculino ?? 0);
+    const sum = hombres + mujeres + acompF + acompM;
+    if (Number.isFinite(sum) && sum > 0) return sum;
+
+    const fallback = Number(d?.tourSalesStudentCount ?? 0);
+    return Number.isFinite(fallback) ? fallback : 0;
   }
 
   showSuccessDialog() {
@@ -615,42 +409,102 @@ export class ToursComponent implements AfterViewInit, OnInit {
     });
   }
 
-  announceSortChange(sortState: Sort) {
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
-  }
-
-  addTour() {
-    this.dialog.open(NewTourModalComponent, {
-      width: '1300px',
-      height: '600px',
+  obtenerGirasAntiguo() {
+    Swal.fire({
+      title: 'Cargando...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        forkJoin({
+          giras: this.girasServices.obtenerGiras(),
+          communes: this.communesService.ObtenerCommunes()
+        }).pipe(
+          tap(({ giras, communes }) => {
+            const communesMap = new Map<number, string>();
+            communes.forEach(c => communesMap.set(c.communesId, String(c.communesName)));
+            giras.forEach(row => {
+              (row as any).communeName = communesMap.get(row.communeId) || '-';
+            });
+            this.dataSource = new MatTableDataSource(giras);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          }),
+          switchMap(({ giras }) => {
+            if (!giras.length) return of(null);
+            const tasks = giras.map(row =>
+              this.girasServices.obtenerDetalleGira(row.tourSalesId).pipe(
+                tap(detalle => {
+                  (row as any).detalle = detalle;
+                  (row as any).alumnosCount = this.calcTotalParticipantes(detalle);
+                  (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
+                }),
+                catchError(err => {
+                  console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
+                  (row as any).addAlumnListDoc = false;
+                  (row as any).alumnosCount = 0;
+                  return of(null);
+                })
+              )
+            );
+            return forkJoin(tasks);
+          }),
+          finalize(() => Swal.close())
+        ).subscribe();
+      },
     });
   }
 
-  applyColumnFilter(field: string, value: string) {
-    this.filterValues[field] = value.trim().toLowerCase();
-    this.dataSource.filter = JSON.stringify(this.filterValues);
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
   getCoordinatorColor(row: any): string {
-  const name = row.coordinatorName;
-  const id = row.coordinatorIdentification;
-  // CASE 1: Grey - no coordinator
-  if (!row.tourSalesCoordinatorSelected || !name || !id) {
-    return 'grey-button';
+    const name = row.coordinatorName;
+    const id = row.coordinatorIdentification;
+    // CASE 1: Grey - no coordinator
+    if (!row.tourSalesCoordinatorSelected || !name || !id) {
+      return 'grey-button';
+    }
+    // CASE 2: Yellow - placeholder coordinator
+    if (name === 'Por Asignar' || id === '11.111.111-1') {
+      return 'yellow-button';
+    }
+    // CASE 3: Green - real coordinator
+    return 'green-button';
   }
-  // CASE 2: Yellow - placeholder coordinator
-  if (name === 'Por Asignar' || id === '11.111.111-1') {
-    return 'yellow-button';
+
+  decodeTourUuid(uuid: string) {
+    const len = uuid.length;
+    if (len === 17) {
+      return {
+        tour: uuid.substring(0, 3),
+        tourGroups: uuid.substring(3, 5),
+        comuna: uuid.substring(5, 10),
+        colegio: uuid.substring(10, 15),
+        addCourse: uuid.substring(15, 17)
+      };
+    }
+    if (len === 19) {
+      return {
+        tour: uuid.substring(0, 3),
+        tourGroups: uuid.substring(3, 7),
+        comuna: "SIN DATOS",
+        colegio: "SIN DATOS",
+        addCourse: uuid.substring(17, 19)
+      };
+    }
+    if (uuid === "CMB20251510231103B") {
+      return {
+        tour: "CMB",
+        tourGroups: "2025",
+        comuna: "SIN DATOS",
+        colegio: "SIN DATOS",
+        addCourse: "3B"
+      };
+    }
+    throw new Error("Formato de tourSalesUuid inválido: " + uuid);
   }
-  // CASE 3: Green - real coordinator
-  return 'green-button';
-}
+
+  private parseDate(value: string): number {
+    if (!value) return 0;
+    // dd-MM-yyyy
+    const [day, month, year] = value.split('-').map(Number);
+    return new Date(year, month - 1, day).getTime();
+  }
 }

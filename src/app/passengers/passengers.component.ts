@@ -11,6 +11,7 @@ import { saveAs } from 'file-saver';
 import { MedicalRecordDialogComponent } from 'app/tours/medical-record-dialog/medical-record-dialog.component';
 import { PassengerEditDialogComponent } from 'app/tours/passenger-edit-dialog/passenger-edit-dialog.component';
 import * as XLSX from 'xlsx';
+import { PassengerCreateDialogComponent } from './passenger-create-dialog/passenger-create-dialog.component';
 
 @Component({
   selector: 'app-passengers',
@@ -68,6 +69,17 @@ export class PassengerComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceAlumnos.filter = filterValue.trim().toLowerCase();
+  }
+  addPassenger() {
+    const ref = this.dialog.open(PassengerCreateDialogComponent, {
+      width: '720px',
+      disableClose: true,
+    });
+    ref.afterClosed().subscribe((updated?: PassengerDTO) => {
+      if (updated) {
+        this.obtenerTodosPasajeros();
+      }
+    });
   }
   medicalRecord(row: any): void {
     console.log(row)
@@ -193,7 +205,6 @@ export class PassengerComponent implements OnInit {
       });
     });
   }
-  addPassenger() { }
   triggerFileInput() {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     fileInput?.click();

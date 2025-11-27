@@ -26,4 +26,9 @@ export class AlumnsService {
     return this.http.post<ResponseUploadPassenger>(`${this.url}/api/passenger/web/upload`, formData, { headers });
   }
 
+  public createPassenger(dto:any): Observable<PassengerDTO>{
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token'));
+    return this.http.post<PassengerDTO>(this.url.concat('/api/passenger/web/create'), dto, { headers });
+  }
+
 }

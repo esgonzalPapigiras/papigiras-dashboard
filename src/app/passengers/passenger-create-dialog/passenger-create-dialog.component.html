@@ -1,0 +1,98 @@
+<h2 mat-dialog-title>Crear Pasajero</h2>
+
+<mat-dialog-content [formGroup]="form">
+    <div class="grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+
+        <!-- Código Gira -->
+        <mat-form-field appearance="outline">
+            <mat-label>Código Gira</mat-label>
+            <input matInput formControlName="codigoGira">
+        </mat-form-field>
+
+        <!-- RUT -->
+        <mat-form-field appearance="outline">
+            <mat-label>RUT</mat-label>
+            <input matInput formControlName="passengersIdentification">
+        </mat-form-field>
+
+        <!-- Apellidos -->
+        <mat-form-field appearance="outline">
+            <mat-label>Apellido Paterno</mat-label>
+            <input matInput formControlName="passengersFatherLastName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Apellido Materno</mat-label>
+            <input matInput formControlName="passengersMotherLastName">
+        </mat-form-field>
+
+        <!-- Nombres -->
+        <mat-form-field appearance="outline">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="passengersNames">
+        </mat-form-field>
+
+        <!-- Fecha Nacimiento -->
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Nacimiento</mat-label>
+            <input type="date" matInput formControlName="passengersBirthDate">
+        </mat-form-field>
+
+        <!-- Sexo -->
+        <mat-form-field appearance="outline">
+            <mat-label>Sexo</mat-label>
+            <mat-select formControlName="passengersSex">
+                <mat-option *ngFor="let s of sexOptions" [value]="s">{{ s }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Talla -->
+        <mat-form-field appearance="outline">
+            <mat-label>Talla Polera</mat-label>
+            <mat-select formControlName="passengersSize">
+                <mat-option *ngFor="let s of sizeOptions" [value]="s">{{ s }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Dieta -->
+        <mat-form-field appearance="outline">
+            <mat-label>Dieta</mat-label>
+            <mat-select formControlName="passengersDiet">
+                <mat-option *ngFor="let d of dietOptions" [value]="d">{{ d }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Celular -->
+        <mat-form-field appearance="outline">
+            <mat-label>Celular</mat-label>
+            <input matInput formControlName="passengersPhone">
+        </mat-form-field>
+
+        <!-- Email -->
+        <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="passengersEmail">
+        </mat-form-field>
+
+        <!-- Apoderado -->
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre Apoderado</mat-label>
+            <input matInput formControlName="namePassengersAttorney">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Teléfono Apoderado</mat-label>
+            <input matInput formControlName="phonePassengersAttorney">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Email Apoderado</mat-label>
+            <input matInput formControlName="emailPassengersAttorney">
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()" [disabled]="loading">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="loading">Crear</button>
+</mat-dialog-actions>
