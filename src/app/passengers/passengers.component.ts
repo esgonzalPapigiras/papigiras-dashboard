@@ -32,8 +32,8 @@ export class PassengerComponent implements OnInit {
     "passengersSex",
     //"passengersSize",
     //"passengersDiet",
-    "passengersEmail",
-    "passengersPhone",
+    //"passengersEmail",
+    //"passengersPhone",
     "acciones",
   ];
   giras: any[] = [];
@@ -135,11 +135,11 @@ export class PassengerComponent implements OnInit {
       }
     });
   }
-  editarPasajero(alumno: any): void {
+  editarPasajero(pasajero: any): void {
     const ref = this.dialog.open(PassengerEditDialogComponent, {
       width: '720px',
       disableClose: true,
-      data: alumno
+      data: pasajero
     });
     ref.afterClosed().subscribe((updated?: PassengerDTO) => {
       if (updated) {

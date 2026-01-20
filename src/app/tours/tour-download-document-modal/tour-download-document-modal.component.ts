@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 })
 export class TourDownloadDocumentModalComponent implements OnInit {
 
-  displayedColumns: string[] = ["documentType", "documentName", "acciones"];
+  displayedColumns: string[] = ["documentType", "documentName", 'visibleToAll', "acciones"];
   dataSource = new MatTableDataSource<DocumentDTO>();
 
   @ViewChild('fileUploader') fileUploader: any;
@@ -39,25 +39,39 @@ export class TourDownloadDocumentModalComponent implements OnInit {
         Swal.showLoading();
         this.tourService.getDocument(this.data.tourSalesId)
           .subscribe({
-            next: (existingDocs: DocumentDTO[]) => {
+            next: (existingDocs: any) => {
               console.log(existingDocs)
-              const documentTypes = [
+              const officialTypes = [
                 { key: 'gira', label: 'Programa' },
                 { key: 'poliza', label: 'Seguro' },
                 { key: 'contract', label: 'Contrato' },
                 { key: 'manifiesto', label: 'Manifiesto' }
               ];
-              const mapped = documentTypes.map(dt => {
+              const officialDocs = officialTypes.map(dt => {
                 const found = existingDocs?.find(d => d.documentType === dt.key);
                 return new DocumentDTO(
                   found ? found.documentId : null,
-                  dt.label,                 // human visible label
-                  dt.key,                   // internal key
+                  dt.label,
+                  dt.key,
                   found ? found.documentName : null,
-                  this.data.tourSalesId
+                  this.data.tourSalesId,
+                  found ? found.visibleToAll : false
                 );
               });
-              this.dataSource = new MatTableDataSource(mapped);
+              const extraDocs = existingDocs
+                .filter(d => d.documentType === 'extra')
+                .map(d => new DocumentDTO(
+                  d.documentId,
+                  'Documento Extra',
+                  'extra',
+                  d.documentName,
+                  this.data.tourSalesId,
+                  d.visibleToAll
+                ));
+              this.dataSource = new MatTableDataSource([
+                ...officialDocs,
+                ...extraDocs
+              ]);
               Swal.close();
             },
             error: () => {
@@ -66,6 +80,23 @@ export class TourDownloadDocumentModalComponent implements OnInit {
           });
       }
     });
+  }
+
+  toggleVisibleLocal(row: DocumentDTO) {
+    const newValue = !row.visibleToAll;
+    this.tourService.changeDocumentVisibility(row.documentId!, newValue)
+      .subscribe({
+        next: () => {
+          row.visibleToAll = newValue;
+        },
+        error: () => {
+          Swal.fire(
+            "Error",
+            "No se pudo actualizar la visibilidad del documento",
+            "error"
+          );
+        }
+      });
   }
 
   applyDelete(event: DocumentDTO) {
@@ -122,6 +153,22 @@ export class TourDownloadDocumentModalComponent implements OnInit {
     });
   }
 
+  addExtraDocumentRow() {
+    const newDoc = new DocumentDTO(
+      null,
+      'Documento Extra',
+      'extra',
+      null,
+      this.data.tourSalesId,
+      false
+    );
+
+    this.dataSource.data = [
+      ...this.dataSource.data,
+      newDoc
+    ];
+  }
+
   chooseFile(row: any) {
     console.log(row)
     this.selectedRow = row;
@@ -137,7 +184,7 @@ export class TourDownloadDocumentModalComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.tourService.uploadDocumentsExtra(file, file.name, this.data.tourSalesUuid, 'documentosextras', this.selectedRow.typeKey   )
+        this.tourService.uploadDocumentsExtra(file, file.name, this.data.tourSalesUuid, 'documentosextras', this.selectedRow.typeKey)
           .subscribe({
             next: () => {
               Swal.fire("Listo", "Documento subido correctamente.", "success");

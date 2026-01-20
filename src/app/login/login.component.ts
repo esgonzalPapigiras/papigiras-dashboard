@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
 
 
   email: string = '';
@@ -18,67 +18,47 @@ export class LoginComponent implements OnInit{
   authStatus: string = 'notAuthenticated'; // Por ejemplo
 
   constructor(
-    private authService: LoginService,private router: Router,) { }
-
+    private authService: LoginService, private router: Router,) { }
 
   ngOnInit(): void {
-    
+
   }
-
-
-
-
   onSubmit(): void {
     Swal.fire({
-      title: "Espere ...",
-      text: "Por favor espera mientras se buscan los datos del usuario.",
+      title: 'Espere ...',
+      text: 'Por favor espera mientras se validan las credenciales.',
       allowOutsideClick: false,
-      didOpen: async () => {
+      didOpen: () => {
         Swal.showLoading();
-  
-        // Primero obtenemos el token
-        this.authService.token().subscribe(
-          (response) => {
-            // Guardamos el token en localStorage
-            localStorage.setItem('token', response.token);
-  
-            // Luego hacemos la solicitud de login
-            this.authService.login(this.email, this.password).subscribe(
-              (response) => {
-                this.authStatus = 'authenticated';
-                this.errorMessage = null;
-                Swal.close();
-                Swal.fire(
-                  "Éxito",
-                  "Los datos fueron encontrados",
-                  "success"
-                ).then(() => {
-                  this.router.navigate(['dashboard']);
-                });
-              },
-              (error) => {
-                localStorage.removeItem('token');
-                Swal.close();
-                Swal.fire(
-                  "Error",
-                  "Hubo un problema al encontrar el usuario",
-                  "error"
-                );
 
-              }
-            );
-          },
-          (error) => {
-            
+        this.authService.login(this.email, this.password).subscribe(
+          (response) => {
+            console.log(response)
+            localStorage.setItem('token', response.token);
+
+            this.authStatus = 'authenticated';
+            this.errorMessage = null;
+
             Swal.close();
             Swal.fire(
-              "Error",
-              "Hubo un problema al obtener el token",
-              "error"
+              'Éxito',
+              'Acceso concedido',
+              'success'
+            ).then(() => {
+              this.router.navigate(['dashboard']);
+            });
+          },
+          () => {
+            localStorage.removeItem('token');
+            Swal.close();
+            Swal.fire(
+              'Error',
+              'Credenciales inválidas',
+              'error'
             );
           }
         );
-      },
+      }
     });
   }
 

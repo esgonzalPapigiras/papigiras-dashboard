@@ -7,10 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class LoginService {
 
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  url = 'http://localhost:8084';
   constructor(private http: HttpClient) { }
 
+  /*
   login(email: string, password: string): Observable<any> {
     // Obtener el token de almacenamiento local
     const token = localStorage.getItem('token');
@@ -32,6 +33,11 @@ export class LoginService {
 
     // Realizar la solicitud POST para login
     return this.http.post(url, {}, { headers });
+  }
+  */
+
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(this.url.concat('/api/auth/login'), { email, password });
   }
 
   token(): Observable<any> {

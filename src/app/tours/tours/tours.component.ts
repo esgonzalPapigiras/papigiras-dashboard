@@ -48,7 +48,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
     tourSalesFinal: '',
     collegeName: '',
     addCourse: '',
-    communeName: ''
+    communesName: ''
   };
 
   constructor(
@@ -60,17 +60,44 @@ export class ToursComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.obtenerGiras();
-    this.dataSource.filterPredicate = (data: TourSalesDTO, filter: string) => {
-      const searchTerms = JSON.parse(filter);
-      return (!searchTerms.tourSalesUuid || data.tourSalesUuid.toLowerCase().includes(searchTerms.tourSalesUuid)) &&
-        (!searchTerms.tourSalesInit || data.tourSalesInit.toLowerCase().includes(searchTerms.tourSalesInit)) &&
-        (!searchTerms.tourSalesFinal || data.tourSalesFinal.toLowerCase().includes(searchTerms.tourSalesFinal)) &&
-        (!searchTerms.collegeName || data.collegeName.toLowerCase().includes(searchTerms.collegeName)) &&
-        (!searchTerms.addCourse || data.addCourse.toLowerCase().includes(searchTerms.addCourse))
-      /*&&
-      (!searchTerms.communeName || (data.communeName?.toLowerCase().includes(searchTerms.communeName) ||
-        data.detalle?.communesName?.toLowerCase().includes(searchTerms.communeName)));
-        */
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const f = JSON.parse(filter);
+      if (f.tourSalesUuid &&
+        !data.tourSalesUuid?.toLowerCase().includes(f.tourSalesUuid)) {
+        return false;
+      }
+      if (f.tourSalesInit) {
+        const filterDate = this.parseDate(f.tourSalesInit);
+        const rowDate = this.parseDate(data.tourSalesInit);
+        if (!rowDate || rowDate < filterDate) {
+          return false;
+        }
+      }
+      if (f.tourSalesFinal) {
+        const filterDate = this.parseDate(f.tourSalesFinal);
+        const rowDate = this.parseDate(data.tourSalesFinal);
+        if (!rowDate || rowDate > filterDate) {
+          return false;
+        }
+      }
+      if (f.collegeName &&
+        !data.collegeName?.toLowerCase().includes(f.collegeName)) {
+        return false;
+      }
+      if (f.addCourse &&
+        !data.addCourse?.toLowerCase().includes(f.addCourse)) {
+        return false;
+      }
+      if (f.communesName) {
+        const comuna =
+          data.detalle?.communesName ||
+          data.communeName ||
+          '';
+        if (!comuna.toLowerCase().includes(f.communesName)) {
+          return false;
+        }
+      }
+      return true;
     };
   }
 
@@ -88,7 +115,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
         this.girasServices.obtenerGirasFull().pipe(
           tap(giras => {
             console.log('FULL GIRAS:', giras);
-            this.dataSource = new MatTableDataSource(giras);
+            this.dataSource.data = giras;
             this.dataSource.sortingDataAccessor = (item, property) => {
               switch (property) {
                 case 'tourSalesInit':
@@ -100,6 +127,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
             };
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
+            this.dataSource.filter = JSON.stringify(this.filterValues);
           }),
           finalize(() => Swal.close())
         ).subscribe();
@@ -179,6 +207,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
             "Colegio": decoded.colegio,
             "Comuna": decoded.comuna,
             "Curso": g.addCourse,
+            "Coordinador": g.coordinatorIdentification,
           };
         });
         const worksheet = XLSX.utils.json_to_sheet(data);
@@ -195,9 +224,9 @@ export class ToursComponent implements AfterViewInit, OnInit {
     });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyColumnFilter(column: string, value: string) {
+    this.filterValues[column] = value?.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify(this.filterValues);
   }
 
   openViewDialog(row: any): void {
@@ -501,10 +530,11 @@ export class ToursComponent implements AfterViewInit, OnInit {
     throw new Error("Formato de tourSalesUuid inválido: " + uuid);
   }
 
-  private parseDate(value: string): number {
-    if (!value) return 0;
-    // dd-MM-yyyy
-    const [day, month, year] = value.split('-').map(Number);
+  private parseDate(value: string): number | null {
+    if (!value) return null;
+    const parts = value.split('-');
+    if (parts.length !== 3) return null;
+    const [day, month, year] = parts.map(Number);
     return new Date(year, month - 1, day).getTime();
   }
 }

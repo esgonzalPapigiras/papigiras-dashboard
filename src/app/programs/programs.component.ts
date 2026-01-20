@@ -95,7 +95,7 @@ export class ProgramsComponent implements OnInit {
   addActivities(row: any) {
     const dialogRef = this.dialog.open(ProgramsModalAddActivitiesComponent, {
       width: "1300px",
-      height: "600px",
+      height: "750px",
       data: row,
     });
 

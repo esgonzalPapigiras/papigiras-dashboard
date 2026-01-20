@@ -261,7 +261,21 @@ export class ToursServicesService {
 
     return this.http.get(this.url.concat('/app/services/get/pdf/view/medical-records'), { headers, params, responseType: 'arraybuffer' });
   }
-  deleteDocument(id: string, uuid:string, fileName: string): Observable<any> {
+  changeDocumentVisibility(documentId: string, visibleToAll: boolean) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    });
+    const params = new HttpParams()
+      .set('documentId', documentId)
+      .set('visibleToAll', visibleToAll.toString());
+    return this.http.post(
+      this.url.concat('/api/tour/sales/web/changeDocument'),
+      null,
+      { headers, params }
+    );
+  }
+  deleteDocument(id: string, uuid: string, fileName: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
@@ -279,12 +293,10 @@ export class ToursServicesService {
   }
   listPDF(id: number): Observable<ArrayBuffer> {
     const params = new HttpParams().set('id', id.toString());
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('token')
     });
-
     return this.http.get(this.url.concat('/api/tour/sales/web/generate-pdf'), {
       headers,
       params,

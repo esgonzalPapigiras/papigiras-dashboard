@@ -23,56 +23,84 @@
             <h4 class="card-title">Mantenedor Giras</h4>
           </div>
           <div class="card-body">
-
+            <!--
             <mat-form-field appearance="standard">
               <mat-label>Filtro</mat-label>
               <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input>
             </mat-form-field>
+            -->
 
+            <div class="table-filters">
+              <!-- Identificador Gira -->
+              <mat-form-field appearance="standard">
+                <mat-label>Identificador Gira</mat-label>
+                <input matInput placeholder="ID" (keyup)="applyColumnFilter('tourSalesUuid', $event.target.value)">
+              </mat-form-field>
+              <!-- Salida (FROM) -->
+              <mat-form-field appearance="standard">
+                <mat-label>Salida desde</mat-label>
+                <input matInput placeholder="01-03-2025"
+                  (keyup)="applyColumnFilter('tourSalesInit', $event.target.value)">
+              </mat-form-field>
+              <!-- Regreso (TO) -->
+              <mat-form-field appearance="standard">
+                <mat-label>Regreso hasta</mat-label>
+                <input matInput placeholder="10-03-2025"
+                  (keyup)="applyColumnFilter('tourSalesFinal', $event.target.value)">
+              </mat-form-field>
+              <!-- Colegio -->
+              <mat-form-field appearance="standard">
+                <mat-label>Colegio</mat-label>
+                <input matInput placeholder="Nombre colegio"
+                  (keyup)="applyColumnFilter('collegeName', $event.target.value)">
+              </mat-form-field>
+              <!-- Curso -->
+              <mat-form-field appearance="standard">
+                <mat-label>Curso</mat-label>
+                <input matInput placeholder="4° Medio A" (keyup)="applyColumnFilter('addCourse', $event.target.value)">
+              </mat-form-field>
+              <!-- Comuna -->
+              <mat-form-field appearance="standard">
+                <mat-label>Comuna</mat-label>
+                <input matInput placeholder="Santiago" (keyup)="applyColumnFilter('communesName', $event.target.value)">
+              </mat-form-field>
+            </div>
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
               class="mat-elevation-z8">
-
               <!-- ===================== HEADER ROW ===================== -->
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-
               <!-- ===================== DATA ROWS ===================== -->
               <!-- Tour ID  -->
               <ng-container matColumnDef="tourSalesUuid">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Identificador Gira</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesUuid}} </td>
               </ng-container>
-
               <!-- Salida  -->
               <ng-container matColumnDef="tourSalesInit">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Salida</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesInit}} </td>
               </ng-container>
-
               <!-- Regreso   -->
               <ng-container matColumnDef="tourSalesFinal">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Regreso</th>
                 <td mat-cell *matCellDef="let element"> {{element.tourSalesFinal}} </td>
               </ng-container>
-
               <!-- Colegio  -->
               <ng-container matColumnDef="collegeName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Colegio</th>
                 <td mat-cell *matCellDef="let element"> {{element.collegeName}} </td>
               </ng-container>
-
               <!-- Curso -->
               <ng-container matColumnDef="addCourse">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Curso</th>
                 <td mat-cell *matCellDef="let element"> {{element.addCourse}} </td>
               </ng-container>
-
               <!-- Comuna -->
               <ng-container matColumnDef="communesName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Comuna</th>
                 <td mat-cell *matCellDef="let element"> {{element.detalle?.communesName || element.communeName || '—' }}
                 </td>
               </ng-container>
-
               <!-- Acciones -->
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
@@ -111,8 +139,12 @@
                   <input #fileInputProgram type="file" (change)="onFileSelectedProgram($event,row)" accept="*"
                     style="display:none" />
                   -->
-                  <button mat-icon-button color="primary" (click)="openViewDialogDownloadDocuments(row)"
-                    matTooltip="Ver Documentos">
+                  <button mat-icon-button [ngClass]="row.addHotel ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogCoordinator(row)" matTooltip="Agregar Hotel">
+                    <mat-icon>hotel</mat-icon>
+                  </button>
+                  <button mat-icon-button [ngClass]="row.addProgramDoc ? 'green-button' : 'grey-button'"
+                    (click)="openViewDialogDownloadDocuments(row)" matTooltip="Ver Documentos">
                     <mat-icon>upload_file</mat-icon>
                   </button>
                   <button mat-icon-button color="primary" (click)="openViewDownloadDocuments(row)"

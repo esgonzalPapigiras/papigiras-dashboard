@@ -1,26 +1,56 @@
-<h3>Selecciona Actividades</h3>
-
 <mat-form-field appearance="fill">
   <mat-label>Selecciona una Actividad</mat-label>
   <mat-select [(value)]="selectedActivities" multiple>
-    <!-- Trigger de selección -->
     <mat-select-trigger>
       {{ selectedProgramsText }}
     </mat-select-trigger>
-
-    <!-- Opción de búsqueda -->
     <div mat-select-search>
       <mat-form-field appearance="fill">
         <input matInput placeholder="Buscar" [(ngModel)]="searchTerm" />
       </mat-form-field>
     </div>
-
-    <!-- Opciones filtradas -->
     <mat-option *ngFor="let programs of filteredPrograms()" [value]="programs">
       {{ programs.itinerary_name }}
     </mat-option>
   </mat-select>
 </mat-form-field>
-
-<!-- Botón para enviar los coordinadores seleccionados -->
 <button mat-raised-button color="primary" (click)="sendCoordinators()">Enviar Selección</button>
+
+<div class="card">
+  <div class="card-header card-header-danger">
+    <h4 class="card-title">Listado Actividades</h4>
+  </div>
+  <div class="card-body">
+    <mat-form-field appearance="standard">
+      <mat-label>Filtro</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Busqueda ...." #input />
+    </mat-form-field>
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+      class="mat-elevation-z8">
+      <!-- Position Column -->
+      <ng-container matColumnDef="itineraryName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Actividad</th>
+        <td mat-cell *matCellDef="let element">{{ element.itineraryName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="itineraryIncludes">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Proveedor</th>
+        <td mat-cell *matCellDef="let element">{{ element.itineraryIncludes }}</td>
+      </ng-container>
+      <ng-container matColumnDef="itineraryDescription">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Descripcion Actividad</th>
+        <td mat-cell *matCellDef="let element">{{ element.itineraryDescription }}</td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+        <td mat-cell *matCellDef="let row" class="action-buttons">
+          <button mat-icon-button color="error" (click)="applyDelete(row)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+  </div>
+</div>
