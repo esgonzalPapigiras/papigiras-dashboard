@@ -186,6 +186,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   downloadGiras() {
+    /*
     const giras = this.dataSource.data;
     if (!giras || giras.length === 0) {
       Swal.fire("No hay giras cargados", "", "warning");
@@ -220,6 +221,24 @@ export class ToursComponent implements AfterViewInit, OnInit {
         const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
         saveAs(blob, "giras.xlsx");
         Swal.close();
+      }
+    });
+    */
+    Swal.fire({
+      title: "Generando Excel...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.girasServices.exportGiras().subscribe({
+          next: (blob: Blob) => {
+            saveAs(blob, "giras.xlsx");
+            Swal.close();
+          },
+          error: (err) => {
+            Swal.close();
+            Swal.fire("Error al generar Excel", "", "error");
+          }
+        });
       }
     });
   }

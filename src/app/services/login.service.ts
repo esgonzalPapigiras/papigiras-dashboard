@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class LoginService {
 
-  //url = 'https://stingray-app-9tqd9.ondigitalocean.app';
-  url = 'http://localhost:8084';
+  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
+  //url = 'http://localhost:8084';
   constructor(private http: HttpClient) { }
 
   /*

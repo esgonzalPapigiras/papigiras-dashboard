@@ -22,7 +22,7 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  url = 'https://stingray-app-9tqd9.ondigitalocean.app';
+  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
   //url = 'http://localhost:8084';
 
   constructor(private http: HttpClient) { }
@@ -384,5 +384,17 @@ export class ToursServicesService {
     });
     const params = new HttpParams().set('id', id.toString());
     return this.http.delete<DeleteResponse>(this.url.concat('/api/passenger/web/delete'), { headers, params });
+  }
+  public exportGiras(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get(
+      this.url.concat('/api/tour/sales/web/export'),
+      {
+        headers,
+        responseType: 'blob'
+      }
+    );
   }
 }

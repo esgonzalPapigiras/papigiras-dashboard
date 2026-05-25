@@ -35,36 +35,39 @@ export class MapsCoordinatorComponent implements OnInit {
   selectedCoord: CoordinatorPosition | null = null;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
 
-  constructor(private coordinatorServices: CoordinatorService) {}
+  constructor(private coordinatorServices: CoordinatorService) { }
 
   ngOnInit(): void {
     this.coordinatorServices
       .getcoordinatorPosition()
       .subscribe(list => {
-        this.markers = list.map(coord => ({
-          position: {
-            lat: coord.positionCoordinatorLatitud,
-            lng: coord.positionCoordinatorLongitud
-          },
-          options: {
-            // Vector: círculo de 12px de radio, color Google blue + borde blanco
-            icon: {
-              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-              scale: 12,
-              fillColor: '#4285F4',
-              fillOpacity: 0.9,
-              strokeColor: '#FFFFFF',
-              strokeWeight: 2
-            }
-          },
-          label: {
-      text: coord.coordinatorName.trim(), 
-      color: '#333',
-      fontSize: '12px',
-      fontWeight: '600'
-    },
-          coord
-        }));
+        this.markers = list.map(coord => {
+          console.log('EACH COORD:', coord);
+
+          return {
+            position: {
+              lat: coord.positionCoordinatorLatitud,
+              lng: coord.positionCoordinatorLongitud
+            },
+            options: {
+              icon: {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 12,
+                fillColor: '#4285F4',
+                fillOpacity: 0.9,
+                strokeColor: '#FFFFFF',
+                strokeWeight: 2
+              }
+            },
+            label: {
+              text: coord.coordinatorName.trim(),
+              color: '#333',
+              fontSize: '12px',
+              fontWeight: '600'
+            },
+            coord
+          };
+        });
       });
   }
 

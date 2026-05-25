@@ -1,17 +1,6 @@
-<google-map
-  height="100vh"
-  width="100vw"
-  [center]="center"
-  [zoom]="zoom"
-  [options]="options"
->
-  <map-marker
-    *ngFor="let m of markers"
-    #markerElem="mapMarker"
-    [position]="m.position"
-    [options]="m.options"
-    (mapClick)="openInfo(m, markerElem)"
-  >
+<google-map height="100vh" width="100vw" [center]="center" [zoom]="zoom" [options]="options">
+  <map-marker *ngFor="let m of markers" #markerElem="mapMarker" [position]="m.position" [options]="m.options"
+    (mapClick)="openInfo(m, markerElem)">
   </map-marker>
 
   <!-- Template de InfoWindow más cuidada -->
@@ -19,6 +8,10 @@
     <div class="info-window">
       <h3>{{ selectedCoord?.coordinatorName }}</h3>
       <h3>Codigo Gira: {{ selectedCoord?.uuidTour }}</h3>
+      <p style="font-size: 1.5625rem;">
+        Última actualización:
+        {{ selectedCoord?.createdAt | date:'dd/MM/yyyy HH:mm:ss':'America/Santiago' }}
+      </p>
     </div>
   </map-info-window>
 </google-map>

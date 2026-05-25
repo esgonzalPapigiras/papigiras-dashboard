@@ -3,4 +3,5 @@ export class CoordinatorPosition {
   positionCoordinatorLongitud: number;
   uuidTour: string;
   coordinatorName: string;
+  createdAt: string;
 }
