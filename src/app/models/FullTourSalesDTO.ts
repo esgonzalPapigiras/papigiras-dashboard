@@ -21,6 +21,7 @@ export interface FullTourSalesDTO {
   tourSalesTripulationSelected: number;
   tourSalesCoordinatorSelected: boolean;
   addHotel: boolean;
+  hotelName: string | null;
   addAirplane: boolean;
   addSegurityPolicyDoc: boolean;
   addAlumnListDoc: boolean;

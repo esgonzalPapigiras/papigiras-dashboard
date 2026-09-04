@@ -1,17 +1,37 @@
-<google-map height="100vh" width="100vw" [center]="center" [zoom]="zoom" [options]="options">
-  <map-marker *ngFor="let m of markers" #markerElem="mapMarker" [position]="m.position" [options]="m.options"
-    (mapClick)="openInfo(m, markerElem)">
-  </map-marker>
+<div class="map-shell">
+  <div class="map-status mat-elevation-z3">
+    <strong>Ubicación de coordinadores</strong>
+    <span *ngIf="lastRefresh">
+      Actualizado: {{ lastRefresh | date:'dd/MM/yyyy HH:mm:ss' }}
+    </span>
+    <span *ngIf="isRefreshing">Actualizando...</span>
+    <span class="error" *ngIf="loadError">{{ loadError }}</span>
+    <span *ngIf="!isRefreshing && !loadError && markers.length === 0">
+      Ningún coordinador activo ha compartido ubicación.
+    </span>
+  </div>
 
-  <!-- Template de InfoWindow más cuidada -->
-  <map-info-window>
-    <div class="info-window">
-      <h3>{{ selectedCoord?.coordinatorName }}</h3>
-      <h3>Codigo Gira: {{ selectedCoord?.uuidTour }}</h3>
-      <p style="font-size: 1.5625rem;">
-        Última actualización:
-        {{ selectedCoord?.createdAt | date:'dd/MM/yyyy HH:mm:ss':'America/Santiago' }}
-      </p>
-    </div>
-  </map-info-window>
-</google-map>
+  <google-map height="100vh" width="100%" [center]="center" [zoom]="zoom" [options]="options">
+    <map-marker
+      *ngFor="let m of markers"
+      #markerElem="mapMarker"
+      [position]="m.position"
+      [options]="m.options"
+      (mapClick)="openInfo(m, markerElem)">
+    </map-marker>
+
+    <map-info-window>
+      <div class="info-window">
+        <h3>{{ selectedCoord?.coordinatorName }}</h3>
+        <p><strong>Código gira:</strong> {{ selectedCoord?.uuidTour }}</p>
+        <p [class.stale]="isStale(selectedCoord)">
+          {{ getPositionStatus(selectedCoord) }}
+        </p>
+        <p>
+          Última actualización:
+          {{ selectedCoord?.createdAt | date:'dd/MM/yyyy HH:mm:ss':'America/Santiago' }}
+        </p>
+      </div>
+    </map-info-window>
+  </google-map>
+</div>

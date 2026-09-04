@@ -337,18 +337,60 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   openViewDialogTripulation(row: any): void {
-    this.dialog.open(TourViewDriverModalComponent, {
+    const dialogRef = this.dialog.open(TourViewDriverModalComponent, {
       width: '1300px',
       height: '600px',
       data: row.tourSalesId
     });
+    dialogRef.afterClosed().subscribe(() => this.obtenerGiras());
   }
 
   openViewDialogCoordinator(row: any): void {
-    this.dialog.open(TourAddCoordinatorModalComponent, {
+    const dialogRef = this.dialog.open(TourAddCoordinatorModalComponent, {
       width: '1300px',
       height: '600px',
       data: row.tourSalesId
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) this.obtenerGiras();
+    });
+  }
+
+  editHotelName(row: TourSalesDTO): void {
+    Swal.fire({
+      title: 'Hotel de la gira',
+      input: 'text',
+      inputLabel: 'Nombre del hotel',
+      inputValue: row.hotelName || '',
+      inputPlaceholder: 'Ej: Hotel Antumalal',
+      inputAttributes: {
+        maxlength: '200',
+        autocapitalize: 'words'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: value => value.length > 200 ? 'Máximo 200 caracteres' : null
+    }).then(result => {
+      if (!result.isConfirmed) return;
+
+      const hotelName = (result.value || '').trim();
+      Swal.fire({
+        title: 'Guardando hotel...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+      this.girasServices.updateHotelName(row.tourSalesId, hotelName).subscribe({
+        next: response => {
+          row.hotelName = response.hotelName;
+          row.addHotel = response.addHotel;
+          Swal.fire('Guardado', hotelName ? 'El hotel fue actualizado.' : 'El hotel fue eliminado.', 'success');
+        },
+        error: error => {
+          console.error('Error al actualizar el hotel:', error);
+          Swal.fire('Error', 'No se pudo guardar el hotel.', 'error');
+        }
+      });
     });
   }
 
@@ -503,18 +545,12 @@ export class ToursComponent implements AfterViewInit, OnInit {
   }
 
   getCoordinatorColor(row: any): string {
-    const name = row.coordinatorName;
-    const id = row.coordinatorIdentification;
-    // CASE 1: Grey - no coordinator
-    if (!row.tourSalesCoordinatorSelected || !name || !id) {
-      return 'grey-button';
-    }
-    // CASE 2: Yellow - placeholder coordinator
-    if (name === 'Por Asignar' || id === '11.111.111-1') {
-      return 'yellow-button';
-    }
-    // CASE 3: Green - real coordinator
-    return 'green-button';
+    return row.tourSalesCoordinatorSelected ? 'green-button' : 'grey-button';
+  }
+
+  getTripulationColor(row: any): string {
+    if (row.addTripulation) return 'green-button';
+    return row.tourSalesTripulationSelected > 0 ? 'yellow-button' : 'grey-button';
   }
 
   decodeTourUuid(uuid: string) {

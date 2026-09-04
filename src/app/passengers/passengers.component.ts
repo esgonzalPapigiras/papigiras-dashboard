@@ -20,6 +20,7 @@ import { PassengerCreateDialogComponent } from './passenger-create-dialog/passen
 })
 export class PassengerComponent implements OnInit {
 
+  private readonly passengerTourYear = '2026';
   dataSourceAlumnos = new MatTableDataSource<PassengerDTO>();
   @ViewChild(MatPaginator) paginatorAlumn: MatPaginator;
   @ViewChild(MatSort) sortAlumn: MatSort;
@@ -59,8 +60,9 @@ export class PassengerComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.alumnsService.obtenerPasajeros().subscribe((respon) => {
-          //console.log(respon);
-          this.dataSourceAlumnos.data = respon;
+          this.dataSourceAlumnos.data = respon.filter(passenger =>
+            String(passenger.codigoGira ?? '').includes(this.passengerTourYear)
+          );
           Swal.close();
         });
       },

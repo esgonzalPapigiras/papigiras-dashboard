@@ -1,0 +1,31 @@
+.map-shell {
+  position: relative;
+}
+
+.map-status {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 360px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #333;
+}
+
+.error,
+.stale {
+  color: #b45309;
+}
+
+.info-window h3 {
+  margin: 0 0 8px;
+}
+
+.info-window p {
+  margin: 5px 0;
+}

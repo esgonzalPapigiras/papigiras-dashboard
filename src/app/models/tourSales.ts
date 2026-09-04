@@ -18,6 +18,7 @@ export class TourSalesDTO {
     tourSalesTripulationSelected: number;
     tourSalesCoordinatorSelected: boolean;
     addHotel: boolean;
+    hotelName: string | null;
     addAirplane: boolean;
     addSegurityPolicyDoc: boolean;
     addAlumnListDoc: boolean;
@@ -48,6 +49,7 @@ export class TourSalesDTO {
       tourSalesTripulationSelected: number,
       tourSalesCoordinatorSelected: boolean,
       addHotel: boolean,
+      hotelName: string | null,
       addAirplane: boolean,
       addSegurityPolicyDoc: boolean,
       addAlumnListDoc: boolean,
@@ -77,6 +79,7 @@ export class TourSalesDTO {
       this.tourSalesTripulationSelected = tourSalesTripulationSelected;
       this.tourSalesCoordinatorSelected = tourSalesCoordinatorSelected;
       this.addHotel = addHotel;
+      this.hotelName = hotelName;
       this.addAirplane = addAirplane;
       this.addSegurityPolicyDoc = addSegurityPolicyDoc;
       this.addAlumnListDoc = addAlumnListDoc;

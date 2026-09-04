@@ -71,6 +71,10 @@ export class TourViewDriverModalComponent implements OnInit {
         <input id="tp-ident" class="swal2-input" placeholder="Rut">
         <input id="tp-fono" class="swal2-input" placeholder="Teléfono">
         <input id="tp-fecha" class="swal2-input" type="date" placeholder="Fecha Nacimiento">
+        <label style="display:flex; align-items:center; gap:8px; margin:18px 32px 0; text-align:left;">
+          <input id="tp-final" type="checkbox">
+          Marcar la selección de tripulación como finalizada
+        </label>
       `,
 
       showCancelButton: true,
@@ -83,6 +87,7 @@ export class TourViewDriverModalComponent implements OnInit {
         const fono = (document.getElementById('tp-fono') as HTMLInputElement).value?.trim();
         const fechaInput = document.getElementById('tp-fecha') as HTMLInputElement;
         const fecha = fechaInput.value;
+        const confirma = (document.getElementById('tp-final') as HTMLInputElement).checked;
 
         if (!nombre || !ident) {
           Swal.showValidationMessage('Tipo, Nombre e Identificación son obligatorios');
@@ -92,7 +97,7 @@ export class TourViewDriverModalComponent implements OnInit {
           Swal.showValidationMessage('La fecha no es válida. Usa formato YYYY-MM-DD.');
           return false;
         }
-        return { nombre, ident, fono, fecha: fecha || null };
+        return { nombre, ident, fono, fecha: fecha || null, confirma };
       }
     });
 
@@ -111,13 +116,10 @@ export class TourViewDriverModalComponent implements OnInit {
     Swal.showLoading();
     // Backend exige ?id=...&confirma=...
     const id = String(this.data);     // ajusta si tu id viene distinto
-    const confirma = true;             // o el valor que uses
-    this.toursService.addTripulationNew(dto, id, confirma).subscribe({
-      next: (created: TripulationsDTO) => {
-        const rows = this.dataSourceTrip.data.slice();
-        rows.unshift(created);
-        this.dataSourceTrip.data = rows;
-        Swal.fire({ icon: 'success', title: 'Creado', text: 'Tripulante agregado' });
+    this.toursService.addTripulationNew(dto, id, form.confirma).subscribe({
+      next: () => {
+        Swal.fire({ icon: 'success', title: 'Creado', text: 'Tripulante agregado' })
+          .then(() => this.obtenerTripulacion());
       },
       error: () => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo crear el tripulante' })
     });
@@ -158,7 +160,7 @@ export class TourViewDriverModalComponent implements OnInit {
     if (!form) return;
     const payload: TripulationsDTO = {
       ...row,
-      tourTripulationTypeId: form.typeId,
+      tourTripulationTypeId: row.tourTripulationTypeId || 1,
       tourTripulationNameId: form.nombre,
       tourTripulationIdentificationId: form.ident,
       tourTripulationPhoneId: form.fono,
@@ -169,11 +171,8 @@ export class TourViewDriverModalComponent implements OnInit {
     // Ajusta el endpoint de update a tu backend real
     this.toursService.updateTripulation(payload).subscribe({
       next: () => {
-        const rows = this.dataSourceTrip.data.map(r =>
-          r.tourTripulationId === payload.tourTripulationId ? payload : r
-        );
-        this.dataSourceTrip.data = rows;
-        Swal.fire({ icon: 'success', title: 'Actualizado', text: 'Tripulante actualizado' });
+        Swal.fire({ icon: 'success', title: 'Actualizado', text: 'Tripulante actualizado' })
+          .then(() => this.obtenerTripulacion());
       },
       error: () => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo actualizar' })
     });
@@ -193,8 +192,8 @@ export class TourViewDriverModalComponent implements OnInit {
       Swal.showLoading();
       this.toursService.deleteTripulation(row.tourTripulationId, this.data).subscribe({
         next: () => {
-          this.dataSourceTrip.data = this.dataSourceTrip.data.filter(r => r.tourTripulationId !== row.tourTripulationId);
-          Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Tripulante eliminado' });
+          Swal.fire({ icon: 'success', title: 'Eliminado', text: 'Tripulante eliminado' })
+            .then(() => this.obtenerTripulacion());
         },
         error: () => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar' })
       });

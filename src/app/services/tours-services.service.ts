@@ -14,6 +14,7 @@ import { TourSalesDetailWeb } from 'app/models/TourSalesDetailWeb';
 import { TripulationBus } from 'app/models/tripulationBus';
 import { TripulationBusDTO } from 'app/models/tripulationBusDTO';
 import { TripulationsDTO } from 'app/models/tripulations';
+import { TourCoordinatorAssignment } from 'app/models/tourCoordinatorAssignment';
 import { catchError, map, Observable } from 'rxjs';
 
 
@@ -148,6 +149,44 @@ export class ToursServicesService {
     const params = new HttpParams().set('id', id.toString());
 
     return this.http.get<TripulationsDTO[]>(this.url.concat('/api/tour/sales/web/get/tripulation'), { headers, params });
+  }
+  public getTourCoordinators(tourId: number): Observable<TourCoordinatorAssignment[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || '',
+    });
+
+    return this.http.get<TourCoordinatorAssignment[]>(
+      this.url.concat(`/api/tour/sales/web/tours/${tourId}/coordinators`),
+      { headers }
+    );
+  }
+  public updateTourCoordinators(
+    tourId: number,
+    coordinatorIds: number[]
+  ): Observable<TourCoordinatorAssignment[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || '',
+    });
+
+    return this.http.put<TourCoordinatorAssignment[]>(
+      this.url.concat(`/api/tour/sales/web/tours/${tourId}/coordinators`),
+      { coordinatorIds },
+      { headers }
+    );
+  }
+  public updateHotelName(tourId: number, hotelName: string): Observable<{ hotelName: string | null; addHotel: boolean }> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || '',
+    });
+
+    return this.http.put<{ hotelName: string | null; addHotel: boolean }>(
+      this.url.concat(`/api/tour/sales/web/tours/${tourId}/hotel`),
+      { hotelName },
+      { headers }
+    );
   }
   public listHotel(id: number): Observable<HotelDTOList[]> {
 

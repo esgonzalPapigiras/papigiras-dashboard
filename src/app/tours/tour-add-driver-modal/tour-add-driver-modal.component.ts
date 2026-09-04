@@ -82,7 +82,7 @@ export class TourAddDriverModalComponent implements OnInit {
                     coordinators.fechaNacimiento
                   );
                   
-                  this.tourService.addTripulation(coordinator,this.data,true).subscribe({
+                  this.tourService.addTripulation(coordinator,this.data,false).subscribe({
                     next: () => {
                       this.dialogRef.close(true);
                     },

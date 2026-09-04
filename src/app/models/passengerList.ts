@@ -1,4 +1,5 @@
 export interface PassengerDTO {
+    codigoGira?: string;
     passengersId: number;
     passengersCourse: string;
     passengersFatherLastName: string;

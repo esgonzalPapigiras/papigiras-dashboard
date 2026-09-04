@@ -123,8 +123,9 @@
                     <mat-icon>directions_bus</mat-icon>
                   </button>
                   <button mat-icon-button color="primary"
-                    [ngClass]="row.tourSalesTripulationSelected >= 3 ? 'green-button' : 'grey-button'"
-                    (click)="openViewDialogTripulation(row)" matTooltip="Agregar Choferes">
+                    [ngClass]="getTripulationColor(row)"
+                    (click)="openViewDialogTripulation(row)"
+                    [matTooltip]="row.addTripulation ? 'Tripulación finalizada' : 'Gestionar choferes'">
                     <mat-icon>people</mat-icon>
                   </button>
                   <button mat-icon-button [ngClass]="getCoordinatorColor(row)" (click)="openViewDialogCoordinator(row)"
@@ -140,7 +141,7 @@
                     style="display:none" />
                   -->
                   <button mat-icon-button [ngClass]="row.addHotel ? 'green-button' : 'grey-button'"
-                    (click)="openViewDialogCoordinator(row)" matTooltip="Agregar Hotel">
+                    (click)="editHotelName(row)" [matTooltip]="row.hotelName || 'Agregar hotel'">
                     <mat-icon>hotel</mat-icon>
                   </button>
                   <button mat-icon-button [ngClass]="row.addProgramDoc ? 'green-button' : 'grey-button'"
