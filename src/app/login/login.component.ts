@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoginService } from 'app/services/login.service';
 import Swal from 'sweetalert2';
+import { normalizeAuthorization } from 'app/lab/lab-auth';
 
 @Component({
   selector: 'app-login',
@@ -33,8 +34,14 @@ export class LoginComponent implements OnInit {
 
         this.authService.login(this.email, this.password).subscribe(
           (response) => {
-            console.log(response)
-            localStorage.setItem('token', response.token);
+            const token = normalizeAuthorization(response?.token);
+            if (!token) {
+              localStorage.removeItem('token');
+              Swal.fire('Error', 'El servidor local no entregó una sesión válida.', 'error');
+              return;
+            }
+            localStorage.setItem('token', token);
+            this.password = '';
 
             this.authStatus = 'authenticated';
             this.errorMessage = null;

@@ -92,7 +92,7 @@ export class CoordinatorModalCreateComponent implements OnInit {
         this.dialogRef.close(true);
       },
       error: (err) => {
-        console.error('Error al guardar la oficina:', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         // Puedes optar por cerrar el modal con false o mostrar un mensaje de error sin cerrarlo
         this.dialogRef.close(false);
       }

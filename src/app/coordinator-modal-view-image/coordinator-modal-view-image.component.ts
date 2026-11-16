@@ -40,7 +40,7 @@ export class CoordinatorModalViewImageComponent implements OnInit {
                 this.convertBlobToBase64(imageBlob).then(base64Image => {
                   this.imageUrl = base64Image;
                 }).catch(error => {
-                  console.error('Error al convertir el Blob a base64:', error);
+                  console.error('PAPIGIRAS LAB: operación local no completada.');
                 });
               },
               error: (error) => {

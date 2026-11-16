@@ -1,3 +1,4 @@
+import { recordList, validCoordinates } from 'app/shared/record-values';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { CoordinatorPosition } from 'app/models/coordinatorPosition';
@@ -15,6 +16,7 @@ export class MapsCoordinatorComponent implements OnInit, OnDestroy {
   private readonly staleAfterMs = 5 * 60 * 1000;
   private readonly destroyed$ = new Subject<void>();
 
+  readonly mapAvailable = typeof google !== 'undefined' && !!google.maps;
   center: google.maps.LatLngLiteral = { lat: -36.8383, lng: -73.1015 };
   zoom = 13;
   options: google.maps.MapOptions = {
@@ -46,7 +48,7 @@ export class MapsCoordinatorComponent implements OnInit, OnDestroy {
         this.isRefreshing = true;
         return this.coordinatorServices.getcoordinatorPosition().pipe(
           catchError(error => {
-            console.error('Error refreshing coordinator positions', error);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             this.loadError = 'No se pudieron actualizar las ubicaciones.';
             return EMPTY;
           }),
@@ -56,21 +58,21 @@ export class MapsCoordinatorComponent implements OnInit, OnDestroy {
     ).subscribe(list => {
       this.loadError = null;
       this.lastRefresh = new Date();
-      this.markers = list.map(coord => ({
+      this.markers = recordList(list).filter(coord => validCoordinates(coord.positionCoordinatorLatitud, coord.positionCoordinatorLongitud)).map(coord => ({
         position: {
-          lat: coord.positionCoordinatorLatitud,
-          lng: coord.positionCoordinatorLongitud
+          lat: Number(coord.positionCoordinatorLatitud),
+          lng: Number(coord.positionCoordinatorLongitud)
         },
         options: {
           title: `${coord.coordinatorName} · ${this.getPositionStatus(coord)}`,
-          icon: {
+          icon: this.mapAvailable ? {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             scale: 12,
             fillColor: this.isStale(coord) ? '#9E9E9E' : '#1B8F3A',
             fillOpacity: 0.95,
             strokeColor: '#FFFFFF',
             strokeWeight: 2
-          }
+          } : undefined
         },
         coord
       }));

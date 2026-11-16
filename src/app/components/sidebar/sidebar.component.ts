@@ -37,7 +37,6 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    console.log(this.router.url);
     this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
 
@@ -64,7 +63,6 @@ export class SidebarComponent implements OnInit {
 
   // Función para verificar si la ruta está activa
   isActiveRoute(route: string): boolean {
-    console.log(route); 
     return this.router.url.indexOf(route) > -1;
   }
 }

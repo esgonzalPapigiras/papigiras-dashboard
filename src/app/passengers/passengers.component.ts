@@ -1,3 +1,4 @@
+import { recordList, positiveRecordId } from 'app/shared/record-values';
 import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -20,7 +21,6 @@ import { PassengerCreateDialogComponent } from './passenger-create-dialog/passen
 })
 export class PassengerComponent implements OnInit {
 
-  private readonly passengerTourYear = '2026';
   dataSourceAlumnos = new MatTableDataSource<PassengerDTO>();
   @ViewChild(MatPaginator) paginatorAlumn: MatPaginator;
   @ViewChild(MatSort) sortAlumn: MatSort;
@@ -59,11 +59,13 @@ export class PassengerComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        this.alumnsService.obtenerPasajeros().subscribe((respon) => {
-          this.dataSourceAlumnos.data = respon.filter(passenger =>
-            String(passenger.codigoGira ?? '').includes(this.passengerTourYear)
-          );
-          Swal.close();
+        this.alumnsService.obtenerPasajeros().subscribe({
+          next: respon => {
+            this.dataSourceAlumnos.data = recordList(respon);
+            this.dataSourceAlumnos.paginator?.firstPage();
+            Swal.close();
+          },
+          error: () => Swal.fire('Error', 'No se pudieron cargar los pasajeros locales.', 'error')
         });
       },
     });
@@ -71,6 +73,7 @@ export class PassengerComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceAlumnos.filter = filterValue.trim().toLowerCase();
+    this.dataSourceAlumnos.paginator?.firstPage();
   }
   addPassenger() {
     const ref = this.dialog.open(PassengerCreateDialogComponent, {
@@ -84,7 +87,12 @@ export class PassengerComponent implements OnInit {
     });
   }
   medicalRecord(row: any): void {
-    console.log(row)
+    // The original API calls the numeric tour ID "passengersUuid" in this list.
+    const tourId = positiveRecordId(row?.passengersUuid);
+    if (tourId === null) {
+      Swal.fire('Gira no identificada', 'Abre la ficha desde una gira con identificador válido.', 'warning');
+      return;
+    }
     // Si YA tiene ficha -> descarga
     if (row.medicalRecord) {
       Swal.fire({
@@ -93,7 +101,7 @@ export class PassengerComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.girasServices
-            .downloadDocumentMedical(row.passengersUuid, row.passengersId, row.passengersIdentification)
+            .downloadDocumentMedical(String(tourId), row.passengersId, row.passengersIdentification)
             .subscribe({
               next: (response) => {
                 const blob = new Blob([response]);
@@ -102,7 +110,7 @@ export class PassengerComponent implements OnInit {
                 Swal.close();
               },
               error: (err) => {
-                console.error('Error downloading the file: ', err);
+                console.error('PAPIGIRAS LAB: operación local no completada.');
                 Swal.close();
                 Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar la ficha.' });
               },
@@ -118,7 +126,7 @@ export class PassengerComponent implements OnInit {
       width: '760px',
       disableClose: true,
       data: {
-        idTour: row.passengersUuid,                // viene de tu componente padre
+        idTour: tourId,                // viene de tu componente padre
         idPassenger: row.passengersId,       // del registro
         // Si quieres prefijar nombres/apellidos/curso/colegio desde row, puedes pasarlos aquí:
         nombres: row.passengersNames,
@@ -150,17 +158,11 @@ export class PassengerComponent implements OnInit {
     });
   }
   eliminarPasajero(row: any) {
-    console.log(row)
     const nombre = row.passengersNames || row.namePassengersAttorney || '';
     const identificacion = row.passengersIdentification || '';
     Swal.fire({
       title: '¿Eliminar pasajero?',
-      html: `
-        <div style="text-align:left">
-          <div><strong>Nombre:</strong> ${nombre}</div>
-          <div><strong>Identificación:</strong> ${identificacion}</div>
-        </div>
-      `,
+      text: `Nombre: ${nombre}\nIdentificación: ${identificacion}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -231,7 +233,7 @@ export class PassengerComponent implements OnInit {
         },
         error: (err) => {
           Swal.close();
-          Swal.fire('Error', 'Hubo un problema al cargar el archivo', err);
+          Swal.fire('Error', 'Hubo un problema al cargar el archivo', 'error');
         }
       });
       event.target.value = ''; // reset input

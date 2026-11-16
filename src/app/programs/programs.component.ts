@@ -119,8 +119,7 @@ export class ProgramsComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.programService.obtenerProgram().subscribe((respon) => {
-          console.log(respon)
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();
@@ -174,7 +173,6 @@ export class ProgramsComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.programService.uploadFile(file).subscribe(response => {
-            console.log('response.status');
             if (response.code === "0") {
               this.showSuccessDialog();
               this.obtenerSuppliers();
@@ -182,7 +180,6 @@ export class ProgramsComponent implements OnInit {
               this.showSuccessDialogError();
             }
           }, error => {
-            console.log(error);
             // Maneja cualquier error durante la carga
             Swal.fire({
               icon: "error",

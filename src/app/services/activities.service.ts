@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Activities } from 'app/models/activities';
@@ -11,8 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class ActivitiesService {
 
-  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  readonly url = environment.apiUrl;
   constructor(private http: HttpClient) { }
 
 

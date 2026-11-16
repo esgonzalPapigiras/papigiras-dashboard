@@ -28,7 +28,6 @@ export class BranchModalEditComponent implements OnInit {
   
 
   obtenercomunaUpdate(){
-      console.log(this.data);
       Swal.fire({
             title: "Cargando...",
             allowOutsideClick: false,
@@ -66,7 +65,6 @@ export class BranchModalEditComponent implements OnInit {
               });
             },
             (error) => {
-              console.log(error);
               Swal.close();
               Swal.fire(
                 "Error",

@@ -11,7 +11,7 @@
     </span>
   </div>
 
-  <google-map height="100vh" width="100%" [center]="center" [zoom]="zoom" [options]="options">
+  <google-map *ngIf="mapAvailable; else localPositions" height="100vh" width="100%" [center]="center" [zoom]="zoom" [options]="options">
     <map-marker
       *ngFor="let m of markers"
       #markerElem="mapMarker"
@@ -29,9 +29,25 @@
         </p>
         <p>
           Última actualización:
-          {{ selectedCoord?.createdAt | date:'dd/MM/yyyy HH:mm:ss':'America/Santiago' }}
+          {{ selectedCoord?.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}
         </p>
       </div>
     </map-info-window>
   </google-map>
 </div>
+
+<ng-template #localPositions>
+  <section style="padding: 120px 24px 24px; overflow-x: auto">
+    <h2>Últimas ubicaciones guardadas</h2>
+    <p>Datos de la copia local. La cartografía de Google no está activada en este laboratorio.</p>
+    <table class="table">
+      <thead><tr><th>Coordinador</th><th>Gira</th><th>Latitud</th><th>Longitud</th><th>Registrada</th><th>Estado</th></tr></thead>
+      <tbody><tr *ngFor="let marker of markers">
+        <td>{{ marker.coord.coordinatorName || '—' }}</td><td>{{ marker.coord.uuidTour || '—' }}</td>
+        <td>{{ marker.position.lat }}</td><td>{{ marker.position.lng }}</td>
+        <td>{{ marker.coord.createdAt ? (marker.coord.createdAt | date:'dd/MM/yyyy HH:mm:ss') : 'Sin fecha' }}</td>
+        <td>{{ getPositionStatus(marker.coord) }}</td>
+      </tr></tbody>
+    </table>
+  </section>
+</ng-template>

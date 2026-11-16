@@ -75,7 +75,6 @@ export class ActivitiesModalEditComponent implements OnInit {
             });
           },
           (error) => {
-            console.log(error);
             Swal.close();
             Swal.fire(
               "Error",

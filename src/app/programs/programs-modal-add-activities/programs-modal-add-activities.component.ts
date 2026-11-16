@@ -59,9 +59,8 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        console.log(this.data)
         this.programService.listActivitiesProgram(this.data.tours_id).subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();
@@ -82,7 +81,6 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(event);
         // Llamamos al servicio para eliminar el coordinador
         this.programService.activitiesProgramDeleteList(event.tourActivitiesId).subscribe(
           (response) => {
@@ -90,7 +88,6 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
             this.obtenerActividades();
           },
           (error) => {
-            console.log(error)
             Swal.fire("Error", "No se pudo eliminar el registro.", "error");
           }
         );
@@ -123,7 +120,6 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
   }
 
   filteredPrograms() {
-    console.log(this.searchTerm)
     return this.programs.filter(programs =>
       programs.itinerary_name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
@@ -139,8 +135,6 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
         confirmButtonText: 'Cerrar'
       });
       this.selectedActivities.forEach(activity => {
-        console.log('ID Actividad:', activity.itinerary_id);
-        console.log('ID Programa :', this.data.tours_id);
 
         // Creación correcta de una nueva instancia de TourActivities
         const tourActivity = new TourActivities();
@@ -150,7 +144,6 @@ export class ProgramsModalAddActivitiesComponent implements OnInit {
         tourActivity.idActivity = activity.itinerary_id;
         tourActivity.isSelect = true;
 
-        console.log(tourActivity);
 
         // Llamada al servicio con tourActivity
         Swal.fire({

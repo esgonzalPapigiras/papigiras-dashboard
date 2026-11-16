@@ -50,10 +50,9 @@ export class BusesComponent implements OnInit {
     this.busService.obtenerBuses().subscribe({
       next: (data) => {
         this.dataSource.data = data;
-        console.log("Buses:", data);
       },
       error: (err) => {
-        console.error("Error fetching buses", err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
       }
     });
   }

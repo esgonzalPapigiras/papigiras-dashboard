@@ -102,7 +102,7 @@ export class BranchComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.branchService.obtenerOficinas().subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();

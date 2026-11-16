@@ -62,7 +62,7 @@ export class ProgramsModalCreateComponent implements OnInit {
           this.dialogRef.close(true);
         },
         error: (err) => {
-          console.error('Error al guardar la oficina:', err);
+          console.error('PAPIGIRAS LAB: operación local no completada.');
           this.dialogRef.close(false);
         }
       });

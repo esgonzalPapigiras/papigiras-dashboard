@@ -70,14 +70,13 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
 
     this.girasServices.listAlumn(this.data.id).pipe(
       tap((respon: PassengerDTO[] | null | undefined) => {
-        console.log(respon)
         this.dataSourceAlumnos.data = respon ?? [];
         // reasegurar refs
         this.dataSourceAlumnos.paginator = this.paginatorAlumn;
         this.dataSourceAlumnos.sort = this.sortAlumn;
       }),
       catchError(err => {
-        console.error('Error listAlumn:', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         this.dataSourceAlumnos.data = [];
         return of([]);
       }),
@@ -87,11 +86,10 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
   ObtenerListaAcompanantes() {
     this.girasServices.listAcompanantes(this.data.id).pipe(
       tap(res => {
-        console.log('Acompanantes response:', res);   // <-- print it here
         this.dataSourceAcompanantes.data = res || [];
       }),
       catchError(err => {
-        console.error('Error listAcompanantes:', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         this.dataSourceAcompanantes.data = [];
         return of([]);
       })
@@ -106,7 +104,7 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
         //console.log(this.data.detalle)
         //console.log(this.total)
       },
-      error: (e) => console.error('Error al obtener detalle de gira', e),
+      error: (e) => console.error('PAPIGIRAS LAB: operación local no completada.'),
     });
   }
   private calcTotalParticipantes(d: any): number {
@@ -151,18 +149,12 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     });
   }
   eliminarPasajero(row: PassengerDTO) {
-    console.log(row)
     const nombre = row.passengersNames || row.namePassengersAttorney || '';
     const identificacion = row.passengersIdentification || '';
 
     Swal.fire({
       title: '¿Eliminar pasajero?',
-      html: `
-      <div style="text-align:left">
-        <div><strong>Nombre:</strong> ${nombre}</div>
-        <div><strong>Identificación:</strong> ${identificacion}</div>
-      </div>
-    `,
+      text: `Nombre: ${nombre}\nIdentificación: ${identificacion}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -214,12 +206,7 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     const identificacion = row.passengersIdentification || '';
     Swal.fire({
       title: '¿Eliminar acompañante?',
-      html: `
-      <div style="text-align:left">
-        <div><strong>Nombre:</strong> ${nombre}</div>
-        <div><strong>Identificación:</strong> ${identificacion}</div>
-      </div>
-    `,
+      text: `Nombre: ${nombre}\nIdentificación: ${identificacion}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -272,7 +259,6 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
     });
   }
   medicalRecord(row: any): void {
-    console.log(row)
     // Si YA tiene ficha -> descarga
     if (row.medicalRecord) {
       Swal.fire({
@@ -290,7 +276,7 @@ export class TourViewAlumnsModalComponent implements OnInit, AfterViewInit {
                 Swal.close();
               },
               error: (err) => {
-                console.error('Error downloading the file: ', err);
+                console.error('PAPIGIRAS LAB: operación local no completada.');
                 Swal.close();
                 Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar la ficha.' });
               },

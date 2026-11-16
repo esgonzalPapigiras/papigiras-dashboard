@@ -1,248 +1,116 @@
-<div class="main-content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-warning card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons">groups</i>
-            </div>
-            <p class="card-category">Cantidad Alumnos</p>
-            <h3 class="card-title">{{ alumns }}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-success card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons">list_alt</i>
-            </div>
-            <p class="card-category">Cantidad Programas</p>
-            <h3 class="card-title">{{ programs }}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-danger card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons">transcribe</i>
-            </div>
-            <p class="card-category">Clientes</p>
-            <h3 class="card-title">{{ clients }}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-info card-header-icon">
-            <div class="card-icon">
-              <i class="material-icons">tour</i>
-            </div>
-            <p class="card-category">Cantidad Tours</p>
-            <h3 class="card-title">{{ tours }}</h3>
-          </div>
-        </div>
-      </div>
+<main class="main-content ops-dashboard" [attr.aria-busy]="loading">
+  <header class="ops-heading">
+    <div><div class="ops-eyebrow">PAPIGIRAS / OPERACIONES</div><h1>Dashboard</h1>
+      <p>Lo que falta antes de salir. Lo que importa durante la gira.</p></div>
+    <div class="ops-heading-actions"><span class="ops-date">{{ todayLabel }}</span>
+      <button class="ops-button" type="button" (click)="refresh()" [disabled]="loading"><span class="material-icons" aria-hidden="true">refresh</span> Actualizar</button></div>
+  </header>
+
+  <div class="ops-toolbar">
+    <div class="ops-controls">
+      <label>Próximas salidas <select [(ngModel)]="horizon" (ngModelChange)="recompute()"><option [ngValue]="7">7 días</option><option [ngValue]="14">14 días</option><option [ngValue]="30">30 días</option></select></label>
+      <label>Seguimiento sin hitos <select [(ngModel)]="quietHours" (ngModelChange)="recompute()"><option [ngValue]="12">12 horas</option><option [ngValue]="24">24 horas</option><option [ngValue]="48">48 horas</option></select></label>
     </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card card-chart">
-          <div class="card-header card-header-success">
-            <div class="ct-chart" id="dailySalesChart"></div>
-          </div>
-          <div class="card-body">
-            <h4 class="card-title">Giras Vendidas</h4>
-            <p class="card-category">
-              <span [ngClass]="{
-                  'text-success': percentageDiff >= 0,
-                  'text-danger': percentageDiff < 0
-                }">
-                <i class="fa" [ngClass]="{
-                    'fa-long-arrow-up': percentageDiff >= 0,
-                    'fa-long-arrow-down': percentageDiff < 0
-                  }"></i>
-                {{ percentageDiff | number : "1.0-0" }}%
-              </span>
-              porcentaje de venta comparado año anterior.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-chart">
-          <div class="card-header card-header-warning">
-            <div class="ct-chart" id="websiteViewsChart"></div>
-          </div>
-          <div class="card-body">
-            <h4 class="card-title">Giras Completadas</h4>
-            <p class="card-category">Giras Completadas</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="ops-source"><span *ngIf="!examples">Consulta {{ updatedLabel }} · actualización manual</span>
+      <button type="button" class="ops-text-button" (click)="toggleExamples()">{{ examples ? 'Volver a datos LAB' : 'Ver ejemplo' }}</button></div>
   </div>
-  <div class="container-fluid" style="width: 100%; padding: 20px">
-    <div class="row">
-      <div class="col-md-12" style="width: 100%; padding: 20px">
-        <div class="card">
-          <div class="card-header card-header-danger">
-            <h4 class="card-title">Mejores Coordinadores</h4>
+  <div class="ops-notice ops-example" *ngIf="examples" role="status"><span class="material-icons" aria-hidden="true">science</span>
+    <div><strong>Vista de ejemplo</strong> · Cuatro giras ficticias para explorar el diseño. No se guardan ni modifican datos; la gestión está deshabilitada.</div></div>
+  <div class="ops-notice ops-error" *ngIf="error && !examples" role="alert"><span class="material-icons" aria-hidden="true">error_outline</span><div>{{ error }}</div>
+    <button class="ops-text-button" type="button" (click)="refresh()" [disabled]="loading">Reintentar</button></div>
+  <div class="ops-loading" *ngIf="loading && !rows.length" role="status">Consultando giras y pendientes…</div>
+
+  <ng-container *ngIf="examples || updatedAt">
+    <section class="ops-metrics" aria-label="Resumen de giras en curso y próximas">
+      <button class="ops-metric" type="button" (click)="setTab('active')"><span class="ops-metric-top">En curso <span class="material-icons ops-teal" aria-hidden="true">explore</span></span>
+        <strong>{{ active.length }}</strong><span>Giras que acompañar hoy <span aria-hidden="true">↗</span></span></button>
+      <button class="ops-metric" type="button" (click)="setTab('upcoming')"><span class="ops-metric-top">Próximas salidas <span class="material-icons ops-blue" aria-hidden="true">event</span></span>
+        <strong>{{ upcoming.length }}</strong><span>En los próximos {{ horizon }} días <span aria-hidden="true">↗</span></span></button>
+      <button class="ops-metric" type="button" (click)="setTab('attention')"><span class="ops-metric-top">Fichas pendientes <span class="material-icons ops-amber" aria-hidden="true">assignment_late</span></span>
+        <strong>{{ missingMedical }}</strong><span>Alumnos sin ficha registrada <span aria-hidden="true">↗</span></span></button>
+      <button class="ops-metric ops-metric-emphasis" type="button" (click)="setTab('attention')"><span class="ops-metric-top">Giras por revisar <span class="material-icons" aria-hidden="true">flag</span></span>
+        <strong>{{ attention.length }}<small> / {{ scope.length }}</small></strong><span>Con al menos un pendiente <span aria-hidden="true">↗</span></span></button>
+    </section>
+
+    <div class="ops-workspace">
+      <section class="ops-panel ops-trips" aria-labelledby="ops-trips-title">
+        <div class="ops-panel-heading"><div><h2 id="ops-trips-title">Tus giras, de un vistazo</h2><p>Primero, las que necesitan atención.</p></div>
+          <a routerLink="/tours" class="ops-text-link">Todas las giras <span aria-hidden="true">↗</span></a></div>
+        <div class="ops-list-tools">
+          <div class="ops-tabs" role="group" aria-label="Filtrar giras">
+            <button type="button" (click)="setTab('all')" [attr.aria-pressed]="tab==='all'">En control <span>{{ scope.length }}</span></button>
+            <button type="button" (click)="setTab('attention')" [attr.aria-pressed]="tab==='attention'">Por revisar <span>{{ attention.length }}</span></button>
+            <button type="button" (click)="setTab('active')" [attr.aria-pressed]="tab==='active'">En curso</button>
+            <button type="button" (click)="setTab('upcoming')" [attr.aria-pressed]="tab==='upcoming'">Próximas</button>
+            <button type="button" (click)="setTab('recent')" [attr.aria-pressed]="tab==='recent'">Recientes <span>{{ recent.length }}</span></button>
           </div>
-          <div class="card-body">
-            <div class="year-selector">
-              <label for="year">Selecciona el año para ver al mejor coordinador</label>
-              <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()" name="year" id="year">
-                <mat-option *ngFor="let year of years" [value]="year">
-                  {{ year }}
-                </mat-option>
-              </mat-select>
-            </div>
-            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-              <!-- Position Column -->
-              <ng-container matColumnDef="cantidadHitos">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by cantidadHitos">
-                  Cantidad Hitos
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.cantidadHitos }}
-                </td>
-              </ng-container>
-
-              <!-- Name Column -->
-              <ng-container matColumnDef="cantidadFotos">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by cantidadFotos">
-                  Cantidad Fotos
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.cantidadFotos }}
-                </td>
-              </ng-container>
-
-              <!-- Weight Column -->
-              <ng-container matColumnDef="tourSalesUuid">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesUuid">
-                  Id Tour
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.tourSalesUuid }}
-                </td>
-              </ng-container>
-
-              <!-- Symbol Column -->
-              <ng-container matColumnDef="tourSalesInit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesInit">
-                  Fecha Inicio
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.tourSalesInit }}
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="tourSalesFinal">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by tourSalesFinal">
-                  Fecha Termino
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.tourSalesFinal }}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="nameClient">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by nameClient">
-                  Colegio
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.nameClient }}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="courseClient">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by courseClient">
-                  Curso
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.courseClient }}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="tourTripulationNameId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                  sortActionDescription="Sort by tourTripulationNameId">
-                  Coordinador
-                </th>
-                <td mat-cell *matCellDef="let element">
-                  {{ element.tourTripulationNameId }}
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-            </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
-          </div>
+          <label class="ops-search"><span class="material-icons" aria-hidden="true">search</span><input aria-label="Buscar gira, colegio o coordinador" placeholder="Buscar colegio, gira o coordinador" [(ngModel)]="search" (ngModelChange)="syncSelection()"></label>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid" style="width: 100%; padding: 20px;">
-    <div class="row">
-      <div class="col-md-12" style="width: 100%; padding: 0;">
-        <div class="card">
-          <div class="card-header card-header-danger">
-            <h4 class="card-title">Reporte Coordinadores</h4>
-          </div>
-          <div class="card-body">
-            <div class="mb-3">
-              <mat-form-field appearance="outline">
-                <mat-label>Filtrar</mat-label>
-                <input matInput (keyup)="applyCoordinatorFilter($event)" placeholder="Filtrar por cualquier campo" />
-              </mat-form-field>
-            </div>
-            <table mat-table [dataSource]="coordinatorReportSource" class="mat-elevation-z8" matSort #coordinatorReportSort="matSort">
-              <!-- RUT Column -->
-              <ng-container matColumnDef="coordinatorRut">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
-                <td mat-cell *matCellDef="let row">{{row.coordinatorRut}}</td>
-              </ng-container>
-              <!-- Nombre Column -->
-              <ng-container matColumnDef="coordinatorName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
-                <td mat-cell *matCellDef="let row">{{row.coordinatorName}}</td>
-              </ng-container>
-              <!-- Apellido Column -->
-              <ng-container matColumnDef="coordinatorLastname">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido</th>
-                <td mat-cell *matCellDef="let row">{{row.coordinatorLastname}}</td>
-              </ng-container>
-              <!-- Gira Column -->
-              <ng-container matColumnDef="tourSalesUuid">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Gira</th>
-                <td mat-cell *matCellDef="let row">{{row.tourSalesUuid}}</td>
-              </ng-container>
-              <!-- Salida Column -->
-              <ng-container matColumnDef="tourSalesInit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Salida</th>
-                <td mat-cell *matCellDef="let row">{{row.tourSalesInit}}</td>
-              </ng-container>
-              <!-- Regreso Column -->
-              <ng-container matColumnDef="tourSalesFinal">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Regreso</th>
-                <td mat-cell *matCellDef="let row">{{row.tourSalesFinal}}</td>
-              </ng-container>
-              <!-- Ubicación Column -->
-              <ng-container matColumnDef="hasSharedLocation">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.hasSharedLocation ? 'Sí' : 'No' }}
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsCoordinatorReport"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumnsCoordinatorReport;"></tr>
-            </table>
-            <mat-paginator #coordinatorReportPaginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]">
-            </mat-paginator>
-          </div>
+        <p class="ops-recent-note" *ngIf="tab==='recent'">Giras finalizadas en los últimos 30 días. No se suman a las prioridades actuales.</p>
+        <div class="ops-trip-list" *ngIf="visibleRows.length; else noTours">
+          <button type="button" class="ops-trip" *ngFor="let row of visibleRows; trackBy:trackTour" (click)="select(row)" [attr.aria-pressed]="selectedId===row.source.id">
+            <div class="ops-trip-main"><div class="ops-trip-title">{{ row.source.school || 'Colegio por definir' }} <span class="ops-course">{{ row.source.course }}</span></div>
+              <div class="ops-muted">{{ row.source.code }} · {{ date(row.source.startsOn) }} – {{ date(row.source.endsOn) }}</div>
+              <div class="ops-trip-badges"><span class="ops-badge" [class.ops-badge-active]="row.phase==='active'">{{ departure(row) }}</span>
+                <span class="ops-badge ops-badge-alert" *ngIf="row.alerts.length">{{ row.alerts.length }} pendiente{{ row.alerts.length===1?'':'s' }}</span></div></div>
+            <div class="ops-trip-medical"><span class="ops-small">Fichas registradas</span><strong>{{ row.source.medicalRecords }} <span>/ {{ row.source.students }}</span></strong>
+              <div class="ops-progress" role="progressbar" aria-label="Proporción de alumnos con ficha registrada" [attr.aria-valuenow]="row.medicalPercent" aria-valuemin="0" aria-valuemax="100"><span [style.width.%]="row.medicalPercent || 0"></span></div>
+              <span class="ops-small" *ngIf="!row.source.students">Sin alumnos cargados</span></div>
+            <div class="ops-trip-activity"><span class="ops-small">Actividad de la gira</span><strong>{{ row.source.milestones }} <span>hitos</span> · {{ row.source.photos }} <span>fotos</span></strong><span class="ops-small">{{ activity(row) }}</span></div>
+            <span class="material-icons ops-trip-arrow" aria-hidden="true">chevron_right</span>
+          </button>
         </div>
-      </div>
+        <ng-template #noTours><div class="ops-empty"><span class="material-icons" aria-hidden="true">travel_explore</span>
+          <h3>{{ search ? 'No encontramos esa gira' : tab==='attention' ? 'Sin pendientes detectados en este período' : 'No hay giras en esta vista' }}</h3>
+          <p>{{ search ? 'Prueba con otro colegio, código o coordinador.' : 'Amplía el período o revisa las giras recientes.' }}</p>
+          <div class="ops-inline-actions"><button class="ops-button" type="button" (click)="setTab('recent')" *ngIf="recent.length && tab!=='recent'">Ver {{ recent.length }} reciente{{ recent.length===1?'':'s' }}</button>
+            <button class="ops-text-button" type="button" (click)="toggleExamples()" *ngIf="!examples">Explorar con un ejemplo</button></div></div></ng-template>
+      </section>
+
+      <aside class="ops-panel ops-priorities" aria-labelledby="ops-priority-title"><div class="ops-panel-heading"><div><div class="ops-eyebrow">PARA GESTIONAR HOY</div><h2 id="ops-priority-title">Prioridades</h2></div><span class="ops-counter">{{ priorities.length }}</span></div>
+        <div class="ops-priority" *ngFor="let item of priorities | slice:0:5"><div class="ops-priority-top"><span class="ops-priority-dot" [class.ops-priority-critical]="item.alert.priority===0"></span><span>{{ item.alert.owner }}</span></div>
+          <h3>{{ item.alert.title }}</h3><p>{{ item.row.source.school }} · {{ item.row.source.course }}</p>
+          <button type="button" class="ops-text-button" (click)="focus(item.row)">Revisar gira <span aria-hidden="true">→</span></button></div>
+        <p class="ops-priority-empty" *ngIf="!priorities.length">{{ scope.length ? 'No se detectaron pendientes en los controles disponibles.' : 'Las prioridades aparecerán cuando haya giras en curso o próximas a salir.' }}</p>
+        <button class="ops-priority-more" *ngIf="priorities.length>5" type="button" (click)="setTab('attention')">Ver todas las giras con pendientes</button>
+      </aside>
     </div>
-  </div>
-</div>
+
+    <section class="ops-panel ops-detail" id="gira-detail" *ngIf="selected as row" aria-labelledby="ops-detail-title">
+      <div class="ops-panel-heading"><div><div class="ops-eyebrow">REVISIÓN DE GIRA · {{ row.source.code }}</div><h2 id="ops-detail-title">{{ row.source.school }} <span class="ops-course">{{ row.source.course }}</span></h2>
+        <p>{{ phaseLabel(row) }} · {{ date(row.source.startsOn) }} al {{ date(row.source.endsOn) }}</p></div>
+        <button type="button" class="ops-button" (click)="open('tour',row)" [disabled]="examples">Abrir gira <span class="material-icons" aria-hidden="true">north_east</span></button></div>
+      <div class="ops-detail-grid">
+        <section><h3><span class="material-icons" aria-hidden="true">fact_check</span> Preparación</h3>
+          <dl class="ops-checks"><div><dt>Alumnos cargados</dt><dd>{{ row.source.students }} / {{ row.source.expectedStudents || 'Por definir' }}</dd></div>
+            <div><dt>Fichas médicas registradas</dt><dd [class.ops-warning]="row.missingMedical>0">{{ row.source.medicalRecords }} / {{ row.source.students }}</dd></div>
+            <div><dt>Sin contacto de apoderado</dt><dd [class.ops-warning]="row.source.missingGuardianContact>0">{{ row.source.missingGuardianContact }}</dd></div>
+            <div><dt>Programa marcado como cargado</dt><dd>{{ row.source.programMarked===true ? 'Sí' : row.source.programMarked===false ? 'No' : 'Sin confirmar' }}</dd></div>
+            <div><dt>Póliza marcada como cargada</dt><dd>{{ row.source.insuranceMarked===true ? 'Sí' : row.source.insuranceMarked===false ? 'No' : 'Sin confirmar' }}</dd></div></dl>
+          <button class="ops-button" type="button" (click)="open('students',row)" [disabled]="examples">Ver alumnos y fichas</button>
+        </section>
+        <section><h3><span class="material-icons" aria-hidden="true">support_agent</span> Coordinación y actividad</h3>
+          <p class="ops-coordinator">{{ row.source.coordinatorNames || 'Sin coordinador asignado' }}</p><p class="ops-muted">{{ row.source.coordinatorCount }} {{ row.source.coordinatorCount===1?'asignación':'asignaciones' }} activa{{ row.source.coordinatorCount===1?'':'s' }}</p>
+          <div class="ops-activity-counts"><div><strong>{{ row.source.milestones }}</strong><span>Hitos registrados</span></div><div><strong>{{ row.source.photos }}</strong><span>Fotos registradas</span></div></div>
+          <p class="ops-small">Último hito: {{ activity(row) }}. Los totales corresponden a toda la gira.</p>
+          <button class="ops-button" type="button" (click)="open('coordinators',row)" [disabled]="examples">Gestionar coordinadores</button>
+        </section>
+        <section class="ops-next"><h3><span class="material-icons" aria-hidden="true">checklist</span> Próximo paso</h3>
+          <ul *ngIf="row.alerts.length"><li *ngFor="let alert of row.alerts"><strong>{{ alert.title }}</strong><span>{{ alert.detail }}</span>
+            <button type="button" class="ops-text-button" (click)="open(alert.action,row)" [disabled]="examples && alert.action!=='followup'">{{ alert.action==='students'?'Revisar alumnos':alert.action==='coordinators'?'Asignar coordinación':alert.action==='followup'?'Preparar seguimiento':'Revisar gira' }} →</button></li></ul>
+          <p *ngIf="!row.alerts.length">{{ row.phase==='recent' ? 'Gira finalizada por fecha. Puedes consultar sus registros; no se generan alertas de actividad.' : 'Sin pendientes detectados. Esto no reemplaza la revisión del equipo.' }}</p>
+          <button class="ops-button ops-button-primary" type="button" (click)="prepare(row)" *ngIf="row.alerts.length">Preparar seguimiento</button>
+        </section>
+      </div>
+      <section class="ops-message" *ngIf="message"><label for="ops-message-text">Texto para compartir con el equipo</label><p>Revísalo y cópialo al canal que uses. No se envía ninguna notificación.</p>
+        <textarea id="ops-message-text" rows="7" [(ngModel)]="message"></textarea><div class="ops-inline-actions"><button class="ops-button ops-button-primary" type="button" (click)="copy()">Copiar texto</button><span role="status">{{ copyStatus }}</span></div></section>
+    </section>
+    <details class="ops-criteria"><summary>Cómo se calculan los pendientes</summary><div>
+      <p><strong>Período:</strong> giras en curso según salida y regreso, y salidas hasta {{ horizon }} días desde hoy, usando fecha de Chile. Las canceladas quedan fuera. Las fechas inválidas requieren revisión.</p>
+      <p><strong>Fichas:</strong> se cuenta si existe una ficha vinculada al alumno y a esta gira. No se evalúa si está completa, autorizada ni clínicamente revisada. Los acompañantes adultos no forman parte de este conteo.</p>
+      <p><strong>Contactos:</strong> se pide al menos un teléfono o correo de apoderado registrado; no se comprueba que sea válido. Programa y póliza reflejan sus marcas de carga, no la revisión de sus archivos.</p>
+      <p><strong>Actividad:</strong> seguimiento tras {{ quietHours }} horas desde la fecha de registro del último hito. Si nunca hubo hitos o fotos, se avisa desde el día siguiente a la salida porque no hay hora de partida. Las fotos se cuentan por gira; no hay una fecha fiable de última foto.</p>
+      <p>Los responsables son áreas sugeridas para gestionar los pendientes. Preparar o copiar un mensaje no asigna una tarea ni acredita que alguien haya sido contactado.</p>
+    </div></details>
+  </ng-container>
+</main>

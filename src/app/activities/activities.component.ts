@@ -48,7 +48,6 @@ export class ActivitiesComponent implements OnInit {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(event.itinerary_id);
         // Llamamos al servicio para eliminar el coordinador
         this.activitiesService.deleteActivities(event.itinerary_id).subscribe(
           (response) => {
@@ -97,8 +96,7 @@ export class ActivitiesComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.activitiesService.obtenerActividades().subscribe((respon) => {
-          console.log(respon)
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();
@@ -151,7 +149,6 @@ export class ActivitiesComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.activitiesService.uploadFile(file).subscribe(response => {
-            console.log('response.status');
             if (response.code === "0") {
               this.showSuccessDialog();
               this.obtenerActividades();
@@ -159,7 +156,6 @@ export class ActivitiesComponent implements OnInit {
               this.showSuccessDialogError();
             }
           }, error => {
-            console.log(error);
             // Maneja cualquier error durante la carga
             Swal.fire({
               icon: "error",

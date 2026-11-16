@@ -51,7 +51,6 @@ export class SuppliersModalEditComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        console.log(this.suppliers)
         this.supplierService.suppliersUpdate(this.suppliers, this.data.suppliers_id).subscribe(
           (response) => {
             Swal.close();
@@ -65,7 +64,6 @@ export class SuppliersModalEditComponent implements OnInit {
             });
           },
           (error) => {
-            console.log(error);
             Swal.close();
             Swal.fire(
               "Error",

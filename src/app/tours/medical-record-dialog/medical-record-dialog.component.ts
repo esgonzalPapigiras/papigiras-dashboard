@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToursServicesService } from 'app/services/tours-services.service';
 import Swal from 'sweetalert2';
+import { calendarDate } from 'app/shared/record-values';
 
 @Component({
   selector: 'app-medical-record-dialog',
@@ -122,6 +123,10 @@ export class MedicalRecordDialogComponent {
       return;
     }
     const raw = this.form.getRawValue();
+    if (!calendarDate(raw.fechaNacimiento) || !calendarDate(raw.fechaAutorizacion)) {
+      Swal.fire('Revisar fechas', 'La fecha de nacimiento o autorización no es válida.', 'warning');
+      return;
+    }
     const payload = {
       ...raw,
       fechaNacimiento: this.toDateString(raw.fechaNacimiento),
@@ -131,7 +136,6 @@ export class MedicalRecordDialogComponent {
       tieneIsapre: raw.cobertura === 'ISAPRE',
       isapre: raw.cobertura === 'ISAPRE' ? raw.isapreNombre : '',
     };
-    console.log(payload)
     Swal.fire({ title: 'Guardando ficha...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     this.girasService.createMedicalRecord(payload).subscribe({
       next: () => {
@@ -141,7 +145,7 @@ export class MedicalRecordDialogComponent {
       },
       error: (err) => {
         Swal.close();
-        console.error('Error al guardar ficha:', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar la ficha médica.' });
       },
     });
@@ -151,14 +155,7 @@ export class MedicalRecordDialogComponent {
     this.dialogRef.close(false);
   }
 
-  private toDateString(val: any): string {
-    if (!val) return '';
-    // Si viene como string yyyy-MM-dd, lo retornamos igual
-    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
-    // Si viene Date, lo parseamos
-    const d = new Date(val);
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${d.getFullYear()}-${mm}-${dd}`;
+  private toDateString(val: unknown): string {
+    return calendarDate(val);
   }
 }

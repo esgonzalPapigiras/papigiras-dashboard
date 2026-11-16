@@ -70,7 +70,6 @@ export class ComunnesModalEditComponent implements OnInit {
             });
           },
           (error) => {
-            console.log(error);
             Swal.close();
             Swal.fire(
               "Error",

@@ -67,7 +67,7 @@ export class TourAddAirplaneModalComponent implements OnInit {
         this.dialogRef.close(true);
       },
       error: (err) => {
-        console.error('Error al guardar el avion:', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         this.dialogRef.close(false);
       }
     });

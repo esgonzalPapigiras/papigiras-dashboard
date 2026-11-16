@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-16",
+  "scope": "review packaging and documented upstream reconciliation",
+  "source_commit": "87e3761fafd9376439cfcd2ec4282ce50828673f",
+  "unchanged_sources_match": true,
+  "changed_source_files": [
+    "scripts/check_isolation.py",
+    "src/assets/fonts/fonts.css",
+    "src/assets/fonts/licenses/Roboto-OFL-1.1.txt"
+  ],
+  "isolation_check": "passed",
+  "secrets_and_private_artifacts_scan": "passed",
+  "new_product_tests": "not rerun; only documented whitespace/packaging changes, previous results in README",
+  "original_lab_and_running_beta_modified": false,
+  "remote_push_verified": "recorded separately after push",
+  "production_ready": false
+}

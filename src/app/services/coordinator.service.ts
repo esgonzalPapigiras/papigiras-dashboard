@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Coordinator } from 'app/models/coordinator';
@@ -10,9 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class CoordinatorService {
 
-  token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhdXRoVG9rZW4iLCJzdWIiOiJhcHBMYW5kZXJvcyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3Mzk3NTYyNTMsImV4cCI6MTc0MDYyMDI1M30.KzjMglLVW6Sy9IDI4xNoYf8SZU1NAlVCQRQhVZsAaig_c4N0or8JRYkKLv53i20e2I9EAE0GHlA_2bwAd8IDag';
-  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  readonly url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -37,7 +36,6 @@ export class CoordinatorService {
   public uploadFile(file: any): Observable<ResponseUploadCoordinator> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    console.log("Se envio excel de coordinadores")
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('token')); // Reemplazar con el token si es necesario
     return this.http.post<ResponseUploadCoordinator>(this.url.concat('/api/coordinator/web/upload'), formData, { headers });
   }
@@ -64,7 +62,7 @@ export class CoordinatorService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     });
-    return this.http.get<Blob>(this.url.concat(`/api/coordinator/web/images/${rut}`), { headers, responseType: 'blob' as 'json' });
+    return this.http.get<Blob>(this.url.concat(`/api/coordinator/web/images/${encodeURIComponent(rut)}`), { headers, responseType: 'blob' as 'json' });
   }
 
   uploadDocumentsPicture(result: Uint8Array, name: string, rut: string, folder: string): Observable<any> {

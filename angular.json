@@ -49,7 +49,7 @@
                   "minify": false,
                   "inlineCritical": false
                 },
-                "fonts": true
+                "fonts": false
               },
               "outputHashing": "all",
               "sourceMap": false,
@@ -76,7 +76,7 @@
                   "minify": false,
                   "inlineCritical": true
                 },
-                "fonts": true
+                "fonts": false
               },
               "outputHashing": "all"
             }
@@ -168,16 +168,16 @@
     }
   },
   "defaultProject": "material-dashboard-angular",
-"schematics": {
-  "@schematics/angular:component": {
-    "prefix": "app",
-    "style": "scss"
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "style": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
   },
-  "@schematics/angular:directive": {
-    "prefix": "app"
+  "cli": {
+    "analytics": false
   }
-},
-"cli": {
-  "analytics": "66717fbc-ea22-4a9b-9bb4-24e9d2ca6f99"
-}
 }

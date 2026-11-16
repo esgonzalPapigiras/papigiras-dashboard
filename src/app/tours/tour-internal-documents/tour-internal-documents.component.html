@@ -1,0 +1,39 @@
+<section class="internal-documents" aria-labelledby="internal-documents-title">
+  <header>
+    <div>
+      <h4 id="internal-documents-title">Documentos internos</h4>
+      <p>Solo coordinación y administración. No se muestran a apoderados.</p>
+    </div>
+    <button mat-stroked-button type="button" (click)="refresh()" [disabled]="loading" aria-label="Actualizar documentos internos">
+      <mat-icon aria-hidden="true">refresh</mat-icon> Actualizar
+    </button>
+  </header>
+  <div class="sections" aria-label="Tipo de documento interno">
+    <button type="button" [class.selected]="category === 'GENERAL'" [attr.aria-pressed]="category === 'GENERAL'" (click)="select('GENERAL')">
+      Generales <span *ngIf="loaded">({{ count('GENERAL') }})</span>
+    </button>
+    <button type="button" [class.selected]="category === 'VOUCHER'" [attr.aria-pressed]="category === 'VOUCHER'" (click)="select('VOUCHER')">
+      Vouchers <span *ngIf="loaded">({{ count('VOUCHER') }})</span>
+    </button>
+  </div>
+  <p *ngIf="loading" role="status">Cargando documentos…</p>
+  <p *ngIf="error" class="error" role="alert">{{ error }}</p>
+  <p *ngIf="downloadError" class="error" role="alert">{{ downloadError }}</p>
+  <p *ngIf="!loading && !error && visibleDocuments.length === 0" class="empty">Todavía no hay documentos en esta sección.</p>
+  <div class="table-wrap" *ngIf="visibleDocuments.length">
+    <table>
+      <thead><tr><th>Nombre</th><th *ngIf="category === 'VOUCHER'">Actividad</th><th>Fecha</th><th>Tamaño</th><th>Archivo</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let document of visibleDocuments; trackBy: trackDocument">
+          <td>{{ document.name }}</td>
+          <td *ngIf="category === 'VOUCHER'">{{ document.activityName || '—' }}</td>
+          <td>{{ document.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ document.sizeBytes / 1024 | number:'1.0-0' }} KB</td>
+          <td><button mat-stroked-button type="button" (click)="download(document)" [disabled]="busy.has(document.id)" [attr.aria-label]="'Descargar ' + document.name">
+            <mat-icon aria-hidden="true">download</mat-icon> {{ busy.has(document.id) ? 'Descargando…' : 'Descargar' }}
+          </button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

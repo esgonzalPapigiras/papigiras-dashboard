@@ -1,346 +1,80 @@
-import { MatPaginator } from "@angular/material/paginator";
-import { StadisticsService } from "./../services/stadistics.service";
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
-import { MatTableDataSource } from "@angular/material/table";
-import * as Chartist from "chartist";
-import Swal from "sweetalert2";
-import { BestCoordinators } from "app/models/bestCoordinator";
-import { CoordinatorReportDTO } from "app/models/CoordinatorReportDTO";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { ToursViewModalComponent } from '../tours/tours-view-modal/tours-view-modal.component';
+import { TourViewAlumnsModalComponent } from '../tours/tour-view-alumns-modal/tour-view-alumns-modal.component';
+import { TourAddCoordinatorModalComponent } from '../tours/tour-add-coordinator-modal/tour-add-coordinator-modal.component';
+import { Action, calendarDay, OperationalTour, TourView, tourView } from './dashboard-operations';
+import { DashboardOperationsService } from './dashboard-operations.service';
+import { dashboardExamples } from './dashboard-examples';
 
-@Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.css"],
-})
-export class DashboardComponent implements OnInit {
-  public labels: string[] = [];
-  public series: number[] = [];
-  public alumns: string;
-  public programs: string;
-  public clients: string;
-  public tours: string;
-  public percentageDiff: number = 0;
-  public dataLoaded = false;
-  years: number[] = []; // Array para los años
-  selectedYear: number;
-  displayedColumns: string[] = ["cantidadHitos", "cantidadFotos", "tourSalesUuid", "tourSalesInit", "tourSalesFinal", "nameClient", "courseClient", "tourTripulationNameId",];
-  dataSource = new MatTableDataSource<BestCoordinators>();
-  displayedColumnsCoordinatorReport: string[] = ["coordinatorRut", "coordinatorName", "coordinatorLastname", "tourSalesUuid", "tourSalesInit", "tourSalesFinal", "hasSharedLocation"];
-  coordinatorReportSource = new MatTableDataSource<CoordinatorReportDTO>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('coordinatorReportPaginator') coordinatorReportPaginator: MatPaginator;
-  @ViewChild('coordinatorReportSort') coordinatorReportSort: MatSort;
-
-
-  constructor(private girasService: StadisticsService) { }
-  startAnimationForLineChart(chart) {
-    let seq: any, delays: any, durations: any;
-    seq = 0;
-    delays = 80;
-    durations = 500;
-
-    chart.on("draw", function (data) {
-      if (data.type === "line" || data.type === "area") {
-        data.element.animate({
-          d: {
-            begin: 600,
-            dur: 700,
-            from: data.path
-              .clone()
-              .scale(1, 0)
-              .translate(0, data.chartRect.height())
-              .stringify(),
-            to: data.path.clone().stringify(),
-            easing: Chartist.Svg.Easing.easeOutQuint,
-          },
-        });
-      } else if (data.type === "point") {
-        seq++;
-        data.element.animate({
-          opacity: {
-            begin: seq * delays,
-            dur: durations,
-            from: 0,
-            to: 1,
-            easing: "ease",
-          },
-        });
-      }
-    });
-
-    seq = 0;
+@Component({selector:'app-dashboard',templateUrl:'./dashboard.component.html',styleUrls:['./dashboard.component.css']})
+export class DashboardComponent implements OnInit, OnDestroy {
+  loading=true; error=''; stale=false; examples=false; horizon=7; quietHours=12;
+  search=''; tab='all'; selectedId:number|null=null; rows:TourView[]=[]; tours:OperationalTour[]=[];
+  now=new Date(); updatedAt:string|null=null; selected:TourView|null=null; message=''; copyStatus='';
+  private request?:Subscription;
+  private dialogs=new Subscription();
+  constructor(private service:DashboardOperationsService, private dialog:MatDialog) {}
+  ngOnInit(){this.refresh();}
+  ngOnDestroy(){this.request?.unsubscribe();this.dialogs.unsubscribe();}
+  refresh(){
+    if(this.examples){this.now=new Date();this.recompute();return;}
+    this.request?.unsubscribe();this.loading=true;this.error='';
+    this.request=this.service.load().subscribe({next:data=>{
+      this.tours=data.tours;this.updatedAt=data.generatedAt;this.now=new Date(data.generatedAt);
+      this.loading=false;this.stale=false;this.recompute();
+    },error:()=>{this.loading=false;this.stale=this.tours.length>0;
+      this.error=this.stale?'No se pudo actualizar. Se conserva la última consulta; sus indicadores pueden estar desactualizados.':'No se pudo consultar el resumen operativo. Reintenta para comprobar los pendientes.';}});
   }
-  startAnimationForBarChart(chart) {
-    let seq2: any, delays2: any, durations2: any;
-
-    seq2 = 0;
-    delays2 = 80;
-    durations2 = 500;
-    chart.on("draw", function (data) {
-      if (data.type === "bar") {
-        seq2++;
-        data.element.animate({
-          opacity: {
-            begin: seq2 * delays2,
-            dur: durations2,
-            from: 0,
-            to: 1,
-            easing: "ease",
-          },
-        });
-      }
-    });
-
-    seq2 = 0;
+  toggleExamples(){this.examples=!this.examples;this.request?.unsubscribe();this.message='';this.selectedId=null;this.search='';this.tab='all';
+    if(this.examples){this.now=new Date();this.loading=false;this.error='';this.recompute();}
+    else {this.now=new Date(this.updatedAt || Date.now());this.recompute();this.refresh();}}
+  recompute(){
+    this.message='';this.copyStatus='';
+    const source=this.examples?dashboardExamples(this.now):this.tours;
+    this.rows=source.map(t=>tourView(t,this.now,this.horizon,this.quietHours));
+    this.syncSelection();
   }
-
-  ngOnInit() {
-    const currentYear = new Date().getFullYear();
-    this.obtenerBestCoordinators(currentYear);
-    this.obtenerRegistrosEstadisticos();
-    // Crear un array con los próximos 10 años y los 10 anteriores
-    for (let i = -5; i <= 5; i++) {
-      this.years.push(currentYear + i);
-    }
-    // Establecer el año actual como valor por defecto
-    this.selectedYear = currentYear;
-    this.obtenerCoordinatorReport();
+  get scope(){return this.rows.filter(r=>['active','upcoming','invalid'].includes(r.phase));}
+  get active(){return this.scope.filter(r=>r.phase==='active');}
+  get upcoming(){return this.scope.filter(r=>r.phase==='upcoming');}
+  get recent(){return this.rows.filter(r=>r.phase==='recent');}
+  get attention(){return this.scope.filter(r=>r.alerts.length>0);}
+  get missingMedical(){return this.scope.reduce((n,r)=>n+r.missingMedical,0);}
+  get pendingPeople(){return this.scope.reduce((n,r)=>n+r.missingStudents,0);}
+  get priorities(){return this.scope.flatMap(row=>row.alerts.map(alert=>({row,alert})))
+    .sort((a,b)=>a.alert.priority-b.alert.priority || (a.row.daysToGo??-999)-(b.row.daysToGo??-999));}
+  get visibleRows(){
+    const base=this.tab==='recent'?this.recent:this.tab==='active'?this.active:this.tab==='upcoming'?this.upcoming:this.tab==='attention'?this.attention:this.scope;
+    const query=this.search.toLocaleLowerCase('es').trim();
+    return base.filter(r=>`${r.source.school} ${r.source.course} ${r.source.code} ${r.source.coordinatorNames||''}`.toLocaleLowerCase('es').includes(query))
+      .sort((a,b)=>(a.alerts[0]?.priority??9)-(b.alerts[0]?.priority??9) || (a.daysToGo??-999)-(b.daysToGo??-999) || a.source.id-b.source.id);
   }
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.coordinatorReportSource.paginator = this.coordinatorReportPaginator;
-    this.coordinatorReportSource.sort = this.coordinatorReportSort;
+  setTab(tab:string){this.tab=tab;this.search='';this.syncSelection();}
+  syncSelection(){this.selected=this.visibleRows.find(r=>r.source.id===this.selectedId)||this.visibleRows[0]||null;this.selectedId=this.selected?.source.id??null;this.message='';}
+  select(row:TourView){this.selected=row;this.selectedId=row.source.id;this.message='';this.copyStatus='';}
+  focus(row:TourView){this.tab=row.phase==='recent'?'recent':'all';this.search='';this.select(row);document.getElementById('gira-detail')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});}
+  phaseLabel(row:TourView){return {active:'En curso',upcoming:'Próxima salida',recent:'Finalizada por fecha',invalid:'Revisar fechas',outside:'Fuera del período',cancelled:'Cancelada'}[row.phase];}
+  departure(row:TourView){return row.daysToGo===null?'Fechas por revisar':row.daysToGo===0?'Sale hoy':row.daysToGo===1?'Sale mañana':row.daysToGo>0?`Sale en ${row.daysToGo} días`:this.phaseLabel(row);}
+  date(value:string){const day=calendarDay(value);return day===null?'Sin fecha válida':new Intl.DateTimeFormat('es-CL',{day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(day*86400000));}
+  get todayLabel(){return new Intl.DateTimeFormat('es-CL',{weekday:'long',day:'numeric',month:'long',timeZone:'America/Santiago'}).format(this.now);}
+  get updatedLabel(){return this.updatedAt?new Intl.DateTimeFormat('es-CL',{hour:'2-digit',minute:'2-digit',timeZone:'America/Santiago'}).format(new Date(this.updatedAt)):'—';}
+  activity(row:TourView){if(!row.source.milestones)return 'Sin hitos registrados';if(row.hoursSinceHito===null)return 'Fecha por verificar';
+    return row.hoursSinceHito<1?'Hace menos de 1 h':`Hace ${Math.floor(row.hoursSinceHito)} h`;}
+  open(action:Action,row:TourView){
+    if(action==='followup'){this.prepare(row);return;}
+    if(this.examples)return;
+    const component:any=action==='students'?TourViewAlumnsModalComponent:action==='coordinators'?TourAddCoordinatorModalComponent:ToursViewModalComponent;
+    const ref=this.dialog.open(component,{width:'1200px',maxWidth:'94vw',maxHeight:'90vh',autoFocus:false,
+      data:action==='students'?{id:row.source.id}:row.source.id});
+    this.dialogs.add(ref.afterClosed().subscribe(()=>this.refresh()));
   }
-
-  onYearChange(): void {
-    this.obtenerBestCoordinators(this.selectedYear);
-  }
-
-  applyCoordinatorFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.coordinatorReportSource.filter = filterValue.trim().toLowerCase();
-    if (this.coordinatorReportSource.paginator) {
-      this.coordinatorReportSource.paginator.firstPage();
-    }
-  }
-
-  obtenerBestCoordinators(year: number) {
-    console.log("mejores coordinadores")
-    Swal.fire({
-      title: "Cargando...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        if (this.selectedYear == null) {
-          year = 2025;
-        }
-        console.log(year);
-        this.girasService.bestCoordinator(year).subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          Swal.close();
-        });
-      },
-    });
-  }
-
-  obtenerRegistrosEstadisticos() {
-    Swal.fire({
-      title: "Cargando...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        this.girasService.listBuyYears().subscribe({
-          next: (data: { [year: string]: number }) => {
-            // Extraer labels y valores del objeto
-            const labels = Object.keys(data); // Ejemplo: ["2024", "2025"]
-            const values = Object.values(data); // Ejemplo: [72, 35]
-            const maxValue = Math.max(...values);
-            this.labels = Object.keys(data).sort(); // Orden ascendente por año
-            this.series = this.labels.map((year) => data[year]);
-
-            // Calcula el porcentaje entre los dos últimos años (si existen)
-            if (this.labels.length >= 2) {
-              const lastYear = this.labels[this.labels.length - 1];
-              const prevYear = this.labels[this.labels.length - 2];
-              const lastValue = data[lastYear];
-              const prevValue = data[prevYear];
-              if (prevValue > 0) {
-                this.percentageDiff =
-                  ((lastValue - prevValue) / prevValue) * 100;
-              } else {
-                this.percentageDiff = 0;
-              }
-            }
-
-            // Configuración del gráfico
-            const dataDailySalesChart: any = {
-              labels: labels,
-              series: [values],
-            };
-
-            const optionsDailySalesChart: any = {
-              lineSmooth: Chartist.Interpolation.cardinal({ tension: 0 }),
-              low: 0,
-              // Opcional: agrega un margen al valor máximo
-              high: maxValue + 20,
-              chartPadding: { top: 0, right: 0, bottom: 0, left: 0 },
-            };
-
-            const dailySalesChart = new Chartist.Line(
-              "#dailySalesChart",
-              dataDailySalesChart,
-              optionsDailySalesChart
-            );
-            //this.startAnimationForLineChart(dailySalesChart);
-          },
-          error: (err) => {
-            console.error("Error al cargar los datos:", err);
-          },
-        });
-
-        const dataCompletedTasksChart: any = {
-          labels: ["12p", "3p", "6p", "9p", "12p", "3a", "6a", "9a"],
-          series: [[230, 750, 450, 300, 280, 240, 200, 190]],
-        };
-
-        const optionsCompletedTasksChart: any = {
-          lineSmooth: Chartist.Interpolation.cardinal({
-            tension: 0,
-          }),
-          low: 0,
-          high: 1000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-          chartPadding: { top: 0, right: 0, bottom: 0, left: 0 },
-        };
-
-        var completedTasksChart = new Chartist.Line(
-          "#completedTasksChart",
-          dataCompletedTasksChart,
-          optionsCompletedTasksChart
-        );
-
-        // start animation for the Completed Tasks Chart - Line Chart
-        this.startAnimationForLineChart(completedTasksChart);
-
-        this.girasService.countAlumns().subscribe({
-          next: (result: string) => {
-            this.alumns = result;
-          },
-          error: (err) => {
-            console.error("Error al obtener el count:", err);
-            this.alumns = "Error";
-          },
-        });
-        this.girasService.countClient().subscribe({
-          next: (result: string) => {
-            this.clients = result;
-          },
-          error: (err) => {
-            console.error("Error al obtener el count:", err);
-            this.alumns = "Error";
-          },
-        });
-        this.girasService.countProgram().subscribe({
-          next: (result: string) => {
-            this.programs = result;
-          },
-          error: (err) => {
-            console.error("Error al obtener el count:", err);
-            this.alumns = "Error";
-          },
-        });
-        this.girasService.countTours().subscribe({
-          next: (result: string) => {
-            this.tours = result;
-          },
-          error: (err) => {
-            console.error("Error al obtener el count:", err);
-            this.alumns = "Error";
-          },
-        });
-
-        /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
-
-        this.girasService.listBuyYears().subscribe({
-          next: (data: { [year: string]: number }) => {
-            // Extraer labels y valores del objeto
-            const labels = Object.keys(data); // Ejemplo: ["2024", "2025"]
-            const values = Object.values(data); // Ejemplo: [72, 35]
-            const maxValue = Math.max(...values); // Obtener el valor máximo para el rango del gráfico
-
-            // Ordenar las etiquetas (años) en orden ascendente
-            this.labels = labels.sort(); // Orden ascendente por año
-            this.series = this.labels.map((year) => data[year]); // Asignar los valores a las series del gráfico
-
-            // Configuración del gráfico
-            const datawebsiteViewsChart: any = {
-              labels: this.labels, // Años
-              series: [this.series], // Valores de las compras por año
-            };
-
-            const optionswebsiteViewsChart: any = {
-              axisX: {
-                showGrid: false,
-              },
-              low: 0,
-              high: maxValue + 20, // Ajusta el valor máximo para dar un poco de margen
-              chartPadding: { top: 0, right: 5, bottom: 0, left: 0 },
-            };
-
-            const responsiveOptions: any[] = [
-              [
-                "screen and (max-width: 640px)",
-                {
-                  seriesBarDistance: 5,
-                  axisX: {
-                    labelInterpolationFnc: function (value) {
-                      return value[0]; // Mostrar solo la primera letra del año si es necesario
-                    },
-                  },
-                },
-              ],
-            ];
-
-            // Crear el gráfico de barras
-            const websiteViewsChart = new Chartist.Bar(
-              "#websiteViewsChart",
-              datawebsiteViewsChart,
-              optionswebsiteViewsChart,
-              responsiveOptions
-            );
-
-            // Iniciar animación para el gráfico
-            this.startAnimationForBarChart(websiteViewsChart);
-          },
-          error: (err) => {
-            console.error("Error al cargar los datos:", err);
-          },
-        });
-      },
-    });
-  }
-
-  obtenerCoordinatorReport() {
-    Swal.fire({
-      title: "Cargando...",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-        this.girasService.getCoordinatorReport().subscribe({
-          next: (data) => {
-            this.coordinatorReportSource.data = data;
-            Swal.close();
-          },
-          error: (error) => {
-            console.error("Error al obtener el reporte de coordinadores", error);
-            Swal.close();
-          }
-        });
-      }
-    });
-  }
+  prepare(row:TourView){this.focus(row);const t=row.source;
+    this.message=`Hola, equipo. Revisemos la gira ${t.code} · ${t.school} ${t.course||''} (${this.date(t.startsOn)} al ${this.date(t.endsOn)}).\n\n`+
+      (row.alerts.length?row.alerts.map(a=>`• ${a.title}: ${a.detail}`).join('\n'):'No hay pendientes detectados en los controles disponibles.')+
+      '\n\nPor favor, confirmar responsables y actualizar la información en Papigiras. Gracias.';
+    this.copyStatus='';}
+  async copy(){try{await navigator.clipboard.writeText(this.message);this.copyStatus='Texto copiado. No se ha enviado.';}catch{this.copyStatus='Selecciona el texto para copiarlo manualmente.';}}
+  trackTour(index:number,row:TourView){return row.source.id;}
 }

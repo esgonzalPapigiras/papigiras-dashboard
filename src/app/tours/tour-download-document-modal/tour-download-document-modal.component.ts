@@ -6,6 +6,7 @@ import { DocumentDTO } from 'app/models/document';
 import { ToursServicesService } from 'app/services/tours-services.service';
 import Swal from 'sweetalert2';
 import { saveAs } from 'file-saver';
+import { recordList } from 'app/shared/record-values';
 
 @Component({
   selector: 'app-tour-download-document-modal',
@@ -40,7 +41,7 @@ export class TourDownloadDocumentModalComponent implements OnInit {
         this.tourService.getDocument(this.data.tourSalesId)
           .subscribe({
             next: (existingDocs: any) => {
-              console.log(existingDocs)
+              existingDocs = recordList(existingDocs);
               const officialTypes = [
                 { key: 'gira', label: 'Programa' },
                 { key: 'poliza', label: 'Seguro' },
@@ -100,7 +101,7 @@ export class TourDownloadDocumentModalComponent implements OnInit {
   }
 
   applyDelete(event: DocumentDTO) {
-    console.log(event)
+    if (!event?.documentId) return;
     Swal.fire({
       title: "Estas Seguro?",
       text: "No puedes revertir esto!!!",
@@ -127,6 +128,7 @@ export class TourDownloadDocumentModalComponent implements OnInit {
   }
 
   applyDownload(event: any): void {
+    if (!event?.documentName || !event?.documentId) return;
     Swal.fire({
       title: "Buscando el archivo...",
       allowOutsideClick: false,
@@ -145,7 +147,7 @@ export class TourDownloadDocumentModalComponent implements OnInit {
               Swal.close();
             },
             error: (err) => {
-              console.error('Error downloading the file: ', err);
+              console.error('PAPIGIRAS LAB: operación local no completada.');
               Swal.close();
             }
           });
@@ -170,13 +172,11 @@ export class TourDownloadDocumentModalComponent implements OnInit {
   }
 
   chooseFile(row: any) {
-    console.log(row)
     this.selectedRow = row;
     this.fileUploader.nativeElement.value = null;
     this.fileUploader.nativeElement.click();
   }
   onFileSelected(event: any) {
-    console.log(event)
     const file = event.target.files[0];
     if (!file || !this.selectedRow) return;
     Swal.fire({

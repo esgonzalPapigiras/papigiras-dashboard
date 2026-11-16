@@ -31,7 +31,7 @@ export class TourAddBusModalComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.busService.obtenerBus().subscribe(respon => {
-            this.buses = respon;
+            this.buses = respon ?? [];
             Swal.close();
           });
         },
@@ -46,8 +46,8 @@ export class TourAddBusModalComponent implements OnInit {
   
     filteredBus() {
       return this.buses.filter(bus =>
-        bus.tourTripulationBusPatent.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        bus.tourTripulationBusEnterprise.toLowerCase().includes(this.searchTerm.toLowerCase())
+        String(bus.tourTripulationBusPatent ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        String(bus.tourTripulationBusEnterprise ?? '').toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
   
@@ -82,7 +82,7 @@ export class TourAddBusModalComponent implements OnInit {
               this.dialogRef.close(true);
             },
             error: (err) => {
-              console.error('Error al guardar el buses:', err);
+              console.error('PAPIGIRAS LAB: operación local no completada.');
               this.dialogRef.close(false);
             }
           });

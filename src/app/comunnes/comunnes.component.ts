@@ -104,7 +104,7 @@ export class ComunnesComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.comunnesService.ObtenerCommunes().subscribe((respon) => {
-            this.dataSource = new MatTableDataSource(respon);
+            this.dataSource = new MatTableDataSource(respon ?? []);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             Swal.close();

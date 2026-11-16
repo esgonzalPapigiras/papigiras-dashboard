@@ -33,7 +33,7 @@ export class TourAddDriverModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.driverService.obtenerConductores().subscribe(respon => {
-          this.drivers = respon;
+          this.drivers = respon ?? [];
           Swal.close();
         });
       },
@@ -48,8 +48,8 @@ export class TourAddDriverModalComponent implements OnInit {
 
   filteredDriver() {
     return this.drivers.filter(driver =>
-      driver.tourTripulationNameId.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      driver.tourTripulationIdentificationId.toLowerCase().includes(this.searchTerm.toLowerCase())
+      String(driver.tourTripulationNameId ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      String(driver.tourTripulationIdentificationId ?? '').toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -87,7 +87,7 @@ export class TourAddDriverModalComponent implements OnInit {
                       this.dialogRef.close(true);
                     },
                     error: (err) => {
-                      console.error('Error al guardar el buses:', err);
+                      console.error('PAPIGIRAS LAB: operación local no completada.');
                       this.dialogRef.close(false);
                     }
                   });

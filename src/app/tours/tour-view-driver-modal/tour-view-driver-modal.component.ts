@@ -1,3 +1,4 @@
+import { escapeHtml, calendarDate } from 'app/shared/record-values';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -47,13 +48,12 @@ export class TourViewDriverModalComponent implements OnInit {
           next: (res: TripulationsDTO[]) => {
             // Filtrar solo choferes (typeId === 1)
             const choferes = (res ?? []).filter(t => t.tourTripulationTypeId === 1);
-            console.log(choferes)
             this.dataSourceTrip = new MatTableDataSource(choferes);
             this.dataSourceTrip.sort = this.sort;
             this.dataSourceTrip.paginator = this.paginator;
           },
           error: (err) => {
-            console.error(err);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'No se pudo cargar la tripulación' });
           },
           complete: () => Swal.close()
@@ -130,10 +130,10 @@ export class TourViewDriverModalComponent implements OnInit {
     const { value: form } = await Swal.fire({
       title: 'Editar Tripulante',
       html: `
-        <input id="tp-nombre" class="swal2-input" placeholder="Nombre" value="${row.tourTripulationNameId ?? ''}">
-        <input id="tp-ident" class="swal2-input" placeholder="Rut" value="${row.tourTripulationIdentificationId ?? ''}">
-        <input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${row.tourTripulationPhoneId ?? ''}">
-        <input id="tp-fecha" class="swal2-input" type="date" value="${(row.fechaNacimiento ?? '').substring(0, 10)}">
+        <input id="tp-nombre" class="swal2-input" placeholder="Nombre" value="${escapeHtml(row.tourTripulationNameId)}">
+        <input id="tp-ident" class="swal2-input" placeholder="Rut" value="${escapeHtml(row.tourTripulationIdentificationId)}">
+        <input id="tp-fono" class="swal2-input" placeholder="Teléfono" value="${escapeHtml(row.tourTripulationPhoneId)}">
+        <input id="tp-fecha" class="swal2-input" type="date" value="${calendarDate(row.fechaNacimiento)}">
       `,
       showCancelButton: true,
       confirmButtonText: 'Actualizar',

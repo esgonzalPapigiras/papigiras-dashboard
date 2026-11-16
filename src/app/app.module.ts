@@ -1,7 +1,8 @@
+import { LabNetworkInterceptor } from './lab/lab-network.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
@@ -45,7 +46,7 @@ import { PassengerAdultEditDialogComponent } from './tours/passenger-adult-edit-
     
     
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: LabNetworkInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

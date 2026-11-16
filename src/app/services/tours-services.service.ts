@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TripulationAvionDTO } from 'app/models/avionList';
@@ -23,8 +24,7 @@ import { catchError, map, Observable } from 'rxjs';
 })
 export class ToursServicesService {
 
-  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  readonly url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -325,7 +325,7 @@ export class ToursServicesService {
       .set('fileName', fileName);
     return this.http.delete(this.url.concat('/api/tour/sales/web/deleteDocument'), { headers, params }).pipe(
       catchError(error => {
-        console.error('Error deleting document:', error);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         throw new Error('Failed to delete document');
       })
     );

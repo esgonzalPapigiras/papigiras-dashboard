@@ -212,11 +212,9 @@ export class NewTourModalComponent implements OnInit {
       addCourse: val.curso,
       collegeName: this.selectedCollege?.name ?? null
     };
-    console.log(payload)
     Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     // Llama a tu endpoint real
-    console.log(payload)
     this.tourService.tourCreate(payload).subscribe({
       next: () => {
         Swal.close();
@@ -226,7 +224,7 @@ export class NewTourModalComponent implements OnInit {
       error: (e) => {
         Swal.close();
         Swal.fire('Error', 'No se pudo crear la gira', 'error');
-        console.error(e);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
       }
     });
   }

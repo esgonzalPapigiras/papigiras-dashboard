@@ -40,10 +40,7 @@ export class SchoolComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listCollege().subscribe((respon) => {
-          console.log(respon)
-          // Guarda sólo los primeros 100 colegios
-          const primerosCien = respon.slice(0, 100);
-          this.dataSourceColegios = new MatTableDataSource(respon);
+          this.dataSourceColegios = new MatTableDataSource(respon ?? []);
           this.dataSourceColegios.paginator = this.paginator;
           this.dataSourceColegios.sort = this.sort;
           Swal.close();
@@ -111,6 +108,7 @@ export class SchoolComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceColegios.filter = filterValue.trim().toLowerCase();
+    this.dataSourceColegios.paginator?.firstPage();
   }
 
 }

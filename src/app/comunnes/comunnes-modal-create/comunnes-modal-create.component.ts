@@ -42,7 +42,6 @@ export class ComunnesModalCreateComponent implements OnInit {
               .obtenerOficinas()
               .subscribe((respon) => {
                 this.branch = respon;
-                console.log(this.branch);
                 Swal.close();
               });
           },
@@ -66,7 +65,7 @@ export class ComunnesModalCreateComponent implements OnInit {
             this.dialogRef.close(true);
           },
           error: (err) => {
-            console.error('Error al guardar la oficina:', err);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             // Puedes optar por cerrar el modal con false o mostrar un mensaje de error sin cerrarlo
             this.dialogRef.close(false);
           }

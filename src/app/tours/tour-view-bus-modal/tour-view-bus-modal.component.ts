@@ -55,7 +55,7 @@ export class TourViewBusModalComponent implements OnInit {
       },
       error: (err) => {
         Swal.close();
-        console.error(err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los buses' });
       }
     });
@@ -86,7 +86,7 @@ export class TourViewBusModalComponent implements OnInit {
         this.alreadySelectedBusPatents = res.map(b => b.tourTripulationBusPatent);
         this.dataSourceBus.sort = this.sort;
       },
-      error: (err) => console.error(err)
+      error: (err) => console.error('PAPIGIRAS LAB: operación local no completada.')
     });
   }
 

@@ -42,7 +42,7 @@ export class BusModalCreateComponent implements OnInit {
           },
           error: (err) => {
             Swal.close();
-            console.error('Error al guardar bus:', err);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             Swal.fire('Error', 'No se pudo guardar el bus.', 'error');
           }
         });

@@ -48,7 +48,6 @@ export class SuppliersComponent implements OnInit {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(event.itinerary_id);
         // Llamamos al servicio para eliminar el coordinador
         this.supplierService.deletesuppliers(event.suppliers_id).subscribe(
           (response) => {
@@ -102,7 +101,7 @@ export class SuppliersComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.supplierService.obtenerSuppliers().subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();

@@ -77,8 +77,6 @@ export class PassengerCreateDialogComponent implements OnInit {
       passengersComment: '',
       passengersActive: true
     };
-    console.log(this.form.value)
-    console.log(dto)
 
     this.loading = true;
     Swal.fire({ title: 'Creando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });

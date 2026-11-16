@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Branch } from 'app/models/branch';
@@ -8,8 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class BranchService {
 
-  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  readonly url = environment.apiUrl;
   constructor(private http: HttpClient) { }
 
 

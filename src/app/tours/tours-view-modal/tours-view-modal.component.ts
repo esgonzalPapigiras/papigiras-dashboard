@@ -141,8 +141,7 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listaTripulantes(this.data).subscribe((respon) => {
-          console.log(respon.length);
-          this.dataSourceTripulantes = new MatTableDataSource(respon);
+          this.dataSourceTripulantes = new MatTableDataSource(respon ?? []);
           this.dataSourceTripulantes.paginator = this.paginatorTripulante;
           this.dataSourceTripulantes.sort = this.sortTripulante;
           this.dataSourceTripulantes.paginator.length = respon.length;
@@ -160,7 +159,7 @@ export class ToursViewModalComponent implements OnInit {
         Swal.showLoading();
         this.girasServices.listAlumn(this.data).subscribe((respon) => {
 
-          this.dataSourceAlumnos = new MatTableDataSource(respon);
+          this.dataSourceAlumnos = new MatTableDataSource(respon ?? []);
           this.dataSourceAlumnos.paginator = this.paginatorAlumn;
 
           this.dataSourceAlumnos.sort = this.sortAlumn;
@@ -184,7 +183,7 @@ export class ToursViewModalComponent implements OnInit {
             Swal.close();
           },
           error: (err) => {
-            console.error('Error downloading the file: ', err);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             Swal.close();
           }
         });
@@ -199,8 +198,7 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listaBusGira(this.data).subscribe((respon) => {
-          console.log(respon);
-          this.dataSourceBus = new MatTableDataSource(respon);
+          this.dataSourceBus = new MatTableDataSource(respon ?? []);
           //this.dataSourceBus.paginator = this.paginator;
           this.dataSourceBus.sort = this.sort;
           Swal.close();
@@ -216,8 +214,7 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listAvion(this.data).subscribe((respon) => {
-          console.log(respon);
-          this.dataSourceAvion = new MatTableDataSource(respon);
+          this.dataSourceAvion = new MatTableDataSource(respon ?? []);
           //this.dataSourceAvion.paginator = this.paginator;
           this.dataSourceAvion.sort = this.sort;
           Swal.close();
@@ -233,8 +230,7 @@ export class ToursViewModalComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.girasServices.listHotel(this.data).subscribe((respon) => {
-          console.log(respon);
-          this.dataSourceHotel = new MatTableDataSource(respon);
+          this.dataSourceHotel = new MatTableDataSource(respon ?? []);
           //this.dataSourceHotel.paginator = this.paginator;
           this.dataSourceHotel.sort = this.sort;
           Swal.close();

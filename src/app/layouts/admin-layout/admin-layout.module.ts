@@ -1,3 +1,4 @@
+import { TourInternalDocumentsComponent } from '../../tours/tour-internal-documents/tour-internal-documents.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -131,6 +132,7 @@ const MY_DATE_FORMATS = {
     TourAddHotelModalComponent,
     TourAddDocumentModalComponent,
     TourDownloadDocumentModalComponent,
+    TourInternalDocumentsComponent,
     TourDeleteModalComponent,
     CoordinatorComponent,
     ComunnesComponent,

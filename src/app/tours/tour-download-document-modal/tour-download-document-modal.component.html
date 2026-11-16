@@ -5,6 +5,7 @@
         <div class="button-container" style="display: flex; gap: 15px; justify-content: start; margin-bottom: 10px;">
           <input type="file" #fileUploader style="display:none" (change)="onFileSelected($event)" />
         </div>
+        <app-tour-internal-documents [tourId]="data.tourSalesId"></app-tour-internal-documents>
         <div class="card">
           <div class="card-header card-header-danger">
             <h4 class="card-title">Documentos Extras</h4>
@@ -53,10 +54,10 @@
                     <button mat-icon-button color="primary" (click)="chooseFile(row)" matTooltip="Subir">
                       <mat-icon>upload</mat-icon>
                     </button>
-                    <button mat-icon-button color="error" (click)="applyDelete(row)" matTooltip="Eliminar">
+                    <button mat-icon-button color="error" [disabled]="!row.documentId || !row.documentName" (click)="applyDelete(row)" matTooltip="Eliminar">
                       <mat-icon>delete</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" (click)="applyDownload(row)" matTooltip="Descargar">
+                    <button mat-icon-button color="primary" [disabled]="!row.documentId || !row.documentName" (click)="applyDownload(row)" matTooltip="Descargar">
                       <mat-icon>download</mat-icon>
                     </button>
                   </div>

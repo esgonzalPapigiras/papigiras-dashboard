@@ -49,7 +49,7 @@ export class TourAddCoordinatorModalComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading tour coordinators', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         this.isLoading = false;
         Swal.fire({
           icon: 'error',
@@ -101,7 +101,7 @@ export class TourAddCoordinatorModalComponent implements OnInit {
         }).then(() => this.dialogRef.close(assignments));
       },
       error: (err) => {
-        console.error('Error saving tour coordinators', err);
+        console.error('PAPIGIRAS LAB: operación local no completada.');
         this.isSaving = false;
         Swal.fire({
           icon: 'error',

@@ -1,3 +1,4 @@
+import { recordList, tourMatches, tourCommune, calendarTimestamp } from 'app/shared/record-values';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -61,45 +62,11 @@ export class ToursComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.obtenerGiras();
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const f = JSON.parse(filter);
-      if (f.tourSalesUuid &&
-        !data.tourSalesUuid?.toLowerCase().includes(f.tourSalesUuid)) {
-        return false;
-      }
-      if (f.tourSalesInit) {
-        const filterDate = this.parseDate(f.tourSalesInit);
-        const rowDate = this.parseDate(data.tourSalesInit);
-        if (!rowDate || rowDate < filterDate) {
-          return false;
-        }
-      }
-      if (f.tourSalesFinal) {
-        const filterDate = this.parseDate(f.tourSalesFinal);
-        const rowDate = this.parseDate(data.tourSalesFinal);
-        if (!rowDate || rowDate > filterDate) {
-          return false;
-        }
-      }
-      if (f.collegeName &&
-        !data.collegeName?.toLowerCase().includes(f.collegeName)) {
-        return false;
-      }
-      if (f.addCourse &&
-        !data.addCourse?.toLowerCase().includes(f.addCourse)) {
-        return false;
-      }
-      if (f.communesName) {
-        const comuna =
-          data.detalle?.communesName ||
-          data.communeName ||
-          '';
-        if (!comuna.toLowerCase().includes(f.communesName)) {
-          return false;
-        }
-      }
-      return true;
+      try { return tourMatches(data, JSON.parse(filter)); } catch { return true; }
     };
   }
+
+  communeLabel = tourCommune;
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -114,15 +81,16 @@ export class ToursComponent implements AfterViewInit, OnInit {
         Swal.showLoading();
         this.girasServices.obtenerGirasFull().pipe(
           tap(giras => {
-            console.log('FULL GIRAS:', giras);
-            this.dataSource.data = giras;
+            this.dataSource.data = recordList(giras);
             this.dataSource.sortingDataAccessor = (item, property) => {
               switch (property) {
                 case 'tourSalesInit':
                 case 'tourSalesFinal':
-                  return this.parseDate(item[property]);
+                  return calendarTimestamp(item[property]) ?? Number.NEGATIVE_INFINITY;
+                case 'communesName':
+                  return tourCommune(item);
                 default:
-                  return item[property];
+                  return item[property] ?? '';
               }
             };
             this.dataSource.paginator = this.paginator;
@@ -130,7 +98,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
             this.dataSource.filter = JSON.stringify(this.filterValues);
           }),
           finalize(() => Swal.close())
-        ).subscribe();
+        ).subscribe({ error: () => Swal.fire('Error', 'No se pudieron cargar las giras locales.', 'error') });
       }
     });
   }
@@ -155,7 +123,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
             tap((response: any) => {
             }),
             catchError(error => {
-              console.log(error);
               Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
               return of(null);
             }),
@@ -311,7 +278,6 @@ export class ToursComponent implements AfterViewInit, OnInit {
               }
             }),
             catchError(error => {
-              console.log(error);
               Swal.fire({ icon: 'error', title: 'Oops...', text: 'Hubo un problema al cargar el archivo' });
               return of(null);
             }),
@@ -387,7 +353,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
           Swal.fire('Guardado', hotelName ? 'El hotel fue actualizado.' : 'El hotel fue eliminado.', 'success');
         },
         error: error => {
-          console.error('Error al actualizar el hotel:', error);
+          console.error('PAPIGIRAS LAB: operación local no completada.');
           Swal.fire('Error', 'No se pudo guardar el hotel.', 'error');
         }
       });
@@ -417,7 +383,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
             Swal.close();
           },
           error: (err) => {
-            console.error('Error downloading the file: ', err);
+            console.error('PAPIGIRAS LAB: operación local no completada.');
             Swal.close();
           }
         });
@@ -457,7 +423,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
         row.alumnosCount = this.calcTotalParticipantes(detalle);
         row.addAlumnListDoc = (row.alumnosCount ?? 0) > 0;
       },
-      error: (e) => console.error('Error al obtener detalle de gira', e),
+      error: (e) => console.error('PAPIGIRAS LAB: operación local no completada.'),
     });
   }
 
@@ -484,10 +450,10 @@ export class ToursComponent implements AfterViewInit, OnInit {
   showDuplicateRutsDialog(duplicates: any) {
     const duplicateList = duplicates.map((p: any) =>
       `${p.rutPassenger} - ${p.namePassenger} ${p.lastNamePassenger}`
-    ).join('<br>');
+    ).join('\n');
     Swal.fire({
       title: '¡Atención!',
-      html: 'Existen RUT duplicados:<br>' + duplicateList,
+      text: 'Existen RUT duplicados:\n' + duplicateList,
       icon: 'warning',
       confirmButtonText: 'Aceptar',
       confirmButtonColor: '#3085d6',
@@ -529,7 +495,7 @@ export class ToursComponent implements AfterViewInit, OnInit {
                   (row as any).addAlumnListDoc = ((row as any).alumnosCount ?? 0) > 0;
                 }),
                 catchError(err => {
-                  console.error('Detalle falla para tourSalesId:', row.tourSalesId, err);
+                  console.error('PAPIGIRAS LAB: operación local no completada.');
                   (row as any).addAlumnListDoc = false;
                   (row as any).alumnosCount = 0;
                   return of(null);
@@ -585,11 +551,4 @@ export class ToursComponent implements AfterViewInit, OnInit {
     throw new Error("Formato de tourSalesUuid inválido: " + uuid);
   }
 
-  private parseDate(value: string): number | null {
-    if (!value) return null;
-    const parts = value.split('-');
-    if (parts.length !== 3) return null;
-    const [day, month, year] = parts.map(Number);
-    return new Date(year, month - 1, day).getTime();
-  }
 }

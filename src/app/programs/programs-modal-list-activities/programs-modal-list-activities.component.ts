@@ -41,9 +41,8 @@ export class ProgramsModalListActivitiesComponent implements OnInit {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        console.log(this.data)
         this.programServices.listActivitiesProgram(this.data.tours_id).subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();
@@ -64,7 +63,6 @@ export class ProgramsModalListActivitiesComponent implements OnInit {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(event);
         // Llamamos al servicio para eliminar el coordinador
         this.programServices.activitiesProgramDeleteList(event.tourActivitiesId).subscribe(
           (response) => {
@@ -72,7 +70,6 @@ export class ProgramsModalListActivitiesComponent implements OnInit {
             this.obtenerActividades();
           },
           (error) => {
-            console.log(error)
             Swal.fire("Error", "No se pudo eliminar el registro.", "error");
           }
         );

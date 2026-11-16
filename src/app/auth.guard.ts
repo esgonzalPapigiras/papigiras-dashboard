@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { normalizeAuthorization } from './lab/lab-auth';
 import {CanActivate,Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { LoginService } from './services/login.service';
@@ -21,7 +22,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private isLoggedIn(): boolean {
-    return localStorage.getItem('token') !== null;  // Ejemplo simple
+    return normalizeAuthorization(localStorage.getItem('token')) !== null;
   }
   
 }

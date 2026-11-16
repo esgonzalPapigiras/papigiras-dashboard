@@ -115,7 +115,6 @@ export class CoordinatorComponent implements OnInit {
         didOpen: () => {
           Swal.showLoading();
           this.coordinatorServices.uploadFile(file).subscribe(response => {
-            console.log('response.status');
             if (response.code === "0") {
               this.showSuccessDialog();
               this.obtenerCoordinadores();
@@ -123,7 +122,6 @@ export class CoordinatorComponent implements OnInit {
               this.showSuccessDialogError();
             }
           }, error => {
-            console.log(error);
             // Maneja cualquier error durante la carga
             Swal.fire({
               icon: "error",
@@ -193,7 +191,7 @@ export class CoordinatorComponent implements OnInit {
       didOpen: () => {
         Swal.showLoading();
         this.coordinatorServices.obtenerCoordinadores().subscribe((respon) => {
-          this.dataSource = new MatTableDataSource(respon);
+          this.dataSource = new MatTableDataSource(respon ?? []);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           Swal.close();

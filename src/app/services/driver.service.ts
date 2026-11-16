@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TripulationsDTO } from 'app/models/driver';
@@ -8,8 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class DriverService {
 
-  url = 'https://stingray-app-9tqd9-djh6d.ondigitalocean.app';
-  //url = 'http://localhost:8084';
+  readonly url = environment.apiUrl;
   constructor(private http: HttpClient) { }
 
   public obtenerConductores(): Observable<TripulationsDTO[]> {
